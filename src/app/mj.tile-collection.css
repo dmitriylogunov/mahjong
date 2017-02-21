@@ -1,0 +1,10 @@
+.tile {
+  position: absolute;
+  background: green;
+  width: 50px;
+  height: 100px;
+}
+
+.tiles {
+  position: relative;
+}
