@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { MjTileComponent } from './mj.tile.component';
+import { MjTile } from './mj.tile';
+import { MJLayoutGraph } from './mj.layout.graph';
 
 @Component({
   selector: 'tiles',
@@ -8,7 +9,7 @@ import { MjTileComponent } from './mj.tile.component';
 })
 export class MjTileCollectionComponent {
   // layout description only, no other data here. Just an array of tile 2d coordinates
-  private dragonLayout: Array<[number, number]> = [
+  private dragonLayout: [number, number][] = [
     // layer 0
     [2,0],[4,0],[6,0],[8,0],[10,0],[12,0],[14,0],[16,0],[18,0],[20,0],[22,0],[24,0],
                 [6,1],[8,1],[10,1],[12,1],[14,1],[16,1],[18,1],[20,1],
@@ -16,10 +17,9 @@ export class MjTileCollectionComponent {
     [8,1],[10,1],[12,1],[14,1],[16,1],[18,1]
   ];
 
-  public collection: Array<[number, number]>;
+  public collection: [number, number][] = [];
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit(): void {
     this.loadCollection("dragon");
@@ -31,9 +31,12 @@ export class MjTileCollectionComponent {
     return Math.floor(Math.random() * range) + 1;
   }
 
-  loadCollection(layout: string): void {
-    // layout is ignored just yet, always use dragon
-    this.collection = this.dragonLayout;
+  loadCollection(layoutType: string): void {
+    // layoutType is ignored just yet, always use dragon
+    // show "loading"
+    console.log("loading started");
+    let dragonLayout = new MJLayoutGraph(this.dragonLayout);
+    dragonLayout.set({}, this.onLoadComplete);
 
     // for (let i=0;i<this.dragonLayout.length;i++) {
     //   let newTile = new MjTile(this.dragonLayout[i][0], this.dragonLayout[i][1]);
@@ -51,5 +54,10 @@ export class MjTileCollectionComponent {
 
     //test
 
+  }
+
+  onLoadComplete():void {
+      // hide "loading"
+      console.log("loading finished")
   }
 }

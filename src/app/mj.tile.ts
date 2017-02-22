@@ -1,18 +1,20 @@
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'tile',
-  template: '<div class="tile" [ngStyle]="positionStyles">AAA</div>',
-})
-export class MjTileComponent {
+// import { Component, Input } from '@angular/core';
+//
+// @Component({
+//   selector: 'tile',
+//   template: '<div class="tile" [ngStyle]="positionStyles">AAA</div>',
+// })
+export class MjTile {
   private vScale:number = 10; // scaling constants to determine pixel size of a tile
   private hScale:number = 5;
   public top: number; // top and left are pixel positions of the tile
   public left: number;
   public positionStyles: {};
   public type: string;
-  public x;
-  public y;
+  // @Input() x: number;
+  // @Input() y: number;
+  public x: number;
+  public y: number;
   public z: number; // x,y,z are field positions of the tile
 
   private tileSizeX = 2;
@@ -21,10 +23,7 @@ export class MjTileComponent {
   private blockedBy: {};
   private blocks: {};
 
-  constructor() {
-
-// initPosition: [number, number]
-
+  constructor(x: number, y: number) {
     this.x = 0;//initPosition[0];
     this.y = 0;//initPosition[1];
     console.log("In tile constructor " + this.x + " " + this.y);
@@ -38,7 +37,7 @@ export class MjTileComponent {
   }
 
   // check if two tile overlap, ignoring z coordinate
-  overlaps2d(otherTile: MjTileComponent): boolean {
+  overlaps2d(otherTile: MjTile): boolean {
     return (
       (this.x+this.tileSizeX>otherTile.x && this.x<=otherTile.x+this.tileSizeX)
       &&

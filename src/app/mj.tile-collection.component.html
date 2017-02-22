@@ -1,3 +1,6 @@
 <div>
-    <tile *ngFor="let tile of collection" class="tile"></tile>
+    <div *ngFor="let tile of collection" class="tile"
+      [ngStyle]="tile.positionStyles"
+      (click)="onSelect(tile)"
+    ></div>
 </div>
