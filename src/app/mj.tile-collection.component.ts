@@ -8,6 +8,9 @@ import { MJLayoutGraph } from './mj.layout.graph';
   styleUrls: ['app/mj.tile-collection.css']
 })
 export class MjTileCollectionComponent {
+  constructor() {
+  }
+
   // layout description only, no other data here. Just an array of tile 2d coordinates
   private dragonLayout: [number, number][] = [
     // layer 0
@@ -17,36 +20,28 @@ export class MjTileCollectionComponent {
     [8,1],[10,1],[12,1],[14,1],[16,1],[18,1]
   ];
 
-  public collection: [number, number][] = [];
-
-  constructor() {}
+  public currentLayout: MJLayoutGraph;
 
   ngOnInit(): void {
     this.loadCollection("dragon");
   }
 
-  tileCollection: Array<{}> = [];
-
-  random(range: number): number {
-    return Math.floor(Math.random() * range) + 1;
-  }
+  // random(range: number): number {
+  //   return Math.floor(Math.random() * range) + 1;
+  // }
 
   loadCollection(layoutType: string): void {
     // layoutType is ignored just yet, always use dragon
-    // show "loading"
-    console.log("loading started");
+
     let dragonLayout = new MJLayoutGraph(this.dragonLayout);
-    dragonLayout.set({}, this.onLoadComplete);
+
+    console.log("loading started");     // TODO show "loading"
+    dragonLayout.set({}, this.onLoadComplete.bind(this));
 
     // for (let i=0;i<this.dragonLayout.length;i++) {
     //   let newTile = new MjTile(this.dragonLayout[i][0], this.dragonLayout[i][1]);
     //
-    //   // determine layer (z coordinate) of the tile
-    //   for (let i=0;i<this.tileCollection.length;i++) {
-    //     if ((newTile.z<=this.tileCollection[i].z) && newTile.overlaps2d(this.tileCollection[i])) {
-    //       newTile.z = this.tileCollection[i].z + 1;
-    //     }
-    //   }
+
 
       // get list of tiles that this new tile blocks or being blocked by
       // this.tileCollection.push(new MjTile(this.random(10), this.random(10)));
@@ -56,8 +51,9 @@ export class MjTileCollectionComponent {
 
   }
 
-  onLoadComplete():void {
-      // hide "loading"
-      console.log("loading finished")
+  // runs out of the class context, so use self instead of this
+  onLoadComplete(layout: MJLayoutGraph):void {
+    this.currentLayout = layout;
+    console.log("loading finished");     // TODO hide "loading"
   }
 }

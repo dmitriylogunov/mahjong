@@ -11,6 +11,7 @@ export class MjTile {
   public left: number;
   public positionStyles: {};
   public type: string;
+  public isFree: boolean;
   // @Input() x: number;
   // @Input() y: number;
   public x: number;
@@ -24,8 +25,8 @@ export class MjTile {
   private blocks: {};
 
   constructor(x: number, y: number) {
-    this.x = 0;//initPosition[0];
-    this.y = 0;//initPosition[1];
+    this.x = x;
+    this.y = y;
     console.log("In tile constructor " + this.x + " " + this.y);
     this.left = this.x*this.hScale;
     this.top = this.y*this.vScale;
