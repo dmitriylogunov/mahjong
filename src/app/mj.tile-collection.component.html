@@ -1,3 +1,8 @@
 <div>
-
+  <div *ngIf="currentLayout">
+    <div *ngFor="let tile of currentLayout.tiles" class="tile"
+      [ngStyle]="tile.positionStyles"
+      (click)="onSelect(tile)"
+    ></div>
+  </div>
 </div>
