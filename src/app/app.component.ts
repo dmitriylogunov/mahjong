@@ -3,6 +3,6 @@ import {MjGameModule} from './mj.game.module';
 
 @Component({
   selector: 'app',
-  template: `Some app outer logic goes here <br/>`,
+  template: `Some outer application logic goes here <br/>`,
 })
 export class AppComponent  { }

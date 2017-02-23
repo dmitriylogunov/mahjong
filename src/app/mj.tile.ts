@@ -5,11 +5,12 @@
 //   template: '<div class="tile" [ngStyle]="positionStyles">AAA</div>',
 // })
 export class MjTile {
-  private vScale:number = 10; // scaling constants to determine pixel size of a tile
-  private hScale:number = 5;
+  // scaling constants to determine resulting pixel size of a tile
+  // should be tile size in pixels / 2 (logical size of tile is 2x2) + margins
+  private xScale:number = 31;
+  private yScale:number = 46;
   public top: number; // top and left are pixel positions of the tile
   public left: number;
-  public positionStyles: {};
   public type: string;
   public isFree: boolean;
   // @Input() x: number;
@@ -27,22 +28,24 @@ export class MjTile {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-    console.log("In tile constructor " + this.x + " " + this.y);
-    this.left = this.x*this.hScale;
-    this.top = this.y*this.vScale;
-    this.positionStyles = {
-      'top': this.top+'px',
-      'left': this.left+'px'
-    };
+    this.left = this.x*this.xScale;
+    this.top = this.y*this.yScale;
+
     this.z = 0;
+  }
+
+  setType(type: string): void {
+    // TODO add tile image here
+    this.type = type;
+
   }
 
   // check if two tile overlap, ignoring z coordinate
   overlaps2d(otherTile: MjTile): boolean {
     return (
-      (this.x+this.tileSizeX>otherTile.x && this.x<=otherTile.x+this.tileSizeX)
+      (this.x+this.tileSizeX>otherTile.x && this.x<otherTile.x+otherTile.tileSizeX)
       &&
-      (this.y+this.tileSizeY>otherTile.y && this.y<=otherTile.y+this.tileSizeY)
+      (this.y+this.tileSizeY>otherTile.y && this.y<otherTile.y+otherTile.tileSizeY)
     );
   }
 }

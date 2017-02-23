@@ -2,9 +2,32 @@
   position: absolute;
   background: green;
   width: 50px;
-  height: 100px;
+  height: 80px;
 }
 
 .tiles {
   position: relative;
+  border: 1px solid black;
+  margin: 5px;
+  padding: 5px;
+}
+
+.layer0 {
+  background: green;
+}
+
+.layer1 {
+  background: blue;
+}
+
+.layer2 {
+  background: pink;
+}
+
+.layer3 {
+  background: yellow;
+}
+
+.layer4plus {
+  background: green;
 }
