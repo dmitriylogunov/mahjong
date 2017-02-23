@@ -1,20 +1,8 @@
-// import { Component, Input } from '@angular/core';
-//
-// @Component({
-//   selector: 'tile',
-//   template: '<div class="tile" [ngStyle]="positionStyles">AAA</div>',
-// })
 export class MjTile {
-  // scaling constants to determine resulting pixel size of a tile
-  // should be tile size in pixels / 2 (logical size of tile is 2x2) + margins
-  private xScale:number = 31;
-  private yScale:number = 46;
   public top: number; // top and left are pixel positions of the tile
   public left: number;
   public type: string;
   public isFree: boolean;
-  // @Input() x: number;
-  // @Input() y: number;
   public x: number;
   public y: number;
   public z: number; // x,y,z are field positions of the tile
@@ -28,9 +16,6 @@ export class MjTile {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-    this.left = this.x*this.xScale;
-    this.top = this.y*this.yScale;
-
     this.z = 0;
   }
 

@@ -11,6 +11,11 @@ export class MjTileCollectionComponent {
   constructor() {
   }
 
+  // scaling constants to determine resulting pixel size of a tile
+  // should be tile size in pixels / 2 (logical size of tile is 2x2) + margins
+  private xScale:number = 31;
+  private yScale:number = 46;
+
   // layout description only, no other data here. Just an array of tile 2d coordinates
   private dragonLayout: [number, number][] = [
     // layer 0

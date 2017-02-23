@@ -1,7 +1,7 @@
-<div class="tiles" [ngStyle]="collectionStyles">
+<div class="tiles" [ngStyle]="{'width.px': 15*xScale, 'height.px': 15*yScale}" >
   <div *ngIf="currentLayout">
     <div *ngFor="let tile of currentLayout.tiles" class="tile"
-      [ngStyle]="{'left.px': tile.left, 'top.px': tile.top}"
+      [ngStyle]="{'left.px': tile.x*xScale, 'top.px': tile.y*yScale}"
       [ngClass]="{'layer0': tile.z==0, 'layer1': tile.z==1, 'layer2': tile.z==2, 'layer3': tile.z==3, 'layer4plus': tile.z>=4}"
       (click)="onSelect(tile)"
     >{{tile.z}}<br/>{{tile.type}}</div>
