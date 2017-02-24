@@ -48,6 +48,12 @@ export class MjTileCollectionComponent {
     [13,7]
   ];
 
+  // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
+  private tileGroups: [string, number][] = [
+    ["ball",8,false],["ball",8,false],["bamboo",8,false],["bamboo",8,false],["character",8,false],["character",8,false],
+    ["seasons",4,true],["wind",4,false],["wind",4,false],["flowers",4,true],["dragons",3,false],["dragons",3,false]
+  ];
+
   public currentLayout: MJLayoutGraph;
 
   ngOnInit(): void {
@@ -64,19 +70,8 @@ export class MjTileCollectionComponent {
     let dragonLayout = new MJLayoutGraph(this.dragonLayout);
 
     console.log("loading started");     // TODO show "loading"
+
     dragonLayout.build({}, this.onLoadComplete.bind(this));
-
-    // for (let i=0;i<this.dragonLayout.length;i++) {
-    //   let newTile = new MjTile(this.dragonLayout[i][0], this.dragonLayout[i][1]);
-    //
-
-
-      // get list of tiles that this new tile blocks or being blocked by
-      // this.tileCollection.push(new MjTile(this.random(10), this.random(10)));
-    // }
-
-    //test
-
   }
 
   onLoadComplete(layout: MJLayoutGraph):void {

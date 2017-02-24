@@ -1,4 +1,4 @@
-import { MjTile } from './mj.tile';
+import { MjTile, MjTileType } from './mj.tile';
 
 export class MJLayoutGraph {
   public tiles: MjTile[] = [];
@@ -40,5 +40,23 @@ export class MJLayoutGraph {
       }
     }
     success(this);
+  }
+
+  public dropTypeRandomly(type: MjTileType) {
+    // TODO
+    this.tiles[0].setType(type);
+  }
+
+  public setTypes(typesDescriptors:[string,number,boolean][]) {
+    for (let typeDescriptor of typesDescriptors) {
+      for (let i=0;i<typeDescriptor[1];i++) {
+        let type: MjTileType = new MjTileType(
+          typeDescriptor[0],
+          i,
+          typeDescriptor[2]
+        )
+      }
+
+    }
   }
 }

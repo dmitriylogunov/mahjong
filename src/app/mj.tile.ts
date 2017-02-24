@@ -1,7 +1,18 @@
+export class MjTileType {
+  constructor (group: string, index: number, matchAny: boolean) {
+    this.group = group;
+    this.index = index;
+    this.matchAny = matchAny;
+  }
+  public group: string;
+  public index: number;
+  public matchAny: boolean;
+}
+
 export class MjTile {
   public top: number; // top and left are pixel positions of the tile
   public left: number;
-  public type: string;
+  public type: MjTileType;
   public x: number;
   public y: number;
   public z: number; // x,y,z are field positions of the tile
@@ -22,8 +33,7 @@ export class MjTile {
     this.z = 0;
   }
 
-  setType(type: string): void {
-    // TODO add tile image here
+  setType(type: MjTileType): void {
     this.type = type;
   }
 
