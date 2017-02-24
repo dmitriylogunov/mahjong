@@ -15,6 +15,7 @@ export class MjTileCollectionComponent {
   // should be tile size in pixels / 2 (logical size of tile is 2x2) + margins
   private xScale:number = 31;
   private yScale:number = 46;
+  private selectedTile: MjTile = null;
 
   // layout description only, no other data here. Just an array of tile 2d coordinates
   private dragonLayout: [number, number][] = [
@@ -63,7 +64,7 @@ export class MjTileCollectionComponent {
     let dragonLayout = new MJLayoutGraph(this.dragonLayout);
 
     console.log("loading started");     // TODO show "loading"
-    dragonLayout.set({}, this.onLoadComplete.bind(this));
+    dragonLayout.build({}, this.onLoadComplete.bind(this));
 
     // for (let i=0;i<this.dragonLayout.length;i++) {
     //   let newTile = new MjTile(this.dragonLayout[i][0], this.dragonLayout[i][1]);
@@ -78,9 +79,38 @@ export class MjTileCollectionComponent {
 
   }
 
-  // runs out of the class context, so use self instead of this
   onLoadComplete(layout: MJLayoutGraph):void {
     this.currentLayout = layout;
     console.log("loading finished");     // TODO hide "loading"
+  }
+
+  onTileSelect(tile: MjTile) : void {
+    console.log("onTileSelect", tile);
+    // checking because still can get clicks on the tile while "hiding" animation is playing
+    if (tile.active) {
+      if (tile.selected) {
+        tile.unselect();
+        this.selectedTile = null;
+      } else {
+        if (tile.isFree()) {
+          tile.select();
+
+          if (this.selectedTile) {
+            if (tile.matches(this.selectedTile)) {
+              tile.remove();
+              this.selectedTile.remove();
+              this.selectedTile = null;
+            } else {
+              this.selectedTile.unselect();
+              this.selectedTile = tile;
+            }
+          } else {
+            this.selectedTile = tile;
+          }
+        } else {
+          // TODO play "blocked" sound and animation
+        }
+      }
+    }
   }
 }

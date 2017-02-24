@@ -25,10 +25,10 @@ export class MJLayoutGraph {
   }
 
   // TODO make async
-  public set(graph: {}, success: (layout: MJLayoutGraph) => void) : void {
+  public build(cachedGraph: {}, success: (layout: MJLayoutGraph) => void) : void {
 
-    // if graph is not already initialised, do initialise
-    if (!graph.hasOwnProperty('a')) {
+    // graph may be already initialised from cache
+    if (!cachedGraph.hasOwnProperty('a')) {
       // for (let tile in tiles) {
       //
       // }

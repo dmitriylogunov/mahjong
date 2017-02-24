@@ -1,3 +1,10 @@
+.gamefield {
+  position: relative;
+  border: none; //1px solid black;
+  margin: 15px;
+  padding: 5px;
+}
+
 .tile {
   position: absolute;
   background: green;
@@ -5,11 +12,13 @@
   height: 80px;
 }
 
-.tiles {
-  position: relative;
-  border: 1px solid black;
-  margin: 5px;
-  padding: 5px;
+.tile.selected {
+  background: black;
+  color: white;
+}
+
+.tile.hidden {
+  display: none;
 }
 
 .layer0 {
