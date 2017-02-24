@@ -24,14 +24,20 @@ export class MJLayoutGraph {
     return z;
   }
 
+
   // TODO make async
   public build(cachedGraph: {}, success: (layout: MJLayoutGraph) => void) : void {
 
     // graph may be already initialised from cache
     if (!cachedGraph.hasOwnProperty('a')) {
-      // for (let tile in tiles) {
-      //
-      // }
+      for (let i=0; i<this.tiles.length-1; i++) {
+        for (let j=i+1; j<this.tiles.length; j++) {
+          // check
+          this.tiles[i].checkRelativePositions(this.tiles[j]);
+          // and vice versa
+          this.tiles[i].checkRelativePositions(this.tiles[j]);
+        }
+      }
     }
     success(this);
   }

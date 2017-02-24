@@ -12,8 +12,9 @@ export class MjTile {
   private tileSizeX = 2;
   private tileSizeY = 2;
 
-  private blockedBy: {};
-  private blocks: {};
+  public blockedBy: MjTile[] = [];
+  public adjacentL: MjTile[] = [];
+  public adjacentR: MjTile[] = [];
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -24,7 +25,6 @@ export class MjTile {
   setType(type: string): void {
     // TODO add tile image here
     this.type = type;
-
   }
 
   // check if two tile overlap, ignoring z coordinate
@@ -36,6 +36,32 @@ export class MjTile {
     );
   }
 
+  // returns [isOnLeft, isOnRight]
+  isXAdjacentTo(otherTile: MjTile): [boolean, boolean] {
+    if ((this.y+this.tileSizeY>otherTile.y && this.y<otherTile.y+otherTile.tileSizeY)) { // same rule as in overlap for Y
+    return (
+      [
+        this.x+this.tileSizeX==otherTile.x, // Adjacent on left
+        this.x==otherTile.x+otherTile.tileSizeX // Adjacent on right
+      ]
+    )
+    } else {
+      return [false, false];
+    }
+  }
+
+  checkRelativePositions(otherTile: MjTile): void {
+    if (this.z-1==otherTile.z && this.overlaps2d(otherTile)) {
+        this.blockedBy.push(otherTile);
+    }
+    let adjacency = this.isXAdjacentTo(otherTile);
+    if (adjacency[0]) {
+      this.adjacentL.push(otherTile);
+    } else if (adjacency[1]) {
+      this.adjacentR.push(otherTile);
+    }
+  }
+
   matches(otherTile: MjTile): boolean {
     if (!otherTile) {
       return false;
@@ -45,7 +71,35 @@ export class MjTile {
   }
 
   isFree(): boolean {
-    return true;
+    for (let tile of this.blockedBy) {
+      if (tile.active) {
+        return false;
+      }
+    }
+
+    // adjacent on left
+    let freeOnLeft = true;
+    for (let tile of this.adjacentL) {
+      if (tile.active) {
+        freeOnLeft = false;
+        break;
+      }
+    }
+
+    if (freeOnLeft) {
+      return true;
+    }
+
+    // adjacent on right
+    let freeOnRight = true;
+    for (let tile of this.adjacentR) {
+      if (tile.active) {
+        freeOnRight = false;
+        break;
+      }
+    }
+
+    return freeOnRight;
   }
 
   remove(): void {
