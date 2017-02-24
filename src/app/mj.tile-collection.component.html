@@ -6,6 +6,9 @@
       [class.selected]="tile.selected"
       [class.hidden]="!tile.active && !tile.selected"
       (click)="onTileSelect(tile)"
-    >{{tile.z}}<br/>{{tile.type}}</div>
+    >
+      {{tile.z}}<br/>{{tile.type}}<br/><span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
+      {{tile.isFree()?"Free":"Locked"}}
+    </div>
   </div>
 </div>

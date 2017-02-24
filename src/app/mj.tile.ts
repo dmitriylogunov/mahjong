@@ -38,7 +38,11 @@ export class MjTile {
 
   // returns [isOnLeft, isOnRight]
   isXAdjacentTo(otherTile: MjTile): [boolean, boolean] {
-    if ((this.y+this.tileSizeY>otherTile.y && this.y<otherTile.y+otherTile.tileSizeY)) { // same rule as in overlap for Y
+    if (
+      (this.z == otherTile.z)
+      &&
+      (this.y+this.tileSizeY>otherTile.y && this.y<otherTile.y+otherTile.tileSizeY) // same rule as in overlap for Y
+    ) {
     return (
       [
         this.x+this.tileSizeX==otherTile.x, // Adjacent on left
@@ -51,7 +55,7 @@ export class MjTile {
   }
 
   checkRelativePositions(otherTile: MjTile): void {
-    if (this.z-1==otherTile.z && this.overlaps2d(otherTile)) {
+    if (this.z==otherTile.z-1 && this.overlaps2d(otherTile)) {
         this.blockedBy.push(otherTile);
     }
     let adjacency = this.isXAdjacentTo(otherTile);

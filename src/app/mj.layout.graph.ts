@@ -35,7 +35,7 @@ export class MJLayoutGraph {
           // check
           this.tiles[i].checkRelativePositions(this.tiles[j]);
           // and vice versa
-          this.tiles[i].checkRelativePositions(this.tiles[j]);
+          this.tiles[j].checkRelativePositions(this.tiles[i]);
         }
       }
     }
