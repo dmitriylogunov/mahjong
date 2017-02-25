@@ -7,7 +7,8 @@
       [class.hidden]="!tile.active && !tile.selected"
       (click)="onTileSelect(tile)"
     >
-      {{tile.z}}<br/><span *ngIf="tile.type">{{tile.type.group}}{{tile.type.index}}</span><br/>
+      {{tile.z}}<br/>
+      <span *ngIf="tile.type">{{tile.type.group}} {{tile.type.index}}<br/></span>
       <div *ngIf="debug">
         <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
         {{tile.isFree()?"Free":"Locked"}}

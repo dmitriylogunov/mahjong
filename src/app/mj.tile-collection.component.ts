@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { MjTile } from './mj.tile';
+import { MjTile, MjTileType } from './mj.tile';
 import { MJLayoutGraph } from './mj.layout.graph';
 
 @Component({
   selector: 'tiles',
-  templateUrl: 'app/mj.tile-collection.component.html',
+  templateUrl: 'app/mj.tile-collection.html',
   styleUrls: ['app/mj.tile-collection.css']
 })
 export class MjTileCollectionComponent {
   constructor() {
   }
+
+  private debug: true;
 
   // scaling constants to determine resulting pixel size of a tile
   // should be tile size in pixels / 2 (logical size of tile is 2x2) + margins
@@ -49,9 +51,14 @@ export class MjTileCollectionComponent {
   ];
 
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
-  private tileGroups: [string, number][] = [
-    ["ball",8,false],["ball",8,false],["bamboo",8,false],["bamboo",8,false],["character",8,false],["character",8,false],
-    ["seasons",4,true],["wind",4,false],["wind",4,false],["flowers",4,true],["dragons",3,false],["dragons",3,false]
+  private tileTypesDescriptor: [string, number, boolean][] = [
+    ["ball",9,false],["ball",9,false],["ball",9,false],["ball",9,false],
+    ["bam",9,false],["bam",9,false],["bam",9,false],["bam",9,false],
+    ["char",9,false],["char",9,false],["char",9,false],["char",9,false],
+    ["season",4,true],
+    ["wind",4,false],["wind",4,false],["wind",4,false],["wind",4,false],
+    ["flower",4,true],
+    ["dragon",3,false],["dragon",3,false],["dragon",3,false],["dragon",3,false]
   ];
 
   public currentLayout: MJLayoutGraph;
@@ -70,7 +77,7 @@ export class MjTileCollectionComponent {
     let dragonLayout = new MJLayoutGraph(this.dragonLayout);
 
     console.log("loading started");     // TODO show "loading"
-
+    dragonLayout.setTypes(this.tileTypesDescriptor);
     dragonLayout.build({}, this.onLoadComplete.bind(this));
   }
 

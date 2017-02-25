@@ -42,21 +42,23 @@ export class MJLayoutGraph {
     success(this);
   }
 
-  public dropTypeRandomly(type: MjTileType) {
+  private tileIndex = 0;
+  public dropTypeRandomly(tileType: MjTileType) {
     // TODO
-    this.tiles[0].setType(type);
+            console.log(tileType, this.tileIndex);
+    this.tiles[this.tileIndex++].setType(tileType);
   }
 
-  public setTypes(typesDescriptors:[string,number,boolean][]) {
-    for (let typeDescriptor of typesDescriptors) {
-      for (let i=0;i<typeDescriptor[1];i++) {
-        let type: MjTileType = new MjTileType(
-          typeDescriptor[0],
+  public setTypes(tileTypesDescriptor:[string,number,boolean][]) {
+    for (let type of tileTypesDescriptor) {
+      for (let i=0;i<type[1];i++) {
+        let tileType: MjTileType = new MjTileType(
+          type[0],
           i,
-          typeDescriptor[2]
+          type[2]
         )
+        this.dropTypeRandomly(tileType);
       }
-
     }
   }
 }

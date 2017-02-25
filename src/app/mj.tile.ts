@@ -12,7 +12,7 @@ export class MjTileType {
 export class MjTile {
   public top: number; // top and left are pixel positions of the tile
   public left: number;
-  public type: MjTileType;
+  public type: MjTileType = null;
   public x: number;
   public y: number;
   public z: number; // x,y,z are field positions of the tile

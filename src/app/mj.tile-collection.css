@@ -10,6 +10,7 @@
   background: green;
   width: 50px;
   height: 80px;
+  word-wrap: break-word;
 }
 
 .tile.selected {
