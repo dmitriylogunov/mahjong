@@ -1,5 +1,8 @@
 import { MjTile, MjTileType } from './mj.tile';
+import { AppToolbox } from './app.toolbox';
 
+
+// TODO merge this class into TileCollection
 export class MJLayoutGraph {
   public tiles: MjTile[] = [];
   private graph: {};
@@ -24,7 +27,6 @@ export class MJLayoutGraph {
     return z;
   }
 
-
   // TODO make async
   public build(cachedGraph: {}, success: (layout: MJLayoutGraph) => void) : void {
 
@@ -42,14 +44,19 @@ export class MJLayoutGraph {
     success(this);
   }
 
-  private tileIndex = 0;
-  public dropTypeRandomly(tileType: MjTileType) {
-    // TODO
-            console.log(tileType, this.tileIndex);
-    this.tiles[this.tileIndex++].setType(tileType);
+
+  public shuffleTypesFisherYates(): void {
+    for (let i=this.tiles.length-1;i>0;i--) {
+      let j = AppToolbox.random(i+1);
+      //swap
+      let tempType = this.tiles[i].type;
+      this.tiles[i].type = this.tiles[j].type;
+      this.tiles[j].type = tempType;
+    }
   }
 
   public setTypes(tileTypesDescriptor:[string,number,boolean][]) {
+    let tileIndex = 0;
     for (let type of tileTypesDescriptor) {
       for (let i=0;i<type[1];i++) {
         let tileType: MjTileType = new MjTileType(
@@ -57,7 +64,7 @@ export class MJLayoutGraph {
           i,
           type[2]
         )
-        this.dropTypeRandomly(tileType);
+        this.tiles[tileIndex++].setType(tileType);
       }
     }
   }

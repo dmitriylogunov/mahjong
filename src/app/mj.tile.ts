@@ -76,12 +76,19 @@ export class MjTile {
     }
   }
 
+  // whether this tile is a match to other tile or not (tile will also match to itself if compared)
   matches(otherTile: MjTile): boolean {
     if (!otherTile) {
       return false;
+    } else if (this.type.matchAny && this.type.group===otherTile.type.group) {
+      // Season or flower tiles that all match to each other
+      return true;
+    } else if (this.type.group===otherTile.type.group && this.type.index == otherTile.type.index) {
+      // Other tiles
+      return true;
+    } else {
+      return false;
     }
-    // TODO
-    return true;
   }
 
   isFree(): boolean {

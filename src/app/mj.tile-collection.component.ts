@@ -67,10 +67,6 @@ export class MjTileCollectionComponent {
     this.loadCollection("dragon");
   }
 
-  // random(range: number): number {
-  //   return Math.floor(Math.random() * range) + 1;
-  // }
-
   loadCollection(layoutType: string): void {
     // layoutType is ignored just yet, always use dragon
 
@@ -78,6 +74,7 @@ export class MjTileCollectionComponent {
 
     console.log("loading started");     // TODO show "loading"
     dragonLayout.setTypes(this.tileTypesDescriptor);
+    dragonLayout.shuffleTypesFisherYates();
     dragonLayout.build({}, this.onLoadComplete.bind(this));
   }
 
@@ -88,7 +85,7 @@ export class MjTileCollectionComponent {
 
   onTileSelect(tile: MjTile) : void {
     console.log("onTileSelect", tile);
-    // checking because still can get clicks on the tile while "hiding" animation is playing
+    // checking .active because still can get clicks on the tile while "hiding" animation is playing
     if (tile.active) {
       if (tile.selected) {
         tile.unselect();
