@@ -51,6 +51,7 @@ export class MJLayoutGraph {
   public shuffleTypesFisherYates(): void {
     for (let i=this.tiles.length-1;i>0;i--) {
       let j = AppToolbox.random(i+1);
+      console.log(j);
       //swap
       let tempType = this.tiles[i].type;
       this.tiles[i].type = this.tiles[j].type;
