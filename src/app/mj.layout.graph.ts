@@ -5,13 +5,20 @@ import { AppToolbox } from './app.toolbox';
 // TODO merge this class into TileCollection
 export class MJLayoutGraph {
   public tiles: MjTile[] = [];
-  private graph: {};
+  public fieldDimensionX = 0;
+  public fieldDimensionY = 0;
 
   constructor(collection: [number, number][]) {
     // init tile collection
     for (let coordinates of collection) {
       let newTile = new MjTile(coordinates[0], coordinates[1]);
       newTile.z = this.getTileZCoordinate(newTile);
+      if (this.fieldDimensionX<newTile.x+newTile.tileSizeX) {
+        this.fieldDimensionX = newTile.x+newTile.tileSizeX;
+      }
+      if (this.fieldDimensionY<newTile.y+newTile.tileSizeY) {
+        this.fieldDimensionY = newTile.y+newTile.tileSizeY;
+      }
       this.tiles.push(newTile);
     }
   }
@@ -28,17 +35,13 @@ export class MJLayoutGraph {
   }
 
   // TODO make async
-  public build(cachedGraph: {}, success: (layout: MJLayoutGraph) => void) : void {
-
-    // graph may be already initialised from cache
-    if (!cachedGraph.hasOwnProperty('a')) {
-      for (let i=0; i<this.tiles.length-1; i++) {
-        for (let j=i+1; j<this.tiles.length; j++) {
-          // check
-          this.tiles[i].checkRelativePositions(this.tiles[j]);
-          // and vice versa
-          this.tiles[j].checkRelativePositions(this.tiles[i]);
-        }
+  public build(success: (layout: MJLayoutGraph) => void) : void {
+    for (let i=0; i<this.tiles.length-1; i++) {
+      for (let j=i+1; j<this.tiles.length; j++) {
+        // check
+        this.tiles[i].checkRelativePositions(this.tiles[j]);
+        // and vice versa
+        this.tiles[j].checkRelativePositions(this.tiles[i]);
       }
     }
     success(this);

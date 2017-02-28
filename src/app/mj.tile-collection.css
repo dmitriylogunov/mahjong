@@ -1,15 +1,51 @@
 .gamefield {
   position: relative;
-  border: none; //1px solid black;
+  border: 1px solid black;
   margin: 15px;
-  padding: 5px;
+  transform-origin: top left;
+}
+
+.tile-colourer-overlay {
+  background-color:rgba(255,255,255,0.2);
+}
+
+.tile-outer {
+  position: absolute;
+  width: 206px;
+  height: 277px;
+}
+
+.tile-shadow {
+  position: absolute;
+  top: 8px;
+  left: 0px;
+  width: 200px;
+  height: 269px;
+  border: 1px solid black;
+  background-color: lightgray;
+  border-radius: 6px;
+}
+
+.tile-shadow2 {
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  width: 200px;
+  height: 269px;
+  border: 1px solid black;
+  background-color: lightgray;
+  border-radius: 6px;
 }
 
 .tile {
+  border:3px solid black;
   position: absolute;
-  background: green;
-  width: 50px;
-  height: 80px;
+  top: 0px;
+  left: 6px;
+  border-radius: 6px;
+  background-size: cover;
+  width: 194px; /* minus 6 for border */
+  height: 265px;
   word-wrap: break-word;
 }
 
@@ -18,26 +54,42 @@
   color: white;
 }
 
+.tile:hover {
+  transform-origin: 50% 50%;
+  transform: scale(1.1,1.1);
+  z-index: 250; /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
+}
+
 .tile.hidden {
   display: none;
 }
 
-.layer0 {
-  background: green;
+.layer0 .tile {
+  background-color: green;
+  z-index: 5;
 }
 
-.layer1 {
-  background: blue;
+.layer1 .tile {
+  background-color: blue;
+  z-index: 15;
 }
 
-.layer2 {
-  background: pink;
+.layer2 .tile {
+  background-color: pink;
+  z-index: 25;
 }
 
-.layer3 {
-  background: yellow;
+.layer3 .tile {
+  background-color: yellow;
+  z-index: 35;
 }
 
-.layer4plus {
-  background: green;
+.layer4 .tile {
+  background-color: green;
+  z-index: 45;
+}
+
+.layer5 .tile {
+  background-color: green;
+  z-index: 55;
 }

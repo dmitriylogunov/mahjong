@@ -11,12 +11,24 @@ export class MjTileCollectionComponent {
   constructor() {
   }
 
+  private desiredWidth: number = 1024;
+  private desiredHeight: number = 768;
+
+  private tilePixelWidth: number = 200; // pixel width of tile, with "3d" part, margins etc.
+  private tilePixelHeight: number = 269; // no other margins are added to tiles
+
+  private fieldPixelWidth: number;
+  private fieldPixelHeight: number;
+
   private debug: true;
 
   // scaling constants to determine resulting pixel size of a tile
   // should be tile size in pixels / 2 (logical size of tile is 2x2) + margins
-  private xScale:number = 31;
-  private yScale:number = 46;
+  // private xScale:number = 31;
+  // private yScale:number = 46;
+
+  private scale: number = 0.25;
+
   private selectedTile: MjTile = null;
 
   // layout description only, no other data here. Just an array of tile 2d coordinates
@@ -75,10 +87,14 @@ export class MjTileCollectionComponent {
     console.log("loading started");     // TODO show "loading"
     dragonLayout.setTypes(this.tileTypesDescriptor);
     dragonLayout.shuffleTypesFisherYates();
-    dragonLayout.build({}, this.onLoadComplete.bind(this));
+    dragonLayout.build(this.onLoadComplete.bind(this));
   }
 
   onLoadComplete(layout: MJLayoutGraph):void {
+    this.fieldPixelWidth = (this.tilePixelWidth/2)*layout.fieldDimensionX+6+3;
+    this.fieldPixelHeight = (this.tilePixelHeight/2)*layout.fieldDimensionY+8+3;
+    this.scale = Math.floor(Math.min(this.desiredWidth/this.fieldPixelWidth,this.desiredHeight/this.fieldPixelHeight)*100)/100;
+console.log(this.scale);
     this.currentLayout = layout;
     console.log("loading finished");     // TODO hide "loading"
   }

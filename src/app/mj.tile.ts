@@ -20,8 +20,8 @@ export class MjTile {
   public selected: boolean = false;
   public active: boolean = true;
 
-  private tileSizeX = 2;
-  private tileSizeY = 2;
+  public tileSizeX = 2;
+  public tileSizeY = 2;
 
   public blockedBy: MjTile[] = [];
   public adjacentL: MjTile[] = [];
