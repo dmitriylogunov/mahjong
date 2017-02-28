@@ -43,7 +43,8 @@
   top: 0px;
   left: 6px;
   border-radius: 6px;
-  background-size: cover;
+  /*background-size: cover;*/
+  background-position: 5px 0;
   width: 194px; /* minus 6 for border */
   height: 265px;
   word-wrap: break-word;
