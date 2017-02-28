@@ -66,7 +66,7 @@ export class MjTileCollectionComponent {
   private tileTypesDescriptor: [string, number, boolean][] = [
     ["ball",9,false],["ball",9,false],["ball",9,false],["ball",9,false],
     ["bam",9,false],["bam",9,false],["bam",9,false],["bam",9,false],
-    ["char",9,false],["char",9,false],["char",9,false],["char",9,false],
+    ["num",9,false],["num",9,false],["num",9,false],["num",9,false],
     ["season",4,true],
     ["wind",4,false],["wind",4,false],["wind",4,false],["wind",4,false],
     ["flower",4,true],
@@ -94,9 +94,8 @@ export class MjTileCollectionComponent {
     this.fieldPixelWidth = (this.tilePixelWidth/2)*layout.fieldDimensionX+6+3;
     this.fieldPixelHeight = (this.tilePixelHeight/2)*layout.fieldDimensionY+8+3;
     this.scale = Math.floor(Math.min(this.desiredWidth/this.fieldPixelWidth,this.desiredHeight/this.fieldPixelHeight)*100)/100;
-console.log(this.scale);
     this.currentLayout = layout;
-    console.log("loading finished");     // TODO hide "loading"
+    console.log("loading finished"); // TODO hide "loading"
   }
 
   onTileSelect(tile: MjTile) : void {

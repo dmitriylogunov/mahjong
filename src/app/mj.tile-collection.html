@@ -9,7 +9,8 @@
         'left.px': tile.x*(tilePixelWidth/2)+tile.z*6,
         'top.px': tile.y*(tilePixelHeight/2)-tile.z*8,
         'z-index': tile.z*10}"
-      [ngClass]="{'layer0': tile.z==0, 'layer1': tile.z==1, 'layer2': tile.z==2, 'layer3': tile.z==3, 'layer4': tile.z==4, 'layer5': tile.z>=5}"
+      [ngClass]="{'layer0': tile.z==0, 'layer1': tile.z==1, 'layer2': tile.z==2, 'layer3': tile.z==3, 'layer4': tile.z==4, 'layer5': tile.z>=5,
+        'free': tile.isFree()}"
     >
       <div class="tile-shadow"
         [ngStyle]="{'z-index': tile.z*10+1}">&nbsp;</div>
@@ -21,9 +22,9 @@
 
         (click)="onTileSelect(tile)"
       >
-        {{tile.z}}<br/>
-        <span *ngIf="tile.type">{{tile.type.group}} {{tile.type.index}}<br/></span>
         <div *ngIf="debug">
+          {{tile.z}}<br/>
+          <span *ngIf="tile.type">{{tile.type.group}} {{tile.type.index}}<br/></span>
           <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
           {{tile.isFree()?"Free":"Locked"}}
         </div>
