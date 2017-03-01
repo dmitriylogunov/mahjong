@@ -17,6 +17,8 @@ export class MjTile {
   public y: number;
   public z: number; // x,y,z are field positions of the tile
 
+  public sortingOrder : number;
+
   public selected: boolean = false;
   public active: boolean = true;
 

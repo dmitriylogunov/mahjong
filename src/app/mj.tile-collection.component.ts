@@ -76,15 +76,21 @@ export class MjTileCollectionComponent {
   public currentLayout: MJLayoutGraph;
 
   ngOnInit(): void {
-    this.loadCollection("dragon");
+    console.log("initialisation started");
+
+    // load layout
+    this.loadLayout(this.dragonLayout);
   }
 
-  loadCollection(layoutType: string): void {
-    // layoutType is ignored just yet, always use dragon
-
-    let dragonLayout = new MJLayoutGraph(this.dragonLayout);
-
+  loadLayout(layout: [number, number][]): void {
     console.log("loading started");     // TODO show "loading"
+
+    let dragonLayout = new MJLayoutGraph(layout);
+
+    // sort tiles for correct display
+    dragonLayout.tiles
+      .sort((tile1: MjTile, tile2:MjTile) => tile1.sortingOrder - tile2.sortingOrder);
+
     dragonLayout.setTypes(this.tileTypesDescriptor);
     dragonLayout.shuffleTypesFisherYates();
     dragonLayout.build(this.onLoadComplete.bind(this));

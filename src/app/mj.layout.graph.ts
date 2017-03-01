@@ -5,6 +5,7 @@ import { AppToolbox } from './app.toolbox';
 // TODO merge this class into TileCollection
 export class MJLayoutGraph {
   public tiles: MjTile[] = [];
+
   public fieldDimensionX = 0;
   public fieldDimensionY = 0;
 
@@ -19,7 +20,11 @@ export class MJLayoutGraph {
       if (this.fieldDimensionY<newTile.y+newTile.tileSizeY) {
         this.fieldDimensionY = newTile.y+newTile.tileSizeY;
       }
+
+      // sort by Z asc, then by Y asc, then by X desc
+      newTile.sortingOrder = newTile.z*10000 + newTile.y*100 - newTile.x;
       this.tiles.push(newTile);
+
     }
   }
 
@@ -51,7 +56,6 @@ export class MJLayoutGraph {
   public shuffleTypesFisherYates(): void {
     for (let i=this.tiles.length-1;i>0;i--) {
       let j = AppToolbox.random(i+1);
-      console.log(j);
       //swap
       let tempType = this.tiles[i].type;
       this.tiles[i].type = this.tiles[j].type;
