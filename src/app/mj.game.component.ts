@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'mj-game',
   template: `
-  <score></score>
+  <status></status>
   <tiles></tiles>
   <options></options>
   `,

@@ -22,12 +22,8 @@ export class MjTileCollectionComponent {
 
   private debug: true;
 
-  // scaling constants to determine resulting pixel size of a tile
-  // should be tile size in pixels / 2 (logical size of tile is 2x2) + margins
-  // private xScale:number = 31;
-  // private yScale:number = 46;
-
-  private scale: number = 0.25;
+  private scale: number;
+  private scaleX: number;
 
   private selectedTile: MjTile = null;
 
@@ -99,6 +95,7 @@ export class MjTileCollectionComponent {
   onLoadComplete(layout: MJLayoutGraph):void {
     this.fieldPixelWidth = (this.tilePixelWidth/2)*layout.fieldDimensionX+6+3;
     this.fieldPixelHeight = (this.tilePixelHeight/2)*layout.fieldDimensionY+8+3;
+    this.scaleX = Math.floor(this.desiredWidth/this.fieldPixelWidth*100)/100;
     this.scale = Math.floor(Math.min(this.desiredWidth/this.fieldPixelWidth,this.desiredHeight/this.fieldPixelHeight)*100)/100;
     this.currentLayout = layout;
     console.log("loading finished"); // TODO hide "loading"
