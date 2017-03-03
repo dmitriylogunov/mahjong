@@ -15,6 +15,7 @@ import { Component } from '@angular/core';
       <span class="timer">0:15</span>
       <span class="restart">X</span>
     </div>
-  `
+  `,
+  styleUrls: ['app/mj.status.component.css']
 })
 export class MjStatusComponent  { }
