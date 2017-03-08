@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { ModalComponent } from './app.modal.component';
+import { ModalComponent, ModalAction } from './app.modal.component';
 
 @Component({
   selector: 'status',
@@ -7,39 +7,40 @@ import { ModalComponent } from './app.modal.component';
     <div class="status">
       <span class="hints">
         Hints:
-        <span *ngFor="let isActive of hints" (click)="onHintClick()" class="hint"
-        [class.active]="isActive">Hint</span>
+        <span *ngFor="let isActive of hints" (click)=onHintClick() class="hint"
+        [class.active]="isActive">&nbsp;</span>
       </span>
-      <span class="undo">
-        <span>Undo</span>
-        <span>Redo</span>
-      </span>
+      <span class="restart" (click)=restartModal.show()>Restart</span>
       <span class="timer">0:15</span>
-      <span class="restart">X</span>
+      <span class="undoredo">
+        <span class="undo">Undo</span>
+        <span class="redo">Redo</span>
+      </span>
     </div>
 
-    <button type="button" (click)="modal.show()">Dialog</button>
     <app-modal [actions]=restartGameModalActions>
         Restart game?
     </app-modal>
   `,
   styleUrls: ['app/mj.status.component.css'],
 })
-/*
 
-<div class="app-modal-actions">
-  <button type="button" class="btn btn-default" (click)="modal.hide()">No</button>
-  <button type="button" class="btn btn-primary">Yes</button>
-</div>
-
-*/
 export class MjStatusComponent  {
   @ViewChild(ModalComponent)
-  public readonly modal: ModalComponent;
+  public readonly restartModal: ModalComponent;
 
-  public restartGameModalActions: string[] = ['Yes', 'No'];
+  public restartGameModalActions: ModalAction[] = [
+    new ModalAction("Yes", this.onRestartClick),
+    new ModalAction("No", this.onRestartNoClick)
+  ];
 
-  hintsCount: number = 3;
+  @Input()
+  set hintsCount(hintsCount: number) {
+    this.hints = Array(hintsCount).fill(true);
+    this.hintsAvailable = hintsCount;
+  }
+  get hintsCount(): number { return this.hintsAvailable; }
+
   hintsAvailable: number;
   hints: boolean[];
   startTime: number;
@@ -56,12 +57,6 @@ export class MjStatusComponent  {
   @Output() restart: EventEmitter<any> = new EventEmitter();
 
   constructor() {
-    this.reset();
-  }
-
-  reset(): void {
-    this.hints = Array(this.hintsCount).fill(true);
-    this.hintsAvailable = 3;
     this.startTime = Date.now();
   }
 
@@ -83,5 +78,9 @@ export class MjStatusComponent  {
 
   onRestartClick() {
     this.restart.emit(null);
+  }
+
+  onRestartNoClick() {
+    this.restartModal.hide();
   }
 }

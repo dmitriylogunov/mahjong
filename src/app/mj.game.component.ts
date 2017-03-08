@@ -4,12 +4,14 @@ import { MJLayoutGraph } from './mj.layout.graph';
 
 @Component({
   selector: 'mj-game',
-  templateUrl: 'app/mj.game.html',
-  styleUrls: ['app/mj.game.css']
+  templateUrl: 'app/mj.game.component.html',
+  styleUrls: ['app/mj.game.component.css']
 })
 export class MjGameComponent {
   constructor() {
   }
+
+  private hintsCount: number = 0;
 
   private desiredWidth: number = 1024;
   private desiredHeight: number = 768;
@@ -87,8 +89,11 @@ export class MjGameComponent {
     dragonLayout.tiles
       .sort((tile1: MjTile, tile2:MjTile) => tile1.sortingOrder - tile2.sortingOrder);
 
+      // TODO !!!!! use setter for tileTypesDescriptor in the layout
     dragonLayout.setTypes(this.tileTypesDescriptor);
     dragonLayout.shuffleTypesFisherYates();
+    this.restartGame();
+
     dragonLayout.build(this.onLoadComplete.bind(this));
   }
 
@@ -98,6 +103,7 @@ export class MjGameComponent {
     this.scaleX = Math.floor(this.desiredWidth/this.fieldPixelWidth*100)/100;
     this.scale = Math.floor(Math.min(this.desiredWidth/this.fieldPixelWidth,this.desiredHeight/this.fieldPixelHeight)*100)/100;
     this.currentLayout = layout;
+
     console.log("loading finished"); // TODO hide "loading"
   }
 
@@ -131,6 +137,11 @@ export class MjGameComponent {
     }
   }
 
+  public restartGame(): void {
+    // this.currentLayout.resetTiles(this.tileTypesDescriptor);
+    this.hintsCount = 3;
+  }
+
   public onHint() {
     // TODO search for matching free tiles and wiggle
   }
@@ -144,6 +155,6 @@ export class MjGameComponent {
   }
 
   public onRestart() {
-    this.currentLayout.resetTiles(this.tileTypesDescriptor);
+    this.restartGame();
   }
 }

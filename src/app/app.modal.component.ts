@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-
+// TODO make modal juicy and jumping out with animation
 @Component({
   selector: 'app-modal',
   template: `
@@ -11,7 +11,7 @@ import { Component, Input } from '@angular/core';
       </div>
       <div class="modal-actions">
         <span *ngFor="let action of actions">
-          <button type="button" class="btn" (click)="modal.hide()">{{action}}</button>
+          <button type="button" class="btn" (click)=action.callback>{{action.name}}</button>
         </span>
       </div>
       <div style="clear: both;"></div>
@@ -22,7 +22,7 @@ import { Component, Input } from '@angular/core';
 })
 export class ModalComponent {
   @Input()
-  public actions: string[];
+  public actions: ModalAction[];
 
   public visible = false;
   private visibleAnimate = false;
@@ -35,5 +35,13 @@ export class ModalComponent {
   public hide(): void {
     this.visibleAnimate = false;
     setTimeout(() => this.visible = false, 300);
+  }
+}
+
+export class ModalAction {
+  constructor(
+    public name: string,
+    public callback: ()=>void,
+    public attributes: Object={}) {
   }
 }
