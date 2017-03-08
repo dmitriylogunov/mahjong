@@ -76,4 +76,9 @@ export class MJLayoutGraph {
       }
     }
   }
+
+  public resetTiles(tileTypesDescriptor: [string, number, boolean][]) {
+    this.setTypes(tileTypesDescriptor);
+    this.shuffleTypesFisherYates();
+  }
 }

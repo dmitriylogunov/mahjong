@@ -1,7 +1,21 @@
 .status {
+  position: relative;
   color:#ddd;
   background-color:#282E34;
   font-family: "GaramondNineSixDT-Roman", "Lato", Helvetica, Arial, sans-serif;
   min-height: 50px;
-  width: 100%;
+}
+
+.hint {
+  margin: 15px;
+  color: gray;
+  font-size: 25px;
+}
+
+.hint.active {
+  color: yellow;
+}
+
+.modal {
+  background: rgba(0,0,0,0.6);
 }

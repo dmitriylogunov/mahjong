@@ -130,4 +130,20 @@ export class MjGameComponent {
       }
     }
   }
+
+  public onHint() {
+    // TODO search for matching free tiles and wiggle
+  }
+
+  public onUndo() {
+
+  }
+
+  public onRedo() {
+
+  }
+
+  public onRestart() {
+    this.currentLayout.resetTiles(this.tileTypesDescriptor);
+  }
 }

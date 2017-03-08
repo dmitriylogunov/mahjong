@@ -15,7 +15,6 @@
   height: 277px;
 }
 
-/*.tile-outer:hover {*/
 .tile.free:hover {
   transform-origin: 50% 50%;
   transform: scale(1.1,1.1);
