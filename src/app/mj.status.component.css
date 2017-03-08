@@ -4,6 +4,7 @@
   background-color:#282E34;
   font-family: "GaramondNineSixDT-Roman", "Lato", Helvetica, Arial, sans-serif;
   min-height: 50px;
+  width: 100%;
 }
 
 .hint {
@@ -14,8 +15,4 @@
 
 .hint.active {
   color: yellow;
-}
-
-.modal {
-  background: rgba(0,0,0,0.6);
 }

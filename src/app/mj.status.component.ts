@@ -4,10 +4,7 @@ import { ModalComponent } from './app.modal.component';
 @Component({
   selector: 'status',
   template: `
-    <div class="status"
-    [ngStyle]="{
-      'width.px': width,
-      'transform': 'scale('+scale+', '+scale+')' }" >
+    <div class="status">
       <span class="hints">
         Hints:
         <span *ngFor="let isActive of hints" (click)="onHintClick()" class="hint"
@@ -22,24 +19,25 @@ import { ModalComponent } from './app.modal.component';
     </div>
 
     <button type="button" (click)="modal.show()">Dialog</button>
-    <app-modal>
-      <div class="app-modal-header">
-        header
-      </div>
-      <div class="app-modal-body">
-        Whatever content you like, form fields, anything
-      </div>
-      <div class="app-modal-footer">
-        <button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+    <app-modal [actions]=restartGameModalActions>
+        Restart game?
     </app-modal>
   `,
   styleUrls: ['app/mj.status.component.css'],
 })
+/*
+
+<div class="app-modal-actions">
+  <button type="button" class="btn btn-default" (click)="modal.hide()">No</button>
+  <button type="button" class="btn btn-primary">Yes</button>
+</div>
+
+*/
 export class MjStatusComponent  {
   @ViewChild(ModalComponent)
   public readonly modal: ModalComponent;
+
+  public restartGameModalActions: string[] = ['Yes', 'No'];
 
   hintsCount: number = 3;
   hintsAvailable: number;

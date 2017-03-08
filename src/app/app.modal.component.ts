@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
@@ -7,21 +7,22 @@ import { Component } from '@angular/core';
        [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <ng-content select=".app-modal-header"></ng-content>
-        </div>
-        <div class="modal-body">
-          <ng-content select=".app-modal-body"></ng-content>
-        </div>
-        <div class="modal-footer">
-          <ng-content select=".app-modal-footer"></ng-content>
-        </div>
+        <ng-content></ng-content>
       </div>
+      <div class="modal-actions">
+        <span *ngFor="let action of actions">
+          <button type="button" class="btn" (click)="modal.hide()">{{action}}</button>
+        </span>
+      </div>
+      <div style="clear: both;"></div>
     </div>
   </div>
-  `
+  `,
+  styleUrls: ['app/app.modal.component.css'],
 })
 export class ModalComponent {
+  @Input()
+  public actions: string[];
 
   public visible = false;
   private visibleAnimate = false;
