@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MjTile, MjTileType } from './mj.tile';
-import { MJLayoutGraph } from './mj.layout.graph';
+import { MJTileCollection } from './mj.tile-collection';
 
 @Component({
   selector: 'mj-game',
@@ -60,51 +60,35 @@ export class MjGameComponent {
     [13,7]
   ];
 
-  // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
-  private tileTypesDescriptor: [string, number, boolean][] = [
-    ["ball",9,false],["ball",9,false],["ball",9,false],["ball",9,false],
-    ["bam",9,false],["bam",9,false],["bam",9,false],["bam",9,false],
-    ["num",9,false],["num",9,false],["num",9,false],["num",9,false],
-    ["season",4,true],
-    ["wind",4,false],["wind",4,false],["wind",4,false],["wind",4,false],
-    ["flower",4,true],
-    ["dragon",3,false],["dragon",3,false],["dragon",3,false],["dragon",3,false]
-  ];
 
-  public currentLayout: MJLayoutGraph;
+  public tileCollection: MJTileCollection = null;
 
   ngOnInit(): void {
     console.log("initialisation started");
 
+    let newTileCollection: MJTileCollection = new MJTileCollection(this.dragonLayout);
+
     // load layout
-    this.loadLayout(this.dragonLayout);
-  }
-
-  loadLayout(layout: [number, number][]): void {
     console.log("loading started");     // TODO show "loading"
-
-    let dragonLayout = new MJLayoutGraph(layout);
-
-    // sort tiles for correct display
-    dragonLayout.tiles
-      .sort((tile1: MjTile, tile2:MjTile) => tile1.sortingOrder - tile2.sortingOrder);
-
-      // TODO !!!!! use setter for tileTypesDescriptor in the layout
-    dragonLayout.setTypes(this.tileTypesDescriptor);
-    dragonLayout.shuffleTypesFisherYates();
-    this.restartGame();
-
-    dragonLayout.build(this.onLoadComplete.bind(this));
+    newTileCollection.init(this.onLoadComplete.bind(this));
   }
 
-  onLoadComplete(layout: MJLayoutGraph):void {
-    this.fieldPixelWidth = (this.tilePixelWidth/2)*layout.fieldDimensionX+6+3;
-    this.fieldPixelHeight = (this.tilePixelHeight/2)*layout.fieldDimensionY+8+3;
+  onLoadComplete(newCollection: MJTileCollection):void {
+    this.fieldPixelWidth = (this.tilePixelWidth/2)*newCollection.fieldDimensionX+6+3;
+    this.fieldPixelHeight = (this.tilePixelHeight/2)*newCollection.fieldDimensionY+8+3;
     this.scaleX = Math.floor(this.desiredWidth/this.fieldPixelWidth*100)/100;
     this.scale = Math.floor(Math.min(this.desiredWidth/this.fieldPixelWidth,this.desiredHeight/this.fieldPixelHeight)*100)/100;
-    this.currentLayout = layout;
+
+    this.tileCollection = newCollection;
+
+    this.startGame();
 
     console.log("loading finished"); // TODO hide "loading"
+  }
+
+  public startGame(): void {
+    this.tileCollection.reset();
+    this.hintsCount = 3;
   }
 
   onTileSelect(tile: MjTile) : void {
@@ -137,11 +121,6 @@ export class MjGameComponent {
     }
   }
 
-  public restartGame(): void {
-    // this.currentLayout.resetTiles(this.tileTypesDescriptor);
-    this.hintsCount = 3;
-  }
-
   public onHint() {
     // TODO search for matching free tiles and wiggle
   }
@@ -155,6 +134,6 @@ export class MjGameComponent {
   }
 
   public onRestart() {
-    this.restartGame();
+    this.startGame();
   }
 }

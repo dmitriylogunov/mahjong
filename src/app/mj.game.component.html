@@ -1,10 +1,10 @@
 <status (hint)=onShowHint() (undo)=onUndo() (redo)=onRedo() [width]=fieldPixelWidth [scale]=scale [hintsCount]=hintsCount></status>
-<div *ngIf="currentLayout">
+<div *ngIf="tileCollection">
   <div class="gamefield" [ngStyle]="{
     'width.px': fieldPixelWidth,
     'height.px': fieldPixelHeight,
     'transform': 'scale('+scale+', '+scale+')' }" >
-    <div *ngFor="let tile of currentLayout.tiles" class="tile-outer"
+    <div *ngFor="let tile of tileCollection.tiles" class="tile-outer"
       [class.hidden]="!tile.active && !tile.selected"
       [ngStyle]="{
         'left.px': tile.x*(tilePixelWidth/2)+tile.z*6,

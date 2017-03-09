@@ -29,10 +29,26 @@ export class MjTile {
   public adjacentL: MjTile[] = [];
   public adjacentR: MjTile[] = [];
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, collection: MjTile[]) {
     this.x = x;
     this.y = y;
-    this.z = 0;
+    this.z = this.getTileZCoordinate(collection);
+    
+    // collection will be sorted later: by Z asc, then by Y asc, then by X desc
+    this.sortingOrder = this.z*10000 + this.y*100 - this.x;
+  }
+
+  // determine layer (z coordinate) of the tile
+  // there is an assumption that tiles with layer 0 come first in init array,
+  // then layer 1 etc
+  private getTileZCoordinate(collection: MjTile[]): number {
+    let z=0;
+    for (let otherTile of collection) {
+      if ((z<=otherTile.z) && this.overlaps2d(otherTile)) {
+        z = otherTile.z + 1;
+      }
+    }
+    return z;
   }
 
   setType(type: MjTileType): void {
@@ -125,7 +141,7 @@ export class MjTile {
     return freeOnRight;
   }
 
-  remove(): void {
+  public remove(): void {
     this.active = false;
     setTimeout(
       () => {
@@ -135,13 +151,19 @@ export class MjTile {
     );
   }
 
-  select(): void {
+  public select(): void {
     this.selected = true;
     // TODO trigger play of "select" animation
   }
 
-  unselect(): void {
+  public unselect(): void {
     this.selected = false;
     // TODO trigger play of "unselect" animation
+  }
+
+  // return to initial state
+  public reset() {
+    this.unselect();
+    this.active = true;
   }
 }
