@@ -45,11 +45,11 @@ export class MjStatusComponent  {
   hints: boolean[];
   startTime: number;
 
-  @Input()
-  width: number;
-
-  @Input()
-  scale: number;
+  // @Input()
+  // width: number;
+  //
+  // @Input()
+  // scale: number;
 
   @Output() hint: EventEmitter<any> = new EventEmitter();
   @Output() undo: EventEmitter<any> = new EventEmitter();
@@ -82,5 +82,9 @@ export class MjStatusComponent  {
 
   onRestartNoClick() {
     this.restartModal.hide();
+  }
+
+  public reset() {
+    this.hintsAvailable = this.hints.length;
   }
 }
