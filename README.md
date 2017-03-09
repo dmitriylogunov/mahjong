@@ -15,7 +15,6 @@ Older versions produce errors.
 
 We recommend [nvm](https://github.com/creationix/nvm) for managing multiple versions of node and npm.
 
-```
 ## Running the game
 
 > See npm and nvm version notes above
