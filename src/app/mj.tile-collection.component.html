@@ -1,6 +1,17 @@
-<div class="tile-collection-field" [ngStyle]="{
+<div class="tile-collection-field"
+  *ngIf="tilesReady"
+  [ngStyle]="{
   'width.px': fieldPixelWidth,
   'height.px': fieldPixelHeight,
   'transform': 'scale('+scale+', '+scale+')' }" >
-  <tile *ngFor="let tileDescriptor of currentLayoutDescriptor" [descriptor]=tileDescriptor [parent]=this></tile>
+
+  <tile *ngFor="let tile of tiles"
+    (click)="onTileSelect(tile)"
+    [scaleX]=50
+    [scaleY]=80
+    [active]=tile.active
+    [selected]=tile.selected
+    [type]=tile.type
+    [isFree]=tile.isFree()
+  ></tile>
 </div>

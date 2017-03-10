@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MjTileComponent, MjTileType } from './mj.tile.component';
+import { MjTileComponent } from './mj.tile.component';
+import { MjTile, MjTileType } from './mj.tile';
 import { AppToolbox } from './app.toolbox';
 
 @Component({
@@ -16,15 +17,17 @@ export class MJTileCollectionComponent {
 
       // shuffle tile types
       this.shuffleTypesFisherYates();
+
+      this.tilesReady = true;
+      this.ready.emit();
     }
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
+  private tilesReady: boolean = false;
 
-  private debug: true;
-
-  public tiles: MjTileComponent[] = [];
-  // private selectedTile: MjTile = null;
+  public tiles: MjTile[] = [];
+  private selectedTile: MjTile = null;
 
   public fieldDimensionX = 0;
   public fieldDimensionY = 0;
@@ -42,8 +45,6 @@ export class MJTileCollectionComponent {
     ["flower",4,true],
     ["dragon",3,false],["dragon",3,false],["dragon",3,false],["dragon",3,false]
   ];
-
-  private currentLayoutDescriptor: [number, number][] = [];
 
   // layout description only, no other data here. Just an array of tile 2d coordinates
   private dragonLayout: [number, number][] = [
@@ -82,7 +83,7 @@ export class MJTileCollectionComponent {
   private initTiles(collection: [number, number][]) {
     // init tile collection
     for (let coordinates of collection) {
-      // let newTile = new MjTile(coordinates[0], coordinates[1], this.tiles);
+      let newTile = new MjTile(coordinates[0], coordinates[1], this.tiles);
 
       if (this.fieldDimensionX<newTile.x+newTile.tileSizeX) {
         this.fieldDimensionX = newTile.x+newTile.tileSizeX;
@@ -114,7 +115,6 @@ export class MJTileCollectionComponent {
         this.tiles[j].checkRelativePositions(this.tiles[i]);
       }
     }
-    this.ready.emit();
   }
 
   public shuffleTypesFisherYates(): void {
@@ -177,5 +177,4 @@ export class MJTileCollectionComponent {
       }
     }
   }
-
 }

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MJTileCollectionComponent } from './mj.tile-collection.component';
+import { MjTile, MjTileType } from './mj.tile';
 
 @Component({
   selector: 'tile',
@@ -8,184 +8,48 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
 })
 export class MjTileComponent {
   //   <div class="test" [innerHTML]="tileUnicode"></div>
-  // public tileUnicode = "&#x1F000; &#x1F02A;";
+  @Input()
+  scaleX: number;
 
   @Input()
-  set descriptor(descriptor: [number, number]) {
-    this.x = descriptor[0];
-    this.y = descriptor[1];
-    this.z = this.getTileZCoordinate();
+  scaleY: number;
 
-    // collection will be sorted later: by Z asc, then by Y asc, then by X desc
-    this.sortingOrder = this.z*10000 + this.y*100 - this.x;
+  @Input()
+  active: boolean;
+
+  @Input()
+  set selected(selected: boolean) {
+    this._selected = selected;
+    // TODO play of "select" or "unselect" animation
+  }
+  _selected: boolean;
+
+  @Input()
+  isFree: boolean;
+
+  @Input()
+  set type(type: MjTileType) {
+    this._type = type;
+
+    // TODO case ...
+    this.primaryCharacter = "&#x1F000; &#x1F02A;";
+    this.secondaryCharacter = "B";
   }
 
-  @Input()
-  parent: MJTileCollectionComponent;
+  private _type: MjTileType;
 
-  public top: number; // top and left are pixel positions of the tile
-  public left: number;
-  public type: MjTileType = null;
-  public x: number;
-  public y: number;
-  public z: number; // x,y,z are field positions of the tile
+  private primaryCharacter: string = "";
+  private secondaryCharacter: string = "";
 
-  public sortingOrder : number;
+  public shiftX = 3;
+  public shiftY = 4;
 
-  public selected: boolean = false;
-  public active: boolean = true;
-
-  public tileSizeX = 2;
-  public tileSizeY = 2;
-
-  public blockedBy: MjTileComponent[] = [];
-  public adjacentL: MjTileComponent[] = [];
-  public adjacentR: MjTileComponent[] = [];
-
-  public primaryCharacter: string = "";
-  public secondaryCharacter: string = "";
+  @Output() click: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
 
-  // determine layer (z coordinate) of the tile
-  // there is an assumption that tiles with layer 0 come first in init array,
-  // then layer 1 etc
-  private getTileZCoordinate(): number {
-    let z=0;
-    for (let otherTile:MjTileComponent of this.parent.tiles) {
-      if ((z<=otherTile.z) && this.overlaps2d(otherTile)) {
-        z = otherTile.z + 1;
-      }
-    }
-    return z;
+  onClick() {
+    this.click.emit();
   }
-
-  setType(type: MjTileType): void {
-    this.type = type;
-  }
-
-  // check if two tile overlap, ignoring z coordinate
-  overlaps2d(otherTile: MjTile): boolean {
-    return (
-      (this.x+this.tileSizeX>otherTile.x && this.x<otherTile.x+otherTile.tileSizeX)
-      &&
-      (this.y+this.tileSizeY>otherTile.y && this.y<otherTile.y+otherTile.tileSizeY)
-    );
-  }
-
-  // returns [isOnLeft, isOnRight]
-  isXAdjacentTo(otherTile: MjTile): [boolean, boolean] {
-    if (
-      (this.z == otherTile.z)
-      &&
-      (this.y+this.tileSizeY>otherTile.y && this.y<otherTile.y+otherTile.tileSizeY) // same rule as in overlap for Y
-    ) {
-    return (
-      [
-        this.x+this.tileSizeX==otherTile.x, // Adjacent on left
-        this.x==otherTile.x+otherTile.tileSizeX // Adjacent on right
-      ]
-    )
-    } else {
-      return [false, false];
-    }
-  }
-
-  checkRelativePositions(otherTile: MjTile): void {
-    if (this.z==otherTile.z-1 && this.overlaps2d(otherTile)) {
-        this.blockedBy.push(otherTile);
-    }
-    let adjacency = this.isXAdjacentTo(otherTile);
-    if (adjacency[0]) {
-      this.adjacentL.push(otherTile);
-    } else if (adjacency[1]) {
-      this.adjacentR.push(otherTile);
-    }
-  }
-
-  // whether this tile is a match to other tile or not (tile will also match to itself if compared)
-  matches(otherTile: MjTile): boolean {
-    if (!otherTile) {
-      return false;
-    } else if (this.type.matchAny && this.type.group===otherTile.type.group) {
-      // Season or flower tiles that all match to each other
-      return true;
-    } else if (this.type.group===otherTile.type.group && this.type.index == otherTile.type.index) {
-      // Other tiles
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  isFree(): boolean {
-    for (let tile of this.blockedBy) {
-      if (tile.active) {
-        return false;
-      }
-    }
-
-    // adjacent on left
-    let freeOnLeft = true;
-    for (let tile of this.adjacentL) {
-      if (tile.active) {
-        freeOnLeft = false;
-        break;
-      }
-    }
-
-    if (freeOnLeft) {
-      return true;
-    }
-
-    // adjacent on right
-    let freeOnRight = true;
-    for (let tile of this.adjacentR) {
-      if (tile.active) {
-        freeOnRight = false;
-        break;
-      }
-    }
-
-    return freeOnRight;
-  }
-
-  public remove(): void {
-    this.active = false;
-    setTimeout(
-      () => {
-        this.unselect();
-      },
-      500
-    );
-  }
-
-  public select(): void {
-    this.selected = true;
-    // TODO trigger play of "select" animation
-  }
-
-  public unselect(): void {
-    this.selected = false;
-    // TODO trigger play of "unselect" animation
-  }
-
-  // return to initial state
-  public reset() {
-    this.unselect();
-    this.active = true;
-  }
-}
-
-
-export class MjTileType {
-  constructor (group: string, index: number, matchAny: boolean) {
-    this.group = group;
-    this.index = index;
-    this.matchAny = matchAny;
-  }
-  public group: string;
-  public index: number;
-  public matchAny: boolean;
 }
