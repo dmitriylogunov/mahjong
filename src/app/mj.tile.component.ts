@@ -1,15 +1,28 @@
-export class MjTileType {
-  constructor (group: string, index: number, matchAny: boolean) {
-    this.group = group;
-    this.index = index;
-    this.matchAny = matchAny;
-  }
-  public group: string;
-  public index: number;
-  public matchAny: boolean;
-}
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { MJTileCollectionComponent } from './mj.tile-collection.component';
 
-export class MjTile {
+@Component({
+  selector: 'tile',
+  templateUrl: 'app/mj.tile.component.html',
+  styleUrls: ['app/mj.tile.component.css']
+})
+export class MjTileComponent {
+  //   <div class="test" [innerHTML]="tileUnicode"></div>
+  // public tileUnicode = "&#x1F000; &#x1F02A;";
+
+  @Input()
+  set descriptor(descriptor: [number, number]) {
+    this.x = descriptor[0];
+    this.y = descriptor[1];
+    this.z = this.getTileZCoordinate();
+
+    // collection will be sorted later: by Z asc, then by Y asc, then by X desc
+    this.sortingOrder = this.z*10000 + this.y*100 - this.x;
+  }
+
+  @Input()
+  parent: MJTileCollectionComponent;
+
   public top: number; // top and left are pixel positions of the tile
   public left: number;
   public type: MjTileType = null;
@@ -25,25 +38,22 @@ export class MjTile {
   public tileSizeX = 2;
   public tileSizeY = 2;
 
-  public blockedBy: MjTile[] = [];
-  public adjacentL: MjTile[] = [];
-  public adjacentR: MjTile[] = [];
+  public blockedBy: MjTileComponent[] = [];
+  public adjacentL: MjTileComponent[] = [];
+  public adjacentR: MjTileComponent[] = [];
 
-  constructor(x: number, y: number, collection: MjTile[]) {
-    this.x = x;
-    this.y = y;
-    this.z = this.getTileZCoordinate(collection);
-    
-    // collection will be sorted later: by Z asc, then by Y asc, then by X desc
-    this.sortingOrder = this.z*10000 + this.y*100 - this.x;
+  public primaryCharacter: string = "";
+  public secondaryCharacter: string = "";
+
+  constructor() {
   }
 
   // determine layer (z coordinate) of the tile
   // there is an assumption that tiles with layer 0 come first in init array,
   // then layer 1 etc
-  private getTileZCoordinate(collection: MjTile[]): number {
+  private getTileZCoordinate(): number {
     let z=0;
-    for (let otherTile of collection) {
+    for (let otherTile:MjTileComponent of this.parent.tiles) {
       if ((z<=otherTile.z) && this.overlaps2d(otherTile)) {
         z = otherTile.z + 1;
       }
@@ -166,4 +176,16 @@ export class MjTile {
     this.unselect();
     this.active = true;
   }
+}
+
+
+export class MjTileType {
+  constructor (group: string, index: number, matchAny: boolean) {
+    this.group = group;
+    this.index = index;
+    this.matchAny = matchAny;
+  }
+  public group: string;
+  public index: number;
+  public matchAny: boolean;
 }

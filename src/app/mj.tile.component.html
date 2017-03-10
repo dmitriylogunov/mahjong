@@ -1,0 +1,25 @@
+<div class="tile-outer"
+  [class.hidden]="!tile.active && !tile.selected"
+  [ngStyle]="{
+    'left.px': tile.x*(tilePixelWidth/2)+tile.z*6,
+    'top.px': tile.y*(tilePixelHeight/2)-tile.z*8
+     }"
+  [ngClass]="{'layer0': tile.z==0, 'layer1': tile.z==1, 'layer2': tile.z==2, 'layer3': tile.z==3, 'layer4': tile.z==4, 'layer5': tile.z>=5,
+    'free': tile.isFree()}"
+>
+  <div class="tile-shadow">&nbsp;</div>
+  <div class="tile-shadow2">&nbsp;</div>
+  <div class="tile"
+    [ngStyle]="{'background-image': 'url(/img/tiles/' + tile.type.group + tile.type.index + '.png)'}"
+    [class.selected]="tile.selected"
+    (click)="onTileSelect(tile)"
+    [class.free]="tile.isFree()"
+  >
+    <span style="font-size: 300%;">{{tile.type.group}}{{tile.type.index}}</span>
+    <div *ngIf="debug">
+      <span *ngIf="tile.type">{{tile.type.group}} {{tile.type.index}}<br/></span>
+      <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
+      {{tile.isFree()?"Free":"Locked"}}
+    </div>
+  </div>
+</div>

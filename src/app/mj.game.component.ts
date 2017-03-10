@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { MjTile, MjTileType } from './mj.tile';
 import { MjStatusComponent }  from './mj.status.component';
 import { MJTileCollectionComponent } from './mj.tile-collection.component';
 
@@ -24,17 +23,12 @@ export class MjGameComponent {
 
   private desiredWidth: number = 1024;
   private desiredHeight: number = 768;
-  
+
   private fieldPixelWidth: number;
   private fieldPixelHeight: number;
 
-  private debug: true;
-
   private scale: number;
   private scaleX: number;
-
-  private selectedTile: MjTile = null;
-
   public currentLayout: string = null;
 
   ngOnInit(): void {
@@ -52,37 +46,8 @@ export class MjGameComponent {
     console.log("loading finished"); // TODO hide "loading"
   }
 
-  onTileSelect(tile: MjTile) : void {
-    console.log("onTileSelect", tile);
-    // checking .active because still can get clicks on the tile while "hiding" animation is playing
-    if (tile.active) {
-      if (tile.selected) {
-        tile.unselect();
-        this.selectedTile = null;
-      } else {
-        if (tile.isFree()) {
-          tile.select();
-
-          if (this.selectedTile) {
-            if (tile.matches(this.selectedTile)) {
-              tile.remove();
-              this.selectedTile.remove();
-              this.selectedTile = null;
-            } else {
-              this.selectedTile.unselect();
-              this.selectedTile = tile;
-            }
-          } else {
-            this.selectedTile = tile;
-          }
-        } else {
-          // TODO play "blocked" sound and animation
-        }
-      }
-    }
-  }
-
   public onHint() {
+    // trigger hint of collection
     // TODO search for matching free tiles and wiggle
   }
 

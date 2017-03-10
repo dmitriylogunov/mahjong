@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
-import { MjTile, MjTileType } from './mj.tile';
+import { MjTileComponent, MjTileType } from './mj.tile.component';
 import { AppToolbox } from './app.toolbox';
 
 @Component({
@@ -22,17 +21,19 @@ export class MJTileCollectionComponent {
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
 
-  public tiles: MjTile[] = [];
+  private debug: true;
+
+  public tiles: MjTileComponent[] = [];
+  // private selectedTile: MjTile = null;
 
   public fieldDimensionX = 0;
   public fieldDimensionY = 0;
 
-  private tilePixelWidth: number = 200; // pixel width of tile, with "3d" part, margins etc.
-  private tilePixelHeight: number = 269; // no other margins are added to tiles
-
+  public tilePixelWidth: number = 200; // pixel width of tile, with "3d" part, margins etc.
+  public tilePixelHeight: number = 269; // no other margins are added to tiles
 
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
-  private tileTypesDescriptor: [string, number, boolean][] = [
+  private tileSetDescriptor: [string, number, boolean][] = [
     ["ball",9,false],["ball",9,false],["ball",9,false],["ball",9,false],
     ["bam",9,false],["bam",9,false],["bam",9,false],["bam",9,false],
     ["num",9,false],["num",9,false],["num",9,false],["num",9,false],
@@ -41,6 +42,8 @@ export class MJTileCollectionComponent {
     ["flower",4,true],
     ["dragon",3,false],["dragon",3,false],["dragon",3,false],["dragon",3,false]
   ];
+
+  private currentLayoutDescriptor: [number, number][] = [];
 
   // layout description only, no other data here. Just an array of tile 2d coordinates
   private dragonLayout: [number, number][] = [
@@ -79,7 +82,7 @@ export class MJTileCollectionComponent {
   private initTiles(collection: [number, number][]) {
     // init tile collection
     for (let coordinates of collection) {
-      let newTile = new MjTile(coordinates[0], coordinates[1], this.tiles);
+      // let newTile = new MjTile(coordinates[0], coordinates[1], this.tiles);
 
       if (this.fieldDimensionX<newTile.x+newTile.tileSizeX) {
         this.fieldDimensionX = newTile.x+newTile.tileSizeX;
@@ -126,7 +129,7 @@ export class MJTileCollectionComponent {
 
   public setTileTypes() {
     let tileIndex = 0;
-    for (let type of this.tileTypesDescriptor) {
+    for (let type of this.tileSetDescriptor) {
       for (let i=0;i<type[1];i++) {
         let tileType: MjTileType = new MjTileType(
           type[0],
@@ -144,4 +147,35 @@ export class MJTileCollectionComponent {
     }
     this.shuffleTypesFisherYates();
   }
+
+  onTileSelect(tile: MjTile) : void {
+    console.log("onTileSelect", tile);
+    // checking .active because still can get clicks on the tile while "hiding" animation is playing
+    if (tile.active) {
+      if (tile.selected) {
+        tile.unselect();
+        this.selectedTile = null;
+      } else {
+        if (tile.isFree()) {
+          tile.select();
+
+          if (this.selectedTile) {
+            if (tile.matches(this.selectedTile)) {
+              tile.remove();
+              this.selectedTile.remove();
+              this.selectedTile = null;
+            } else {
+              this.selectedTile.unselect();
+              this.selectedTile = tile;
+            }
+          } else {
+            this.selectedTile = tile;
+          }
+        } else {
+          // TODO play "blocked" sound and animation
+        }
+      }
+    }
+  }
+
 }
