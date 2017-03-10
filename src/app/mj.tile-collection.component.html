@@ -7,6 +7,9 @@
 
   <tile *ngFor="let tile of tiles"
     (click)="onTileSelect(tile)"
+    [x]=tile.x
+    [y]=tile.y
+    [z]=tile.z
     [scaleX]=50
     [scaleY]=80
     [active]=tile.active

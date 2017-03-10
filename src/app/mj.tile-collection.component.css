@@ -1,6 +1,7 @@
 .tile-collection-field {
   position: relative;
   border: 1px solid black;
-  margin: 15px;
   transform-origin: top left;
+  width: 100%;
+  height: 50px;
 }

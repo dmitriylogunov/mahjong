@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { MjTileComponent } from './mj.tile.component';
 import { MjTile, MjTileType } from './mj.tile';
 import { AppToolbox } from './app.toolbox';
@@ -34,6 +34,9 @@ export class MJTileCollectionComponent {
 
   public tilePixelWidth: number = 200; // pixel width of tile, with "3d" part, margins etc.
   public tilePixelHeight: number = 269; // no other margins are added to tiles
+
+  private windowWidth = 0;
+  private windowHeight = 0;
 
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
   private tileSetDescriptor: [string, number, boolean][] = [
@@ -77,7 +80,18 @@ export class MJTileCollectionComponent {
     [13,7]
   ];
 
-  constructor() {
+  constructor(private _elRef:ElementRef) {
+    // listen to window resize
+    window.addEventListener("resize", this.onWindowResize);
+    // and call it once in the beginning for initialisation
+    this.onWindowResize();
+  }
+
+  onWindowResize(): void {
+    // check for div size changes and adjust scale
+    // TODO check why native element is null
+    this.windowWidth = this._elRef.nativeElement.offsetWidth;
+    this.windowHeight = this._elRef.nativeElement.offsetHeight;
   }
 
   private initTiles(collection: [number, number][]) {

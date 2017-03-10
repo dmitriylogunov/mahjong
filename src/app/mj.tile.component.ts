@@ -9,6 +9,15 @@ import { MjTile, MjTileType } from './mj.tile';
 export class MjTileComponent {
   //   <div class="test" [innerHTML]="tileUnicode"></div>
   @Input()
+  x: number;
+
+  @Input()
+  y: number;
+
+  @Input()
+  z: number;
+
+  @Input()
   scaleX: number;
 
   @Input()

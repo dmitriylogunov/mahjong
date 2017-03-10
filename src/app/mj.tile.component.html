@@ -1,8 +1,8 @@
 <div class="tile-outer"
   [class.hidden]="!active && !_selected"
   [ngStyle]="{
-    'left.px': x*(scaleX)+z*shiftX*2,
-    'top.px': y*(scaleY)-z*shiftY*2,
+    'left.px': x*scaleX+z*shiftX*2,
+    'top.px': y*scaleY-z*shiftY*2,
     'width': scaleX*2,
     'height': scaleY*2
    }"
@@ -18,7 +18,7 @@
     [class.free]="isFree"
   >
     <span style="font-size: 300%;">{{_type.group}}{{_type.index}}</span>
-
+{{x*scaleX+z*shiftX*2}}
     <div *ngIf="tile"> <!-- if tile property is set for debugging, display debug info -->
       <span *ngIf="tile.type">{{tile.type.group}} {{tile.type.index}}<br/></span>
       <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
