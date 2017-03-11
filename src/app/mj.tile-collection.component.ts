@@ -80,16 +80,26 @@ export class MJTileCollectionComponent {
     [13,7]
   ];
 
+  private fieldElement: any = null;
+
   constructor(private _elRef:ElementRef) {
     // listen to window resize
-    window.addEventListener("resize", this.onWindowResize);
-    // and call it once in the beginning for initialisation
+    window.addEventListener("resize", this.onWindowResize.bind(this));
+  }
+
+  ngAfterViewInit(): void {
+    this.fieldElement = this._elRef.nativeElement.querySelector(".tile-collection-field");
+    // call resize handler once after component is rendered, to initialise scale
     this.onWindowResize();
   }
 
   onWindowResize(): void {
     // check for div size changes and adjust scale
-    // TODO check why native element is null
+    
+    // console.log(this.fieldElement.offsetWidth);
+    // console.log(this.fieldElement.offsetHeight);
+
+
     this.windowWidth = this._elRef.nativeElement.offsetWidth;
     this.windowHeight = this._elRef.nativeElement.offsetHeight;
   }
