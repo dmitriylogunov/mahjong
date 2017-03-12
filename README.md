@@ -2,6 +2,13 @@
 
 Built on Angular framework
 
+# Quickstart
+
+* `npm install`
+* `npm start`
+* Open [http://localhost:3000](http://localhost:3000)
+* `Ctrl-C` to stop
+
 ## Prerequisites
 
 Node.js and npm are essential to Angular development.
