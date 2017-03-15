@@ -5,11 +5,19 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
 @Component({
   selector: 'mj-game',
   template: `
+    <style>
+      .gamefield {
+        position: relative;
+        width: 100%;
+        height: 90vh;
+        border: 1px solid black;
+        border-radius: 1%;
+      }
+    </style>
     <status (hint)=onShowHint() (undo)=onUndo() (redo)=onRedo() [hintsCount]=3></status>
-    <tile-collection (ready)=onTileCollectionReady() [layout]=currentLayout></tile-collection>
+    <div class="gamefield"><tile-collection (ready)=onTileCollectionReady() [layout]=currentLayout></tile-collection></div>
     <options></options>
-  `,
-  styleUrls: ['app/mj.game.component.css']
+  `
 })
 export class MjGameComponent {
   constructor() {
@@ -24,8 +32,8 @@ export class MjGameComponent {
   private desiredWidth: number = 1024;
   private desiredHeight: number = 768;
 
-  private fieldPixelWidth: number;
-  private fieldPixelHeight: number;
+  // private fieldPixelWidth: number;
+  // private fieldPixelHeight: number;
 
   private scale: number;
   private scaleX: number;
@@ -38,10 +46,12 @@ export class MjGameComponent {
   }
 
   onTileCollectionReady():void {
-    this.fieldPixelWidth = (this.tileCollection.tilePixelWidth/2)*this.tileCollection.fieldDimensionX+6+3;
-    this.fieldPixelHeight = (this.tileCollection.tilePixelHeight/2)*this.tileCollection.fieldDimensionY+8+3;
-    this.scaleX = Math.floor(this.desiredWidth/this.fieldPixelWidth*100)/100;
-    this.scale = Math.floor(Math.min(this.desiredWidth/this.fieldPixelWidth,this.desiredHeight/this.fieldPixelHeight)*100)/100;
+
+    // TODO clean up
+    // this.fieldPixelWidth = (this.tileCollection.tilePixelWidth/2)*this.tileCollection.fieldDimensionX+6+3;
+    // this.fieldPixelHeight = (this.tileCollection.tilePixelHeight/2)*this.tileCollection.fieldDimensionY+8+3;
+    // this.scaleX = Math.floor(this.desiredWidth/this.fieldPixelWidth*100)/100;
+    // this.scale = Math.floor(Math.min(this.desiredWidth/this.fieldPixelWidth,this.desiredHeight/this.fieldPixelHeight)*100)/100;
 
     console.log("loading finished"); // TODO hide "loading"
   }

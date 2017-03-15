@@ -4,8 +4,6 @@
 
 .tile-outer {
   position: absolute;
-  width: 206px;
-  height: 277px;
 }
 
 .tile.free:hover {
@@ -17,39 +15,33 @@
 
 .tile-shadow {
   position: absolute;
-  top: 8px;
-  left: 0px;
-  width: 200px;
-  height: 269px;
   border: 1px solid black;
   background-color: lightgray;
   border-radius: 18px;
+  width: 100%;
+  height: 100%;
+}
+
+.tile-shadow1 {
+  top: 0px;
+  left: 0px;
 }
 
 .tile-shadow2 {
-  position: absolute;
-  top: 4px;
-  left: 3px;
-  width: 200px;
-  height: 269px;
-  border: 1px solid black;
-  background-color: lightgray;
-  border-radius: 18px;
   opacity: .99;
 }
 
 .tile {
   border:3px solid black;
   position: absolute;
-  top: 0px;
-  left: 6px;
   border-radius: 18px;
+  width: 100%;
+  height: 100%;
   /*background-size: cover;*/
-  background-position: 5px 0;
-  width: 194px; /* minus 6 for border */
-  height: 265px;
+  /*background-position: 5px 0;*/
+   /* minus 6 for border */
+  font-size: 25px;
   word-wrap: break-word;
-  /*z-index: 250;*/
 }
 
 .tile.selected {

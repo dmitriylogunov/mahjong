@@ -1,7 +1,10 @@
-.tile-collection-field {
+.tile-field-outer {
   position: relative;
-  border: 1px solid black;
-  transform-origin: top left;
+  height: 100%;
   width: 100%;
-  height: 50px;
+}
+
+.tile-field {
+  position: relative;
+  /*transform-origin: top left;*/
 }

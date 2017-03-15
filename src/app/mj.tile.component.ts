@@ -7,6 +7,11 @@ import { MjTile, MjTileType } from './mj.tile';
   styleUrls: ['app/mj.tile.component.css']
 })
 export class MjTileComponent {
+  // constants
+  public shiftX: number = 6; // both must be odd for integer division in half
+  public shiftY: number = 8;
+  public debug: boolean = false;
+
   //   <div class="test" [innerHTML]="tileUnicode"></div>
   @Input()
   x: number;
@@ -18,10 +23,10 @@ export class MjTileComponent {
   z: number;
 
   @Input()
-  scaleX: number;
+  elementPixelWidth: number;
 
   @Input()
-  scaleY: number;
+  elementPixelHeight: number;
 
   @Input()
   active: boolean;
@@ -45,17 +50,15 @@ export class MjTileComponent {
     this.secondaryCharacter = "B";
   }
 
-  private _type: MjTileType;
+  public _type: MjTileType;
 
   private primaryCharacter: string = "";
   private secondaryCharacter: string = "";
 
-  public shiftX = 3;
-  public shiftY = 4;
-
   @Output() click: EventEmitter<any> = new EventEmitter();
 
   constructor() {
+    console.log("New tile");
   }
 
   onClick() {

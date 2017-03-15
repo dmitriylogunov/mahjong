@@ -1,20 +1,25 @@
-<div class="tile-collection-field"
-  *ngIf="tilesReady"
-  [ngStyle]="{
-  'width.px': fieldPixelWidth,
-  'height.px': fieldPixelHeight,
-  'transform': 'scale('+scale+', '+scale+')' }" >
+<div class="tile-field-outer"
+[ngStyle]="{
+'padding-left.px': paddingLeft,
+'padding-right.px': paddingRight,
+'padding-top.px': paddingTop,
+'padding-bottom.px': paddingBottom
+}"
+>
+  <div class="tile-field"
+    *ngIf="tilesReady" >
 
-  <tile *ngFor="let tile of tiles"
-    (click)="onTileSelect(tile)"
-    [x]=tile.x
-    [y]=tile.y
-    [z]=tile.z
-    [scaleX]=50
-    [scaleY]=80
-    [active]=tile.active
-    [selected]=tile.selected
-    [type]=tile.type
-    [isFree]=tile.isFree()
-  ></tile>
+    <tile *ngFor="let tile of tiles"
+      (click)="onTileSelect(tile)"
+      [x]=tile.x
+      [y]=tile.y
+      [z]=tile.z
+      [elementPixelWidth] = elementPixelWidth
+      [elementPixelHeight] = elementPixelHeight
+      [active]=tile.active
+      [selected]=tile.selected
+      [type]=tile.type
+      [isFree]=tile.isFree()
+    ></tile>
+  </div>
 </div>

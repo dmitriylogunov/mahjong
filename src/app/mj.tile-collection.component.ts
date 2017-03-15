@@ -12,15 +12,19 @@ export class MJTileCollectionComponent {
   @Input()
   set layout(layout: string) {
     if (layout=="dragon") {
-      // init tile structures
-      this.initTiles(this.dragonLayout);
-
-      // shuffle tile types
-      this.shuffleTypesFisherYates();
-
-      this.tilesReady = true;
-      this.ready.emit();
+      this.init(this.dragonLayout);
     }
+  }
+
+  private init(layout: [number, number][]) {
+    // init tile structures
+    this.initTiles(layout);
+
+    // shuffle tile types
+    this.shuffleTypesFisherYates();
+
+    this.tilesReady = true;
+    this.ready.emit();
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
@@ -32,8 +36,13 @@ export class MJTileCollectionComponent {
   public fieldDimensionX = 0;
   public fieldDimensionY = 0;
 
-  public tilePixelWidth: number = 200; // pixel width of tile, with "3d" part, margins etc.
-  public tilePixelHeight: number = 269; // no other margins are added to tiles
+  public elementPixelWidth: number = 200; // pixel width of tile, with "3d" part, margins etc.
+  public elementPixelHeight: number = 269; // no other margins are added to tiles
+
+  public paddingLeft: number = 0;
+  public paddingRight: number = 0;
+  public paddingTop: number = 0;
+  public paddingBottom: number = 0;
 
   private windowWidth = 0;
   private windowHeight = 0;
@@ -80,28 +89,43 @@ export class MJTileCollectionComponent {
     [13,7]
   ];
 
-  private fieldElement: any = null;
-
   constructor(private _elRef:ElementRef) {
-    // listen to window resize
-    window.addEventListener("resize", this.onWindowResize.bind(this));
+    // every time the window size changes, recalculate field and tile dimensions
+    window.addEventListener("resize", (()=>{this.retrieveDimensionsFromElement();}).bind(this));
   }
 
-  ngAfterViewInit(): void {
-    this.fieldElement = this._elRef.nativeElement.querySelector(".tile-collection-field");
-    // call resize handler once after component is rendered, to initialise scale
-    this.onWindowResize();
+  ngOnInit():void {
+    this.retrieveDimensionsFromElement();
+    this.init(this.dragonLayout); //TODO this is debug code
   }
 
-  onWindowResize(): void {
-    // check for div size changes and adjust scale
-    
-    // console.log(this.fieldElement.offsetWidth);
-    // console.log(this.fieldElement.offsetHeight);
+  // recalculate field and tile dimensions
+  private retrieveDimensionsFromElement(): void {
+    let element: any = this._elRef.nativeElement.parentElement;
 
+    console.log("retrieveDimensionsFromElement");
+    console.log(element);
+    console.log(element.offsetWidth);
+    console.log(element.offsetHeight);
 
-    this.windowWidth = this._elRef.nativeElement.offsetWidth;
-    this.windowHeight = this._elRef.nativeElement.offsetHeight;
+    // Game field
+    this.windowWidth = element.offsetWidth;
+    this.windowHeight = element.offsetHeight;
+
+    // X
+    this.elementPixelWidth = Math.floor(this.windowWidth / this.fieldDimensionX);
+    let totalPaddingX = this.windowWidth - (this.elementPixelWidth * this.fieldDimensionX);
+    this.paddingLeft = Math.floor(totalPaddingX / 2);
+    this.paddingRight = totalPaddingX - this.paddingLeft; // accounts for uneven total padding
+
+    // Y - similar
+    this.elementPixelHeight = Math.floor(this.windowHeight / this.fieldDimensionY);
+    let totalPaddingY = this.windowHeight - (this.elementPixelHeight * this.fieldDimensionY);
+    this.paddingTop = Math.floor(totalPaddingY / 2);
+    this.paddingBottom = totalPaddingY - this.paddingTop;
+
+    console.log(this.elementPixelWidth);
+    console.log(this.elementPixelHeight);
   }
 
   private initTiles(collection: [number, number][]) {
@@ -202,3 +226,8 @@ export class MJTileCollectionComponent {
     }
   }
 }
+//
+// [ngStyle]="{
+// 'width.px': fieldPixelWidth,
+// 'height.px': fieldPixelHeight,
+// 'transform': 'scale('+scale+', '+scale+')' }" >

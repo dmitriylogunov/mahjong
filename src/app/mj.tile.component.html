@@ -1,26 +1,35 @@
 <div class="tile-outer"
   [class.hidden]="!active && !_selected"
   [ngStyle]="{
-    'left.px': x*scaleX+z*shiftX*2,
-    'top.px': y*scaleY-z*shiftY*2,
-    'width': scaleX*2,
-    'height': scaleY*2
+    'left.px': x*elementPixelWidth+z*shiftX,
+    'top.px': y*elementPixelHeight-z*shiftY,
+    'width.px': elementPixelWidth*2,
+    'height.px': elementPixelHeight*2
    }"
   [ngClass]="{'layer0': z==0, 'layer1': z==1, 'layer2': z==2, 'layer3': z==3, 'layer4': z==4, 'layer5': z>=5,
     'free': isFree}"
 >
-  <div class="tile-shadow">&nbsp;</div>
-  <div class="tile-shadow2">&nbsp;</div>
-  <div class="tile"
-    [ngStyle]="{'background-image': 'url(/img/tiles/' + _type.group + _type.index + '.png)'}"
+  <div class="tile-shadow tile-shadow1">&nbsp;</div>
+
+  <div class="tile-shadow tile-shadow2"
+    [ngStyle]="{
+      'top.px': -shiftX/2,
+      'left.px': -shiftY/2
+    }">&nbsp;</div>
+
+  <div class="tile" *ngIf="_type"
+    [ngStyle]="{
+      'top.px': -shiftX,
+      'left.px': -shiftY,
+      'background-image': 'url(/img/tiles/' + _type.group + _type.index + '.png)'
+    }"
     [class.selected]="_selected"
     (click)="onClick()"
     [class.free]="isFree"
   >
-    <span style="font-size: 300%;">{{_type.group}}{{_type.index}}</span>
-{{x*scaleX+z*shiftX*2}}
-    <div *ngIf="tile"> <!-- if tile property is set for debugging, display debug info -->
-      <span *ngIf="tile.type">{{tile.type.group}} {{tile.type.index}}<br/></span>
+    <span>{{_type.group}}{{_type.index}}</span>
+    <div *ngIf="debug"> <!-- if tile debug property is set, display debug info -->
+      <span *ngIf="type">{{type.group}} {{type.index}}<br/></span>
       <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
       {{tile.isFree()?"Free":"Locked"}}
     </div>
