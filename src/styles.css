@@ -2,3 +2,8 @@
   font-family: "FreeSerif";
   src: url("fonts/FreeSerif.ttf");
 }
+
+body {
+  overflow: hidden; /* disable scrollbars and margins which break the app sizing logic */
+  margin: 0px;
+}

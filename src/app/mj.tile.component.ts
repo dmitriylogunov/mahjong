@@ -8,8 +8,7 @@ import { MjTile, MjTileType } from './mj.tile';
 })
 export class MjTileComponent {
   // constants
-  public shiftX: number = 6; // both must be odd for integer division in half
-  public shiftY: number = 8;
+  public shiftProportion: number = 0.12;
   public debug: boolean = false;
 
   //   <div class="test" [innerHTML]="tileUnicode"></div>
@@ -22,11 +21,25 @@ export class MjTileComponent {
   @Input()
   z: number;
 
-  @Input()
-  elementPixelWidth: number;
+  _elementPixelWidth: number;
+  shiftX: number;
 
   @Input()
-  elementPixelHeight: number;
+  set elementPixelWidth(elementPixelWidth: number) {
+    this._elementPixelWidth = elementPixelWidth;
+    this.shiftX = Math.floor(elementPixelWidth*this.shiftProportion);
+    console.log(this.shiftX);
+  }
+
+  _elementPixelHeight: number;
+  shiftY: number;
+
+  @Input()
+  set elementPixelHeight(elementPixelHeight: number) {
+    this._elementPixelHeight = elementPixelHeight;
+    this.shiftY = Math.floor(elementPixelHeight*this.shiftProportion);
+    console.log(this.shiftY);
+  }
 
   @Input()
   active: boolean;

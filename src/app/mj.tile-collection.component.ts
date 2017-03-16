@@ -9,9 +9,17 @@ import { AppToolbox } from './app.toolbox';
   styleUrls: ['app/mj.tile-collection.component.css']
 })
 export class MJTileCollectionComponent {
+  // constants
+  // constraints in tile scaling (tile == 2x2 elements), proportion = width / Height
+  // 1 is square, 0.5 is 2:1 etc
+  private elementProportionMax = 0.8; // almost square, which is 1
+  private elementProportionMin = 0.5;
+
+  public tilesReady: boolean = false;
+
   @Input()
   set layout(layout: string) {
-    if (layout=="dragon") {
+    if (layout==="dragon") {
       this.init(this.dragonLayout);
     }
   }
@@ -19,7 +27,6 @@ export class MJTileCollectionComponent {
   private init(layout: [number, number][]) {
     // init tile structures
     this.initTiles(layout);
-
     // shuffle tile types
     this.shuffleTypesFisherYates();
 
@@ -28,7 +35,6 @@ export class MJTileCollectionComponent {
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
-  private tilesReady: boolean = false;
 
   public tiles: MjTile[] = [];
   private selectedTile: MjTile = null;
@@ -36,16 +42,14 @@ export class MJTileCollectionComponent {
   public fieldDimensionX = 0;
   public fieldDimensionY = 0;
 
-  public elementPixelWidth: number = 200; // pixel width of tile, with "3d" part, margins etc.
-  public elementPixelHeight: number = 269; // no other margins are added to tiles
+  public elementPixelWidth: number = 0; // pixel width of tile, with "3d" part, margins etc.
+  public elementPixelHeight: number = 0; // no other margins are added to tiles
 
   public paddingLeft: number = 0;
   public paddingRight: number = 0;
   public paddingTop: number = 0;
   public paddingBottom: number = 0;
 
-  private windowWidth = 0;
-  private windowHeight = 0;
 
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
   private tileSetDescriptor: [string, number, boolean][] = [
@@ -96,48 +100,65 @@ export class MJTileCollectionComponent {
 
   ngOnInit():void {
     this.retrieveDimensionsFromElement();
-    this.init(this.dragonLayout); //TODO this is debug code
   }
 
   // recalculate field and tile dimensions
   private retrieveDimensionsFromElement(): void {
     let element: any = this._elRef.nativeElement.parentElement;
 
-    console.log("retrieveDimensionsFromElement");
-    console.log(element);
-    console.log(element.offsetWidth);
-    console.log(element.offsetHeight);
+    // console.log("retrieveDimensionsFromElement");
+    // console.log(element);
+    // console.log(element.offsetWidth);
+    // console.log(element.offsetHeight);
 
     // Game field
-    this.windowWidth = element.offsetWidth;
-    this.windowHeight = element.offsetHeight;
+    let windowWidth = element.offsetWidth;
+    let windowHeight = element.offsetHeight;
 
-    // X
-    this.elementPixelWidth = Math.floor(this.windowWidth / this.fieldDimensionX);
-    let totalPaddingX = this.windowWidth - (this.elementPixelWidth * this.fieldDimensionX);
-    this.paddingLeft = Math.floor(totalPaddingX / 2);
+    // element size
+    this.elementPixelWidth = Math.floor(windowWidth / this.fieldDimensionX);
+    this.elementPixelHeight = Math.floor(windowHeight / this.fieldDimensionY);
+    // console.log(this.elementPixelWidth);
+    // console.log(this.elementPixelHeight);
+
+    // check element proportion and adjust if needed
+    let currentProportion = this.elementPixelWidth / this.elementPixelHeight;
+    // console.log(currentProportion);
+
+    // too much "Portrait"
+    if (currentProportion<this.elementProportionMin) {
+        this.elementPixelHeight = Math.floor(this.elementPixelWidth / this.elementProportionMax);
+    }
+
+    // too much "Landscape"
+    if (currentProportion>this.elementProportionMax) {
+      this.elementPixelWidth = Math.floor(this.elementPixelHeight * this.elementProportionMax);
+    }
+
+    // field padding, so tiles are centered inside the game field
+    let totalPaddingX = windowWidth - (this.elementPixelWidth * this.fieldDimensionX);
+    this.paddingLeft = Math.floor(totalPaddingX / 2) - 5;
     this.paddingRight = totalPaddingX - this.paddingLeft; // accounts for uneven total padding
-
     // Y - similar
-    this.elementPixelHeight = Math.floor(this.windowHeight / this.fieldDimensionY);
-    let totalPaddingY = this.windowHeight - (this.elementPixelHeight * this.fieldDimensionY);
+    let totalPaddingY = windowHeight - (this.elementPixelHeight * this.fieldDimensionY);
     this.paddingTop = Math.floor(totalPaddingY / 2);
     this.paddingBottom = totalPaddingY - this.paddingTop;
 
-    console.log(this.elementPixelWidth);
-    console.log(this.elementPixelHeight);
+    // console.log(this.elementPixelWidth);
+    // console.log(this.elementPixelHeight);
   }
 
   private initTiles(collection: [number, number][]) {
+    this.tiles.length = 0;
     // init tile collection
     for (let coordinates of collection) {
       let newTile = new MjTile(coordinates[0], coordinates[1], this.tiles);
 
-      if (this.fieldDimensionX<newTile.x+newTile.tileSizeX) {
-        this.fieldDimensionX = newTile.x+newTile.tileSizeX;
+      if (this.fieldDimensionX<newTile.x+1+newTile.tileSizeX) {
+        this.fieldDimensionX = newTile.x+1+newTile.tileSizeX;
       }
-      if (this.fieldDimensionY<newTile.y+newTile.tileSizeY) {
-        this.fieldDimensionY = newTile.y+newTile.tileSizeY;
+      if (this.fieldDimensionY<newTile.y+1+newTile.tileSizeY) {
+        this.fieldDimensionY = newTile.y+1+newTile.tileSizeY;
       }
 
       this.tiles.push(newTile);

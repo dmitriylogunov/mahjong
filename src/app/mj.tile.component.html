@@ -1,26 +1,34 @@
 <div class="tile-outer"
   [class.hidden]="!active && !_selected"
   [ngStyle]="{
-    'left.px': x*elementPixelWidth+z*shiftX,
-    'top.px': y*elementPixelHeight-z*shiftY,
-    'width.px': elementPixelWidth*2,
-    'height.px': elementPixelHeight*2
+    'left.px': x*_elementPixelWidth+z*shiftX,
+    'top.px': y*_elementPixelHeight-z*shiftY,
+    'width.px': _elementPixelWidth*2,
+    'height.px': _elementPixelHeight*2
    }"
   [ngClass]="{'layer0': z==0, 'layer1': z==1, 'layer2': z==2, 'layer3': z==3, 'layer4': z==4, 'layer5': z>=5,
     'free': isFree}"
 >
-  <div class="tile-shadow tile-shadow1">&nbsp;</div>
-
+ <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
+  <div class="tile-shadow tile-shadow1"
+    [ngStyle]="{
+        'width.px': _elementPixelWidth*2 - 2,
+        'height.px': _elementPixelHeight*2 - 2
+      }">&nbsp;</div>
   <div class="tile-shadow tile-shadow2"
     [ngStyle]="{
       'top.px': -shiftX/2,
-      'left.px': -shiftY/2
+      'left.px': shiftY/2,
+      'width.px': _elementPixelWidth*2 - 2,
+      'height.px': _elementPixelHeight*2 - 2
     }">&nbsp;</div>
 
   <div class="tile" *ngIf="_type"
     [ngStyle]="{
       'top.px': -shiftX,
-      'left.px': -shiftY,
+      'left.px': shiftY,
+      'width.px': _elementPixelWidth*2 - 4,
+      'height.px': _elementPixelHeight*2 - 4,
       'background-image': 'url(/img/tiles/' + _type.group + _type.index + '.png)'
     }"
     [class.selected]="_selected"
