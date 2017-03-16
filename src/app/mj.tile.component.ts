@@ -43,19 +43,23 @@ export class MjTileComponent {
     // console.log(this.shiftY);
     this.fontSizePrimary =  Math.floor(elementPixelHeight*1.4);
     this.fontSizeSecondary = Math.floor(elementPixelHeight / 3);
-
-    console.log(this.fontSizePrimary);
+    // console.log(this.fontSizePrimary);
   }
 
   @Input()
   active: boolean;
 
+  _selected: boolean = false;
   @Input()
   set selected(selected: boolean) {
+    if (!this._selected && selected) {
+      // play "select" animation
+    } else if (this._selected && !selected){
+      // play "unselect"
+    }
     this._selected = selected;
-    // TODO play of "select" or "unselect" animation
+    console.log(this._selected);
   }
-  _selected: boolean;
 
   @Input()
   isFree: boolean;
@@ -67,14 +71,14 @@ export class MjTileComponent {
 
   public _type: MjTileType;
 
-  @Output() click: EventEmitter<any> = new EventEmitter();
+  @Output() tileClicked: EventEmitter<any> = new EventEmitter();
 
   constructor() {
     // console.log("New tile");
   }
 
   onClick() {
-    this.click.emit();
+    this.tileClicked.emit();
   }
 }
 

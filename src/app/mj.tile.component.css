@@ -2,6 +2,10 @@
   position: absolute;
 }
 
+.tile.free {
+  cursor: pointer;
+}
+
 .tile.free:hover {
   transform: scale(1.15,1.15);
   z-index: 500; /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
@@ -31,6 +35,11 @@
   position: absolute;
   border-radius: 10%;
   font-size: 25px;
+  cursor: default;
+}
+
+.tile.selected {
+  background-color: lightgray;
 }
 
 .tile-content {
@@ -53,13 +62,6 @@
 }
 
 .tile-content .secondary-character {
-}
-
-
-.tile.selected {
-  transform: scale(1.1,1.1);
-  background-color: black;
-  color: white;
 }
 
 .tile.hidden {

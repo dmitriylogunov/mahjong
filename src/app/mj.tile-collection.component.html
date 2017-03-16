@@ -10,7 +10,7 @@
     *ngIf="tilesReady" >
 
     <tile *ngFor="let tile of tiles"
-      (click)="onTileSelect(tile)"
+      (tileClicked)="onTileSelect(tile)"
       [x]=tile.x
       [y]=tile.y
       [z]=tile.z

@@ -229,18 +229,18 @@ export class MJTileCollectionComponent {
         if (tile.isFree()) {
           tile.select();
 
-          if (this.selectedTile) {
-            if (tile.matches(this.selectedTile)) {
-              tile.remove();
-              this.selectedTile.remove();
-              this.selectedTile = null;
-            } else {
-              this.selectedTile.unselect();
-              this.selectedTile = tile;
-            }
-          } else {
-            this.selectedTile = tile;
-          }
+          // if (this.selectedTile) {
+          //   if (tile.matches(this.selectedTile)) {
+          //     tile.remove();
+          //     this.selectedTile.remove();
+          //     this.selectedTile = null;
+          //   } else {
+          //     this.selectedTile.unselect();
+          //     this.selectedTile = tile;
+          //   }
+          // } else {
+          //   this.selectedTile = tile;
+          // }
         } else {
           // TODO play "blocked" sound and animation
         }
