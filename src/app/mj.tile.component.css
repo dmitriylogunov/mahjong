@@ -30,29 +30,34 @@
   border: 2px solid gray;
   position: absolute;
   border-radius: 10%;
-  /*background-size: cover;*/
-  /*background-position: 5px 0;*/
-   /* minus 6 for border */
   font-size: 25px;
-  word-wrap: break-word;
 }
 
-.tile .secondary-character {
-  position: absolute;
-  top: 0px;
-  left: 5%;
+.tile-content {
+  margin: 5px;
+  padding: 0px;
+  text-align: left;
 }
 
-.tile .primary-character {
-  position: absolute;
-  top: 15%;
-  left: 5%;
-  /*transform-origin: 50% 50%;
-  transform: scale(2,2);*/
+.tile-content .primary-character-wrap {
+  width: 100%;
+  text-align: center;
 }
+
+.tile-content .primary-character {
+  margin: 0;
+}
+
+.tile-content .clear {
+  clear: both;
+}
+
+.tile-content .secondary-character {
+}
+
 
 .tile.selected {
-  transform: scale(1.15,1.15);
+  transform: scale(1.1,1.1);
   background-color: black;
   color: white;
 }

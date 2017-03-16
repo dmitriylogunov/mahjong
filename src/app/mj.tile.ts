@@ -167,10 +167,10 @@ export class MjTileType {
   public matchAny: boolean; // Season or flower tiles that all match to each other
 
   private tileCharacters: TileCharacters = {
-    "ball": [["&#x1F019","","blue"], ["&#x1F01A","","blue"], ["&#x1F01B","","blue"], ["&#x1F01C","","blue"],
-      ["&#x1F01D","","blue"], ["&#x1F01E","","blue"], ["&#x1F01F","","blue"], ["&#x1F020","","blue"], ["&#x1F021","","blue"] ],
-    "bam": [["&#x1F010","mah-jongg","green"], ["&#x1F011","","green"], ["&#x1F012","","green"], ["&#x1F013","","green"],
-      ["&#x1F014","","green"], ["&#x1F015","","green"], ["&#x1F016","","green"], ["&#x1F017","","green"], ["&#x1F018","","green"] ],
+    "ball": [["&#x1F019","1","blue"], ["&#x1F01A","2","blue"], ["&#x1F01B","3","blue"], ["&#x1F01C","4","blue"],
+      ["&#x1F01D","5","blue"], ["&#x1F01E","6","blue"], ["&#x1F01F","7","blue"], ["&#x1F020","8","blue"], ["&#x1F021","9","blue"] ],
+    "bam": [["&#x1F010","1","green"], ["&#x1F011","2","green"], ["&#x1F012","3","green"], ["&#x1F013","4","green"],
+      ["&#x1F014","5","green"], ["&#x1F015","6","green"], ["&#x1F016","7","green"], ["&#x1F017","8","green"], ["&#x1F018","9","green"] ],
     "num": [["&#x1F007","1","red"], ["&#x1F008","2","red"], ["&#x1F009","3","red"], ["&#x1F00A","4","red"],
       ["&#x1F00B","5","red"], ["&#x1F00C","6","red"], ["&#x1F00D","7","red"], ["&#x1F00E","8","red"], ["&#x1F00F","9","red"] ],
     "season": [["&#x1F026", "spring", "green"], ["&#x1F027", "summer", "yellow"], ["&#x1F028", "autumn", "orange"], ["&#x1F029", "winter", "blue"]],

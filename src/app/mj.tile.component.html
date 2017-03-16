@@ -35,19 +35,24 @@
     (click)="onClick()"
     [class.free]="isFree"
   >
-    <div class="secondary-character"
-      [ngStyle]="{
-        'font-size.px': fontSizeSecondary
-      }"
-    >{{_type.getSecondaryCharacter()}}</div>
+    <div class="tile-content">
+      <div class="secondary-character"
+        [ngStyle]="{
+          'font-size.px': fontSizeSecondary,
+          'line-height.px': fontSizeSecondary-5
+        }"
+      >{{_type.getSecondaryCharacter()}}</div>
 
-    <div class="primary-character"
-      [ngStyle]="{
-        'font-size.px': fontSizePrimary,
-        'line-height.px': fontSizePrimary
-      }"
-      [innerHTML]="_type.getPrimaryCharacter()"
-    ></div>
+      <div class="primary-character-wrap">
+        <span class="primary-character"
+          [ngStyle]="{
+            'font-size.px': fontSizePrimary,
+            'line-height.px': fontSizePrimary
+          }"
+          [innerHTML]="_type.getPrimaryCharacter()"
+        ></span>
+      </div>
+    </div>
 
     <div *ngIf="debug"> <!-- if tile debug property is set, display debug info -->
       <span *ngIf="type">{{type.group}} {{type.index}}<br/></span>

@@ -41,8 +41,10 @@ export class MjTileComponent {
     this._elementPixelHeight = elementPixelHeight;
     this.shiftY = Math.floor(elementPixelHeight*this.shiftProportion);
     // console.log(this.shiftY);
-    this.fontSizePrimary =  Math.floor(elementPixelHeight*1.5);
+    this.fontSizePrimary =  Math.floor(elementPixelHeight*1.4);
     this.fontSizeSecondary = Math.floor(elementPixelHeight / 3);
+
+    console.log(this.fontSizePrimary);
   }
 
   @Input()
