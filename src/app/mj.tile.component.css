@@ -1,13 +1,8 @@
-.tile-colourer-overlay {
-  background-color:rgba(255,255,255,0.2);
-}
-
 .tile-outer {
   position: absolute;
 }
 
 .tile.free:hover {
-  transform-origin: 50% 50%;
   transform: scale(1.15,1.15);
   z-index: 500; /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
   opacity: .99;
@@ -15,8 +10,8 @@
 
 .tile-shadow {
   position: absolute;
-  border: 1px solid black;
-  background-color: gray;
+  border: 1px solid gray;
+  background-color: lightgray;
   border-radius: 10%;
 }
 
@@ -30,7 +25,9 @@
 }
 
 .tile {
-  border: 2px solid black;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+  border: 2px solid gray;
   position: absolute;
   border-radius: 10%;
   /*background-size: cover;*/
@@ -40,7 +37,22 @@
   word-wrap: break-word;
 }
 
+.tile .secondary-character {
+  position: absolute;
+  top: 0px;
+  left: 5%;
+}
+
+.tile .primary-character {
+  position: absolute;
+  top: 15%;
+  left: 5%;
+  /*transform-origin: 50% 50%;
+  transform: scale(2,2);*/
+}
+
 .tile.selected {
+  transform: scale(1.15,1.15);
   background-color: black;
   color: white;
 }
@@ -50,25 +62,25 @@
 }
 
 .layer0 .tile {
-  background-color: green;
+  background-color: lightgreen;
 }
 
 .layer1 .tile {
-  background-color: blue;
+  background-color: lightblue;
 }
 
 .layer2 .tile {
-  background-color: pink;
+  background-color: lightpink;
 }
 
 .layer3 .tile {
-  background-color: yellow;
+  background-color: lightyellow;
 }
 
 .layer4 .tile {
-  background-color: green;
+  background-color: lightgreen;
 }
 
 .layer5 .tile {
-  background-color: green;
+  background-color: lightgreen;
 }

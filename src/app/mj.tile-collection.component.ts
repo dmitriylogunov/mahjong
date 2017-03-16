@@ -51,6 +51,7 @@ export class MJTileCollectionComponent {
   public paddingBottom: number = 0;
 
 
+  // TODO wrap into MjTileType class
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
   private tileSetDescriptor: [string, number, boolean][] = [
     ["ball",9,false],["ball",9,false],["ball",9,false],["ball",9,false],
@@ -247,8 +248,3 @@ export class MJTileCollectionComponent {
     }
   }
 }
-//
-// [ngStyle]="{
-// 'width.px': fieldPixelWidth,
-// 'height.px': fieldPixelHeight,
-// 'transform': 'scale('+scale+', '+scale+')' }" >

@@ -21,24 +21,28 @@ export class MjTileComponent {
   @Input()
   z: number;
 
-  _elementPixelWidth: number;
-  shiftX: number;
+  public _elementPixelWidth: number;
+  public shiftX: number;
 
   @Input()
   set elementPixelWidth(elementPixelWidth: number) {
     this._elementPixelWidth = elementPixelWidth;
     this.shiftX = Math.floor(elementPixelWidth*this.shiftProportion);
-    console.log(this.shiftX);
+    // console.log(this.shiftX);
   }
 
-  _elementPixelHeight: number;
-  shiftY: number;
+  public _elementPixelHeight: number;
+  public shiftY: number;
+  public fontSizePrimary: number;
+  public fontSizeSecondary: number;
 
   @Input()
   set elementPixelHeight(elementPixelHeight: number) {
     this._elementPixelHeight = elementPixelHeight;
     this.shiftY = Math.floor(elementPixelHeight*this.shiftProportion);
-    console.log(this.shiftY);
+    // console.log(this.shiftY);
+    this.fontSizePrimary =  Math.floor(elementPixelHeight*1.5);
+    this.fontSizeSecondary = Math.floor(elementPixelHeight / 3);
   }
 
   @Input()
@@ -57,24 +61,19 @@ export class MjTileComponent {
   @Input()
   set type(type: MjTileType) {
     this._type = type;
-
-    // TODO case ...
-    this.primaryCharacter = "&#x1F000; &#x1F02A;";
-    this.secondaryCharacter = "B";
   }
 
   public _type: MjTileType;
 
-  private primaryCharacter: string = "";
-  private secondaryCharacter: string = "";
-
   @Output() click: EventEmitter<any> = new EventEmitter();
 
   constructor() {
-    console.log("New tile");
+    // console.log("New tile");
   }
 
   onClick() {
     this.click.emit();
   }
 }
+
+  // 'background-image': 'url(/img/tiles/' + _type.group + _type.index + '.png)'

@@ -29,13 +29,26 @@
       'left.px': shiftY,
       'width.px': _elementPixelWidth*2 - 4,
       'height.px': _elementPixelHeight*2 - 4,
-      'background-image': 'url(/img/tiles/' + _type.group + _type.index + '.png)'
+      'color': _type.getColor()
     }"
     [class.selected]="_selected"
     (click)="onClick()"
     [class.free]="isFree"
   >
-    <span>{{_type.group}}{{_type.index}}</span>
+    <div class="secondary-character"
+      [ngStyle]="{
+        'font-size.px': fontSizeSecondary
+      }"
+    >{{_type.getSecondaryCharacter()}}</div>
+
+    <div class="primary-character"
+      [ngStyle]="{
+        'font-size.px': fontSizePrimary,
+        'line-height.px': fontSizePrimary
+      }"
+      [innerHTML]="_type.getPrimaryCharacter()"
+    ></div>
+
     <div *ngIf="debug"> <!-- if tile debug property is set, display debug info -->
       <span *ngIf="type">{{type.group}} {{type.index}}<br/></span>
       <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>

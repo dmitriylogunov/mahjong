@@ -16,7 +16,6 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
         width: 100vw;
         height: 80vh;
         padding: 10px;
-
         background-color: lightyellow;
       }
     </style>

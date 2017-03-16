@@ -87,14 +87,8 @@ export class MjTile {
   matches(otherTile: MjTile): boolean {
     if (!otherTile) {
       return false;
-    } else if (this.type.matchAny && this.type.group===otherTile.type.group) {
-      // Season or flower tiles that all match to each other
-      return true;
-    } else if (this.type.group===otherTile.type.group && this.type.index == otherTile.type.index) {
-      // Other tiles
-      return true;
     } else {
-      return false;
+      return this.type.matches(otherTile.type);
     }
   }
 
@@ -151,10 +145,15 @@ export class MjTile {
   }
 
   // return to initial state
-  public reset() {
+  public reset(): void {
     this.unselect();
     this.active = true;
   }
+}
+
+
+interface TileCharacters {
+  [group: string]: string[][];
 }
 
 export class MjTileType {
@@ -165,5 +164,39 @@ export class MjTileType {
   }
   public group: string;
   public index: number;
-  public matchAny: boolean;
+  public matchAny: boolean; // Season or flower tiles that all match to each other
+
+  private tileCharacters: TileCharacters = {
+    "ball": [["&#x1F019","","blue"], ["&#x1F01A","","blue"], ["&#x1F01B","","blue"], ["&#x1F01C","","blue"],
+      ["&#x1F01D","","blue"], ["&#x1F01E","","blue"], ["&#x1F01F","","blue"], ["&#x1F020","","blue"], ["&#x1F021","","blue"] ],
+    "bam": [["&#x1F010","mah-jongg","green"], ["&#x1F011","","green"], ["&#x1F012","","green"], ["&#x1F013","","green"],
+      ["&#x1F014","","green"], ["&#x1F015","","green"], ["&#x1F016","","green"], ["&#x1F017","","green"], ["&#x1F018","","green"] ],
+    "num": [["&#x1F007","1","red"], ["&#x1F008","2","red"], ["&#x1F009","3","red"], ["&#x1F00A","4","red"],
+      ["&#x1F00B","5","red"], ["&#x1F00C","6","red"], ["&#x1F00D","7","red"], ["&#x1F00E","8","red"], ["&#x1F00F","9","red"] ],
+    "season": [["&#x1F026", "spring", "green"], ["&#x1F027", "summer", "yellow"], ["&#x1F028", "autumn", "orange"], ["&#x1F029", "winter", "blue"]],
+    "wind": [["&#x1F000", "east", "black"], ["&#x1F001", "south", "black"], ["&#x1F002", "west", "black"], ["&#x1F003", "north", "black"]],
+    "flower": [["&#x1F022", "plum", "pink"], ["&#x1F023", "orchid", "green"], ["&#x1F024", "bamboo", "green"], ["&#x1F025", "mum", "red"]],
+    "dragon": [["&#x1F004", "dragon", "red"], ["&#x1F005", "dragon", "green"], ["&#x1F006", "dragon", "blue"]]
+  }
+
+  public getPrimaryCharacter(): string {
+    return this.tileCharacters[this.group][this.index][0];
+  }
+
+  public getSecondaryCharacter(): string {
+    return this.tileCharacters[this.group][this.index][1];
+  }
+
+  public getColor(): string {
+    // console.log(this.group, this.index);
+    return this.tileCharacters[this.group][this.index][2];
+  }
+
+  public matches(otherType: MjTileType) {
+    if (this.group===otherType.group && (this.matchAny || this.index == otherType.index)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
