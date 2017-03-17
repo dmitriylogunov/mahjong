@@ -135,7 +135,7 @@ export class MjTile {
     );
   }
 
-  public return(): void {
+  public returnToField(): void {
     this.active = true;
     // TODO play fade in animation
   }

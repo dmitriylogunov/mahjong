@@ -13,8 +13,8 @@ import { ModalComponent, ModalAction } from './app.modal.component';
       <span class="restart" (click)=restartModal.show()>Restart</span>
       <span class="timer">0:15</span>
       <span class="undoredo">
-        <span class="undo">Undo</span>
-        <span class="redo">Redo</span>
+        <span class="undo" (click)=onUndoClick() [class.disabled]=undoStatus>Undo</span>
+        <span class="redo" (click)=onRedoClick() [class.disabled]=redoStatus>Redo</span>
       </span>
     </div>
 
@@ -33,6 +33,12 @@ export class MjStatusComponent  {
     new ModalAction("Yes", this.onRestartClick),
     new ModalAction("No", this.onRestartNoClick)
   ];
+
+  @Input()
+  undoStatus: boolean;
+
+  @Input()
+  redoStatus: boolean;
 
   @Input()
   set hintsCount(hintsCount: number) {

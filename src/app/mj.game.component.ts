@@ -26,6 +26,8 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
       (redo)=onRedoRequest()
       (restart)=onRestartRequest()
       [hintsCount]=3
+      [undoStatus]=undoStatus
+      [redoStatus]=redoStatus
     ></status></div>
 
     <div class="gamefield"><tile-collection

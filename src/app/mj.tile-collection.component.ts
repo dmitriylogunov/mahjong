@@ -261,18 +261,25 @@ export class MJTileCollectionComponent {
     }
   }
 
-  private removeTile(tile: MjTile) {
+  private removeTile(tile: MjTile, saveToLog: boolean = true) {
     if (tile.active) {
       this.activeTileCount--;
     };
     tile.remove();
+    if (saveToLog) {
+      if (this.tileRemoveLog.length>this.tileRemoveLogCursor) {
+        this.tileRemoveLog.splice(this.tileRemoveLogCursor, this.tileRemoveLog.length-this.tileRemoveLogCursor);
+      }
+      this.tileRemoveLog.push(tile);
+      this.tileRemoveLogCursor++;
+    }
   }
 
   private returnTile(tile: MjTile) {
     if (!tile.active) {
       this.activeTileCount++;
     };
-    tile.return();
+    tile.returnToField();
   }
 
   public freePairs: [MjTile, MjTile][] = [];
@@ -308,17 +315,27 @@ export class MJTileCollectionComponent {
   }
 
   private tileRemoveLog: MjTile[] = [];
+  private tileRemoveLogCursor = 0;
 
   public undo(): boolean {
-    if (this.tileRemoveLog.length==0) {
+    if (this.tileRemoveLogCursor<=0) {
       return false;
     } else {
-      this.tileRemoveLog[this.tileRemoveLog.length-1].return();
-      this.tileRemoveLog[this.tileRemoveLog.length-2].return();
+      this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-1]);
+      this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-2]);
+      this.tileRemoveLogCursor-=2;
+      return (this.tileRemoveLogCursor>0);
     }
   }
 
   public redo(): boolean {
-    return false;
+    if (this.tileRemoveLogCursor>=this.tileRemoveLog.length) {
+      return false;
+    } else {
+      this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor], false);
+      this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor+1], false);
+      this.tileRemoveLogCursor+=2;
+      return (this.tileRemoveLogCursor<this.tileRemoveLog.length);
+    }
   }
 }

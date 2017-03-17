@@ -69,3 +69,7 @@
   font-size: 26px;
   cursor: pointer;
 }
+
+span.disabled {
+  color: gray;
+}
