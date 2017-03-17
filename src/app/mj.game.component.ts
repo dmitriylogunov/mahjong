@@ -18,6 +18,15 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
         padding: 10px;
         background-color: lightyellow;
       }
+      .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                            supported by Chrome and Opera */
+      }
     </style>
 
     <div class="statusfield"><status
@@ -30,7 +39,7 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
       [redoStatus]=redoStatus
     ></status></div>
 
-    <div class="gamefield"><tile-collection
+    <div class="gamefield noselect"><tile-collection
       [layout]=currentLayout
       (ready)=onTileCollectionReady()
       (gameStateChanged)=onGameStateChanged()
@@ -69,8 +78,8 @@ export class MjGameComponent {
       // trigger lose
     }
 
-    this.undoStatus = true;
-    this.redoStatus = false;
+    // this.undoStatus = true;
+    // this.redoStatus = false;
   }
 
   private getGameEndStatus(): string {
@@ -88,14 +97,14 @@ export class MjGameComponent {
 
   private undoStatus = false;
   public onUndoRequest() {
-    this.undoStatus = this.tileCollection.undo();
-    this.redoStatus = true;
+    // this.undoStatus = this.tileCollection.undo();
+    // this.redoStatus = true;
   }
 
   private redoStatus = false;
   public onRedoRequest() {
-    this.redoStatus = this.tileCollection.redo();
-    this.undoStatus = true;
+    // this.redoStatus = this.tileCollection.redo();
+    // this.undoStatus = true;
   }
 
   public onRestartRequest() {

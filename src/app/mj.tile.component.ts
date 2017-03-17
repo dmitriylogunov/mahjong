@@ -76,8 +76,9 @@ export class MjTileComponent {
     // console.log("New tile");
   }
 
-  onClick() {
+  onClick(event: any) {
     this.tileClicked.emit();
+    event.stopPropagation();
   }
 }
 

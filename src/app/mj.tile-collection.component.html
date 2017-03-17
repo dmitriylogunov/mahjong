@@ -7,7 +7,13 @@
 }"
 >
   <div class="tile-field"
-    *ngIf="tilesReady" >
+    *ngIf="tilesReady"
+    (click)="onFieldClick()"
+    [ngStyle]="{
+        'width.px': windowWidth,
+        'height.px': windowHeight
+      }"
+  >
 
     <tile *ngFor="let tile of tiles"
       (tileClicked)="onTileSelect(tile)"

@@ -103,6 +103,9 @@ export class MJTileCollectionComponent {
     this.retrieveDimensionsFromElement();
   }
 
+  private windowWidth: number = 0;
+  private windowHeight: number = 0;
+
   // recalculate field and tile dimensions
   private retrieveDimensionsFromElement(): void {
     let element: any = this._elRef.nativeElement.parentElement;
@@ -113,12 +116,12 @@ export class MJTileCollectionComponent {
     // console.log(element.offsetHeight);
 
     // Game field
-    let windowWidth = element.offsetWidth;
-    let windowHeight = element.offsetHeight;
+    this.windowWidth = element.offsetWidth;
+    this.windowHeight = element.offsetHeight;
 
     // element size
-    this.elementPixelWidth = Math.floor(windowWidth / this.fieldDimensionX);
-    this.elementPixelHeight = Math.floor(windowHeight / this.fieldDimensionY);
+    this.elementPixelWidth = Math.floor(this.windowWidth / this.fieldDimensionX);
+    this.elementPixelHeight = Math.floor(this.windowHeight / this.fieldDimensionY);
     // console.log(this.elementPixelWidth);
     // console.log(this.elementPixelHeight);
 
@@ -137,11 +140,11 @@ export class MJTileCollectionComponent {
     }
 
     // field padding, so tiles are centered inside the game field
-    let totalPaddingX = windowWidth - (this.elementPixelWidth * this.fieldDimensionX);
+    let totalPaddingX = this.windowWidth - (this.elementPixelWidth * this.fieldDimensionX);
     this.paddingLeft = Math.floor(totalPaddingX / 2) - 5;
     this.paddingRight = totalPaddingX - this.paddingLeft; // accounts for uneven total padding
     // Y - similar
-    let totalPaddingY = windowHeight - (this.elementPixelHeight * this.fieldDimensionY);
+    let totalPaddingY = this.windowHeight - (this.elementPixelHeight * this.fieldDimensionY);
     this.paddingTop = Math.floor(totalPaddingY / 2);
     this.paddingBottom = totalPaddingY - this.paddingTop;
 
@@ -337,5 +340,11 @@ export class MJTileCollectionComponent {
       this.tileRemoveLogCursor+=2;
       return (this.tileRemoveLogCursor<this.tileRemoveLog.length);
     }
+  }
+
+  // Handle click on to empty area
+  public onFieldClick(): void {
+    this.selectedTile.unselect();
+    this.selectedTile = null;
   }
 }
