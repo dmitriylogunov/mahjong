@@ -58,7 +58,6 @@ export class MjTileComponent {
       // play "unselect"
     }
     this._selected = selected;
-    console.log(this._selected);
   }
 
   @Input()

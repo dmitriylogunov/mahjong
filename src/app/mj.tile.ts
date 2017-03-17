@@ -126,12 +126,18 @@ export class MjTile {
 
   public remove(): void {
     this.active = false;
+    // TODO play fade out animation
     setTimeout(
       () => {
         this.unselect();
       },
       500
     );
+  }
+
+  public return(): void {
+    this.active = true;
+    // TODO play fade in animation
   }
 
   public select(): void {
@@ -198,5 +204,9 @@ export class MjTileType {
     } else {
       return false;
     }
+  }
+
+  public toString(): string {
+    return this.group + this.index.toString();
   }
 }

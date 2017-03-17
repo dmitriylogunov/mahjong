@@ -19,8 +19,21 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
         background-color: lightyellow;
       }
     </style>
-    <div class="statusfield"><status (hint)=onShowHint() (undo)=onUndo() (redo)=onRedo() [hintsCount]=3></status></div>
-    <div class="gamefield"><tile-collection (ready)=onTileCollectionReady() [layout]=currentLayout></tile-collection></div>
+
+    <div class="statusfield"><status
+      (hint)=onHintRequest()
+      (undo)=onUndoRequest()
+      (redo)=onRedoRequest()
+      (restart)=onRestartRequest()
+      [hintsCount]=3
+    ></status></div>
+
+    <div class="gamefield"><tile-collection
+      [layout]=currentLayout
+      (ready)=onTileCollectionReady()
+      (gameStateChanged)=onGameStateChanged()
+      ></tile-collection></div>
+
     <options></options>
   `
 })
@@ -46,20 +59,44 @@ export class MjGameComponent {
     console.log("loading finished"); // TODO hide "loading"
   }
 
-  public onHint() {
-    // trigger hint of collection
-    // TODO search for matching free tiles and wiggle
+  onGameStateChanged(): void {
+    let status = this.getGameEndStatus();
+    if (status==="win") {
+      // trigger win
+    } else if (status==="lose") {
+      // trigger lose
+    }
+
+    this.undoStatus = true;
+    this.redoStatus = false;
   }
 
-  public onUndo() {
-
+  private getGameEndStatus(): string {
+    if (this.tileCollection.activeTileCount==0) {
+      return "win";
+    }
+    if (this.tileCollection.freePairs.length==0) {
+      return "lose";
+    }
   }
 
-  public onRedo() {
-
+  public onHintRequest() {
+    this.tileCollection.showHints();
   }
 
-  public onRestart() {
+  private undoStatus = false;
+  public onUndoRequest() {
+    this.undoStatus = this.tileCollection.undo();
+    this.redoStatus = true;
+  }
+
+  private redoStatus = false;
+  public onRedoRequest() {
+    this.redoStatus = this.tileCollection.redo();
+    this.undoStatus = true;
+  }
+
+  public onRestartRequest() {
     this.tileCollection.reset();
     this.status.reset();
   }

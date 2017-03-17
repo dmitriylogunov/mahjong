@@ -38,10 +38,6 @@
   cursor: default;
 }
 
-.tile.selected {
-  background-color: lightgray;
-}
-
 .tile-content {
   margin: 5px;
   padding: 0px;
@@ -64,30 +60,34 @@
 .tile-content .secondary-character {
 }
 
-.tile.hidden {
+.tile-outer.hidden {
   display: none;
 }
 
-.layer0 .tile {
+.tile.layer0  {
   background-color: lightgreen;
 }
 
-.layer1 .tile {
+.tile.layer1  {
   background-color: lightblue;
 }
 
-.layer2 .tile {
+.tile.layer2 {
   background-color: lightpink;
 }
 
-.layer3 .tile {
+.tile.layer3  {
   background-color: lightyellow;
 }
 
-.layer4 .tile {
+.tile.layer4 {
   background-color: lightgreen;
 }
 
-.layer5 .tile {
+.tile.layer5 {
   background-color: lightgreen;
+}
+
+.tile.selected {
+  background-color: lightgray;
 }

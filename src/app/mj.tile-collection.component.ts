@@ -25,16 +25,16 @@ export class MJTileCollectionComponent {
   }
 
   private init(layout: [number, number][]) {
-    // init tile structures
     this.initTiles(layout);
-    // shuffle tile types
-    this.shuffleTypesFisherYates();
+
+    this.reset();
 
     this.tilesReady = true;
     this.ready.emit();
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
+  @Output() gameStateChanged: EventEmitter<any> = new EventEmitter();
 
   public tiles: MjTile[] = [];
   private selectedTile: MjTile = null;
@@ -149,6 +149,8 @@ export class MJTileCollectionComponent {
     // console.log(this.elementPixelHeight);
   }
 
+  // arrange tiles into given layout and detect which tile blocks which
+  // this function has to be only called once per layout change, and not called on subsequent game restarts
   private initTiles(collection: [number, number][]) {
     this.tiles.length = 0;
     // init tile collection
@@ -212,14 +214,22 @@ export class MJTileCollectionComponent {
   }
 
   public reset() {
+    // reset tiles
     for (let tile of this.tiles) {
       tile.reset();
     }
     this.shuffleTypesFisherYates();
+
+    // reset game state data
+    this.activeTileCount = this.tiles.length;
+    this.tileRemoveLog.length = 0;
+
+    // notify listeners of changes
+    this.onFieldUpdate();
   }
 
   onTileSelect(tile: MjTile) : void {
-    console.log("onTileSelect", tile);
+    // console.log("onTileSelect", tile, tile.type.toString());
     // checking .active because still can get clicks on the tile while "hiding" animation is playing
     if (tile.active) {
       if (tile.selected) {
@@ -229,22 +239,86 @@ export class MJTileCollectionComponent {
         if (tile.isFree()) {
           tile.select();
 
-          // if (this.selectedTile) {
-          //   if (tile.matches(this.selectedTile)) {
-          //     tile.remove();
-          //     this.selectedTile.remove();
-          //     this.selectedTile = null;
-          //   } else {
-          //     this.selectedTile.unselect();
-          //     this.selectedTile = tile;
-          //   }
-          // } else {
-          //   this.selectedTile = tile;
-          // }
+          if (this.selectedTile) {
+            // console.log("Currently selected: ", this.selectedTile, this.selectedTile.type.toString());
+            if (tile.matches(this.selectedTile)) {
+              this.removeTile(tile);
+              this.removeTile(this.selectedTile);
+              this.selectedTile = null;
+
+              this.onFieldUpdate();
+            } else {
+              this.selectedTile.unselect();
+              this.selectedTile = tile;
+            }
+          } else {
+            this.selectedTile = tile;
+          }
         } else {
           // TODO play "blocked" sound and animation
         }
       }
     }
+  }
+
+  private removeTile(tile: MjTile) {
+    if (tile.active) {
+      this.activeTileCount--;
+    };
+    tile.remove();
+  }
+
+  private returnTile(tile: MjTile) {
+    if (!tile.active) {
+      this.activeTileCount++;
+    };
+    tile.return();
+  }
+
+  public freePairs: [MjTile, MjTile][] = [];
+  public activeTileCount: number = 0;
+
+  private onFieldUpdate(): void {
+    this.updateFreePairs();
+    this.gameStateChanged.emit();
+  }
+
+  private updateFreePairs(): void {
+    this.freePairs.length = 0;
+
+    for (let i=0; i<this.tiles.length-1; i++) {
+      let tile1 = this.tiles[i];
+      if (tile1.isFree()) {
+        for (let j=i+1; j<this.tiles.length; j++) {
+          let tile2 = this.tiles[j];
+          if (tile2.isFree() && tile1.matches(tile2)) {
+            this.freePairs.push([tile1, tile2]);
+          }
+        }
+      }
+    }
+
+    if (this.tiles[this.tiles.length-1].active) {
+      this.activeTileCount++;
+    }
+  }
+
+  public showHints(): void {
+
+  }
+
+  private tileRemoveLog: MjTile[] = [];
+
+  public undo(): boolean {
+    if (this.tileRemoveLog.length==0) {
+      return false;
+    } else {
+      this.tileRemoveLog[this.tileRemoveLog.length-1].return();
+      this.tileRemoveLog[this.tileRemoveLog.length-2].return();
+    }
+  }
+
+  public redo(): boolean {
+    return false;
   }
 }
