@@ -27,7 +27,8 @@
       'left.px': shiftY,
       'width.px': _elementPixelWidth*2 - 4,
       'height.px': _elementPixelHeight*2 - 4,
-      'color': _type.getColor()
+      'color': _type.getColor(),
+      'text-shadow': '0 0 ' + _elementPixelWidth*2 + 'px ' + _type.getColor()
     }"
     [class.selected]="_selected"
     [ngClass]="{'layer0': z==0, 'layer1': z==1, 'layer2': z==2, 'layer3': z==3, 'layer4': z==4, 'layer5': z>=5}"
