@@ -2,13 +2,28 @@ import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/cor
 import { MjTileComponent } from './mj.tile.component';
 import { MjTile, MjTileType } from './mj.tile';
 import { AppToolbox } from './app.toolbox';
+import { MjGameControlService } from './mj.game.control.service';
 
 @Component({
   selector: 'tile-collection',
   templateUrl: 'app/mj.tile-collection.component.html',
-  styleUrls: ['app/mj.tile-collection.component.css']
+  styleUrls: ['app/mj.tile-collection.component.css'],
+  providers: [MjGameControlService]
 })
 export class MJTileCollectionComponent {
+  constructor(private _elRef: ElementRef, private mjGameControlService: MjGameControlService) {
+    // every time the window size changes, recalculate field and tile dimensions
+    window.addEventListener("resize", (()=>{this.retrieveDimensionsFromElement();}).bind(this));
+console.log(mjGameControlService.hintStatusUpdated$);
+    // listen to events
+    mjGameControlService.hintStatusUpdated$.subscribe(
+      status => {
+        alert("A");
+        this.showHints = status;
+      }
+    );
+  }
+
   // constants
   // constraints in tile scaling (tile == 2x2 elements), proportion = width / Height
   // 1 is square, 0.5 is 2:1 etc
@@ -29,8 +44,12 @@ export class MJTileCollectionComponent {
 
     this.reset();
 
+    // notify that controller is ready
     this.tilesReady = true;
     this.ready.emit();
+
+    // also trigger first state change event (from zero to initial tile layout)
+    this.gameStateChanged.emit();
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
@@ -44,6 +63,7 @@ export class MJTileCollectionComponent {
 
   public elementPixelWidth: number = 0; // pixel width of tile, with "3d" part, margins etc.
   public elementPixelHeight: number = 0; // no other margins are added to tiles
+  public showHints: boolean = false;
 
   public paddingLeft: number = 0;
   public paddingRight: number = 0;
@@ -93,11 +113,6 @@ export class MJTileCollectionComponent {
     // layer 4
     [13,7]
   ];
-
-  constructor(private _elRef:ElementRef) {
-    // every time the window size changes, recalculate field and tile dimensions
-    window.addEventListener("resize", (()=>{this.retrieveDimensionsFromElement();}).bind(this));
-  }
 
   ngOnInit():void {
     this.retrieveDimensionsFromElement();
@@ -290,11 +305,17 @@ export class MJTileCollectionComponent {
 
   private onFieldUpdate(): void {
     this.updateFreePairs();
-    this.gameStateChanged.emit();
+    if (this.tilesReady) {
+      this.gameStateChanged.emit();
+    }
   }
 
   private updateFreePairs(): void {
     this.freePairs.length = 0;
+
+    for (let tile of this.tiles) {
+      tile.hasFreePair = false;
+    }
 
     for (let i=0; i<this.tiles.length-1; i++) {
       let tile1 = this.tiles[i];
@@ -303,6 +324,8 @@ export class MJTileCollectionComponent {
           let tile2 = this.tiles[j];
           if (tile2.isFree() && tile1.matches(tile2)) {
             this.freePairs.push([tile1, tile2]);
+            tile1.hasFreePair = true;
+            tile2.hasFreePair = true;
           }
         }
       }
@@ -311,10 +334,6 @@ export class MJTileCollectionComponent {
     if (this.tiles[this.tiles.length-1].active) {
       this.activeTileCount++;
     }
-  }
-
-  public showHints(): void {
-
   }
 
   private tileRemoveLog: MjTile[] = [];
@@ -344,7 +363,9 @@ export class MJTileCollectionComponent {
 
   // Handle click on to empty area
   public onFieldClick(): void {
-    this.selectedTile.unselect();
-    this.selectedTile = null;
+    if (this.selectedTile) {
+      this.selectedTile.unselect();
+      this.selectedTile = null;
+    }
   }
 }

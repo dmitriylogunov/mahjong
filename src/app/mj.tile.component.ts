@@ -11,8 +11,6 @@ export class MjTileComponent {
   public shiftProportion: number = 0.12;
   public debug: boolean = false;
 
-  private hintEnabled = false;
-
   //   <div class="test" [innerHTML]="tileUnicode"></div>
   @Input()
   x: number;
@@ -22,6 +20,12 @@ export class MjTileComponent {
 
   @Input()
   z: number;
+
+  @Input()
+  showHints: boolean;
+
+  @Input()
+  hasFreePair: boolean;
 
   public _elementPixelWidth: number;
   public shiftX: number;

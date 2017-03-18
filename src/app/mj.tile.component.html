@@ -6,7 +6,7 @@
     'width.px': _elementPixelWidth*2,
     'height.px': _elementPixelHeight*2
    }"
-   [ngClass]="{'shake shake-rotate shake-constant': isFree && hintEnabled}"
+   [ngClass]="{'shake shake-rotate shake-constant shake-slow': hasFreePair && showHints}"
 >
  <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
   <div class="tile-shadow tile-shadow1"

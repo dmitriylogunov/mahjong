@@ -10,6 +10,8 @@ export class MjTile {
 
   public selected: boolean = false;
   public active: boolean = true;
+  public showHint: boolean = false;
+  public hasFreePair: boolean = false;
 
   public tileSizeX = 2;
   public tileSizeY = 2;
@@ -155,6 +157,14 @@ export class MjTile {
     this.unselect();
     this.active = true;
   }
+
+  public startHint(): void {
+    this.showHint = true;
+  }
+
+  public stopHint(): void {
+    this.showHint = false;
+  }
 }
 
 
@@ -209,4 +219,5 @@ export class MjTileType {
   public toString(): string {
     return this.group + this.index.toString();
   }
+
 }

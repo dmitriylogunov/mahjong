@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MjStatusComponent }  from './mj.status.component';
 import { MJTileCollectionComponent } from './mj.tile-collection.component';
+import { MjGameControlService } from './mj.game.control.service';
 
 @Component({
   selector: 'mj-game',
@@ -30,26 +31,25 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
     </style>
 
     <div class="statusfield"><status
-      (hint)=onHintRequest()
       (undo)=onUndoRequest()
       (redo)=onRedoRequest()
       (restart)=onRestartRequest()
       [hintsCount]=3
-      [undoStatus]=undoStatus
-      [redoStatus]=redoStatus
     ></status></div>
 
     <div class="gamefield noselect"><tile-collection
       [layout]=currentLayout
       (ready)=onTileCollectionReady()
       (gameStateChanged)=onGameStateChanged()
+      (click)=onClick()
       ></tile-collection></div>
 
     <options></options>
-  `
+  `,
+  providers: [MjGameControlService]
 })
 export class MjGameComponent {
-  constructor() {
+  constructor(private gameControlService: MjGameControlService) {
   }
 
   @ViewChild(MJTileCollectionComponent)
@@ -78,8 +78,8 @@ export class MjGameComponent {
       // trigger lose
     }
 
-    // this.undoStatus = true;
-    // this.redoStatus = false;
+    this.gameControlService.updateUndoStatus(true);
+    this.gameControlService.updateRedoStatus(false);
   }
 
   private getGameEndStatus(): string {
@@ -91,24 +91,29 @@ export class MjGameComponent {
     }
   }
 
-  public onHintRequest() {
-    this.tileCollection.showHints();
-  }
-
   private undoStatus = false;
   public onUndoRequest() {
-    // this.undoStatus = this.tileCollection.undo();
-    // this.redoStatus = true;
+    let undoStatus = this.tileCollection.undo();
+
+    this.gameControlService.updateUndoStatus(undoStatus);
+    this.gameControlService.updateRedoStatus(true);
   }
 
   private redoStatus = false;
   public onRedoRequest() {
-    // this.redoStatus = this.tileCollection.redo();
-    // this.undoStatus = true;
+    let redoStatus = this.tileCollection.redo();
+
+    this.gameControlService.updateRedoStatus(redoStatus);
+    this.gameControlService.updateUndoStatus(true);
   }
 
   public onRestartRequest() {
     this.tileCollection.reset();
     this.status.reset();
+  }
+
+  private onClick() {
+    // stop hint animation
+    // this.gameControlService.updateHintStatus(false);
   }
 }

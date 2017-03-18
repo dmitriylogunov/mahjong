@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ModalComponent, ModalAction } from './app.modal.component';
+import { MjGameControlService } from './mj.game.control.service';
 
 @Component({
   selector: 'status',
@@ -23,6 +24,7 @@ import { ModalComponent, ModalAction } from './app.modal.component';
     </app-modal>
   `,
   styleUrls: ['app/mj.status.component.css'],
+  providers: [MjGameControlService]
 })
 
 export class MjStatusComponent  {
@@ -34,11 +36,27 @@ export class MjStatusComponent  {
     new ModalAction("No", this.onRestartNoClick)
   ];
 
-  @Input()
-  undoStatus: boolean;
+  undoStatus: boolean = true;
+  redoStatus: boolean = true;
+  showHintStatus: boolean = true;
 
-  @Input()
-  redoStatus: boolean;
+  constructor(private mjGameControlService: MjGameControlService) {
+    this.startTime = Date.now();
+
+    mjGameControlService.undoStatusUpdated$.subscribe(
+      status => {
+        this.undoStatus = status;
+      }
+    );
+
+    mjGameControlService.redoStatusUpdated$.subscribe(
+      status => {
+        this.redoStatus = status;
+      }
+    );
+
+  }
+
 
   @Input()
   set hintsCount(hintsCount: number) {
@@ -51,26 +69,17 @@ export class MjStatusComponent  {
   hints: boolean[];
   startTime: number;
 
-  // @Input()
-  // width: number;
-  //
-  // @Input()
-  // scale: number;
-
-  @Output() hint: EventEmitter<any> = new EventEmitter();
   @Output() undo: EventEmitter<any> = new EventEmitter();
   @Output() redo: EventEmitter<any> = new EventEmitter();
   @Output() restart: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
-    this.startTime = Date.now();
-  }
-
   onHintClick(): void {
     if (this.hintsAvailable > 0) {
       this.hintsAvailable--;
-      this.hint.emit(null);
       this.hints[this.hintsAvailable] = false;
+
+      // inform other components that hint is requested
+      this.mjGameControlService.updateHintStatus(true);
     }
   }
 
