@@ -1,6 +1,6 @@
 .status {
   position: relative;
-  color: yellow;
+  color: white;
   background-color:#282E34;
   /*font-family: "GaramondNineSixDT-Roman", "Lato", Helvetica, Arial, sans-serif;*/
   font-family: museo-slab,Georgia,"Times New Roman",Times,serif;
@@ -9,13 +9,38 @@
   background-size: cover;
   font-size: 30px;
   padding: 10px;
+  text-align: center;
 }
 
-/*.undo {
-  width: 200px;
-  margin-left: auto;
-  margin-right: auto;
-}*/
+.hints {
+  float: left;
+}
+
+.timer .score {
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
+.undoredo {
+  float: right;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+
+.restart {
+  float: right;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-radius: 40%;
+  color: orange;
+  background-color: yellow;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: 3px solid orange;
+  font-size: 26px;
+  cursor: pointer;
+}
 
 .hint {
   background-color: grey;
@@ -44,37 +69,11 @@
   color: pink;
 }
 
-.undoredo {
-  float: right;
-  margin-right: 20px;
-  margin-left: 20px;
-}
-
 .undo {
   cursor: pointer;
 }
 
 .redo {
-  cursor: pointer;
-}
-
-.timer {
-  float: right;
-  margin-right: 20px;
-  margin-left: 20px;
-}
-
-.restart {
-  float: right;
-  margin-left: 20px;
-  margin-right: 20px;
-  border-radius: 40%;
-  color: orange;
-  background-color: yellow;
-  padding-left: 15px;
-  padding-right: 15px;
-  border: 3px solid orange;
-  font-size: 26px;
   cursor: pointer;
 }
 

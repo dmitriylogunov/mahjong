@@ -40,6 +40,9 @@ export class MJTileCollectionComponent implements OnDestroy {
   public tilesReady: boolean = false;
 
   @Input()
+  paused: boolean;
+
+  @Input()
   set layout(layout: string) {
     if (layout==="dragon") {
       this.init(this.dragonLayout);

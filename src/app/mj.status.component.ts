@@ -15,7 +15,8 @@ import { Subscription } from 'rxjs/Subscription'
         ><i class="fa fa-diamond" aria-hidden="true"></i></span>
       </span>
       <span class="restart" (click)=restartModal.show()>Restart</span>
-      <span class="timer">0:15</span>
+      <span class="score">{{score}}</span>
+      <span class="timer">{{timer | date:"m:ss"}}</span>
       <span class="undoredo">
         <span class="undo" (click)=onUndoClick() [class.disabled]=undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
         <span class="redo" (click)=onRedoClick() [class.disabled]=redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
@@ -47,8 +48,6 @@ export class MjStatusComponent implements OnDestroy  {
   private hintRequestSubscription: Subscription;
 
   constructor(private mjGameControlService: MjGameControlService) {
-    this.startTime = Date.now();
-
     // subscribe to events
     mjGameControlService.undoStatusUpdated$.subscribe(
       status => {
@@ -73,6 +72,8 @@ export class MjStatusComponent implements OnDestroy  {
         }
       }
     );
+
+    this.reset();
   }
 
   ngOnDestroy(): void {
@@ -82,17 +83,19 @@ export class MjStatusComponent implements OnDestroy  {
     this.hintRequestSubscription.unsubscribe();
   }
 
+  @Input()
+  paused: boolean;
 
+  hintsRemaining: number;
+  hints: boolean[] = [];
   @Input()
   set hintsCount(hintsCount: number) {
     this.hints = Array(hintsCount).fill(true);
-    this.hintsAvailable = hintsCount;
+    this.hintsRemaining = hintsCount;
   }
-  get hintsCount(): number { return this.hintsAvailable; }
 
-  hintsAvailable: number;
-  hints: boolean[];
-  startTime: number;
+  private score: number = 0;
+  private timer: Date = new Date();
 
   @Output() undo: EventEmitter<any> = new EventEmitter();
   @Output() redo: EventEmitter<any> = new EventEmitter();
@@ -101,9 +104,9 @@ export class MjStatusComponent implements OnDestroy  {
   private hintStatus: boolean = false;
   onHintClick(): void {
     if (!this.hintCurrentlyShowing) {
-      if (this.hintsAvailable > 0) {
-        this.hintsAvailable--;
-        this.hints[this.hintsAvailable] = false;
+      if (this.hintsRemaining > 0) {
+        this.hintsRemaining--;
+        this.hints[this.hintsRemaining] = false;
 
         // inform other components that hint is requested
         this.hintCurrentlyShowing = true; //seems like duplication but it is not. it overcomes possible concurrency issues.
@@ -132,6 +135,8 @@ export class MjStatusComponent implements OnDestroy  {
   }
 
   public reset() {
-    this.hintsAvailable = this.hints.length;
+    this.hintsRemaining = this.hints.length;
+    this.timer = new Date();
+    this.score = 0;
   }
 }

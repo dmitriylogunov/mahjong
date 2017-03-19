@@ -35,6 +35,7 @@ import { MjGameControlService } from './mj.game.control.service';
       (redo)=onRedoRequest()
       (restart)=onRestartRequest()
       [hintsCount]=3
+      [paused]=false
     ></status></div>
 
     <div class="gamefield noselect"><tile-collection
@@ -42,6 +43,7 @@ import { MjGameControlService } from './mj.game.control.service';
       (ready)=onTileCollectionReady()
       (gameStateChanged)=onGameStateChanged()
       (click)=onClick()
+      [paused]=false
       ></tile-collection></div>
 
     <options></options>
