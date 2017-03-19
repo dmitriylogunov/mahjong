@@ -12,13 +12,13 @@ import { Subscription } from 'rxjs/Subscription'
         <span *ngFor="let isAvailable of hints" (click)=onHintClick() class="hint"
         [class.available]="isAvailable"
         [class.active]="hintCurrentlyShowing"
-        >&nbsp;</span>
+        ><i class="fa fa-diamond" aria-hidden="true"></i></span>
       </span>
       <span class="restart" (click)=restartModal.show()>Restart</span>
       <span class="timer">0:15</span>
       <span class="undoredo">
-        <span class="undo" (click)=onUndoClick() [class.disabled]=undoStatus>Undo</span>
-        <span class="redo" (click)=onRedoClick() [class.disabled]=redoStatus>Redo</span>
+        <span class="undo" (click)=onUndoClick() [class.disabled]=undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
+        <span class="redo" (click)=onRedoClick() [class.disabled]=redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
       </span>
     </div>
 

@@ -2,7 +2,8 @@
   position: relative;
   color: yellow;
   background-color:#282E34;
-  font-family: "GaramondNineSixDT-Roman", "Lato", Helvetica, Arial, sans-serif;
+  /*font-family: "GaramondNineSixDT-Roman", "Lato", Helvetica, Arial, sans-serif;*/
+  font-family: museo-slab,Georgia,"Times New Roman",Times,serif;
   width: 100%;
   background-image: url('img/statusbar-bg.png');
   background-size: cover;
@@ -17,9 +18,11 @@
 }*/
 
 .hint {
-  color: gray;
-  background-color: gray;
-  border: 3px solid black;
+  background-color: grey;
+  color: green;
+  padding: 2px;
+  border: none;
+
   min-width: 30px;
   min-height: 30px;
   line-height: 1px;
@@ -33,12 +36,12 @@
 
 .hint.available {
   background-color: yellow;
-  border: 3px solid orange;
+  color: orange;
 }
 
 .hint.active {
-  background-color: pink;
-  border: 3px solid red;
+  background-color: red;
+  color: pink;
 }
 
 .undoredo {
