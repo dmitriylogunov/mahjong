@@ -114,6 +114,6 @@ export class MjGameComponent {
 
   private onClick() {
     // stop hint animation
-    // this.gameControlService.updateHintStatus(false);
+    this.gameControlService.updateHintStatus(false);
   }
 }

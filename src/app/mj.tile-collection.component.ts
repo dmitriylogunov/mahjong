@@ -1,27 +1,34 @@
-import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, Input, OnDestroy, Output, EventEmitter, ElementRef } from '@angular/core';
 import { MjTileComponent } from './mj.tile.component';
 import { MjTile, MjTileType } from './mj.tile';
 import { AppToolbox } from './app.toolbox';
 import { MjGameControlService } from './mj.game.control.service';
+import { Subscription }   from 'rxjs/Subscription';
 
 @Component({
   selector: 'tile-collection',
   templateUrl: 'app/mj.tile-collection.component.html',
-  styleUrls: ['app/mj.tile-collection.component.css'],
-  providers: [MjGameControlService]
+  styleUrls: ['app/mj.tile-collection.component.css']
 })
-export class MJTileCollectionComponent {
-  constructor(private _elRef: ElementRef, private mjGameControlService: MjGameControlService) {
+export class MJTileCollectionComponent implements OnDestroy {
+
+  private hintRequestSubscription: Subscription;
+  constructor(private _elRef: ElementRef, private gameControlService: MjGameControlService) {
     // every time the window size changes, recalculate field and tile dimensions
     window.addEventListener("resize", (()=>{this.retrieveDimensionsFromElement();}).bind(this));
-console.log(mjGameControlService.hintStatusUpdated$);
-    // listen to events
-    mjGameControlService.hintStatusUpdated$.subscribe(
+
+    // subscribe to the hint request event
+    // listen to changes in hint request status and show hints when requested
+    this.hintRequestSubscription = gameControlService.hintRequestUpdated$.subscribe(
       status => {
-        alert("A");
         this.showHints = status;
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    // prevent memory leak
+    this.hintRequestSubscription.unsubscribe();
   }
 
   // constants
@@ -304,6 +311,7 @@ console.log(mjGameControlService.hintStatusUpdated$);
   public activeTileCount: number = 0;
 
   private onFieldUpdate(): void {
+    this.gameControlService.updateHintStatus(false);
     this.updateFreePairs();
     if (this.tilesReady) {
       this.gameStateChanged.emit();

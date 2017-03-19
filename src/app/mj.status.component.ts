@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { ModalComponent, ModalAction } from './app.modal.component';
 import { MjGameControlService } from './mj.game.control.service';
+import { Subscription } from 'rxjs/Subscription'
 
 @Component({
   selector: 'status',
@@ -8,8 +9,10 @@ import { MjGameControlService } from './mj.game.control.service';
     <div class="status">
       <span class="hints">
         Hints:
-        <span *ngFor="let isActive of hints" (click)=onHintClick() class="hint"
-        [class.active]="isActive">&nbsp;</span>
+        <span *ngFor="let isAvailable of hints" (click)=onHintClick() class="hint"
+        [class.available]="isAvailable"
+        [class.active]="hintCurrentlyShowing"
+        >&nbsp;</span>
       </span>
       <span class="restart" (click)=restartModal.show()>Restart</span>
       <span class="timer">0:15</span>
@@ -23,11 +26,10 @@ import { MjGameControlService } from './mj.game.control.service';
         Restart game?
     </app-modal>
   `,
-  styleUrls: ['app/mj.status.component.css'],
-  providers: [MjGameControlService]
+  styleUrls: ['app/mj.status.component.css']
 })
 
-export class MjStatusComponent  {
+export class MjStatusComponent implements OnDestroy  {
   @ViewChild(ModalComponent)
   public readonly restartModal: ModalComponent;
 
@@ -38,11 +40,16 @@ export class MjStatusComponent  {
 
   undoStatus: boolean = true;
   redoStatus: boolean = true;
-  showHintStatus: boolean = true;
+  hintCurrentlyShowing: boolean = false;
+
+  private undoSubscription: Subscription;
+  private redoSubscription: Subscription;
+  private hintRequestSubscription: Subscription;
 
   constructor(private mjGameControlService: MjGameControlService) {
     this.startTime = Date.now();
 
+    // subscribe to events
     mjGameControlService.undoStatusUpdated$.subscribe(
       status => {
         this.undoStatus = status;
@@ -55,6 +62,24 @@ export class MjStatusComponent  {
       }
     );
 
+    this.hintRequestSubscription = mjGameControlService.hintRequestUpdated$.subscribe(
+      status => {
+        if (status) {
+          this.hintCurrentlyShowing = true;
+        } else {
+          window.setTimeout((()=>{
+            this.hintCurrentlyShowing = false;
+          }).bind(this), 250);
+        }
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    // prevent memory leak
+    this.undoSubscription.unsubscribe();
+    this.redoSubscription.unsubscribe();
+    this.hintRequestSubscription.unsubscribe();
   }
 
 
@@ -73,13 +98,20 @@ export class MjStatusComponent  {
   @Output() redo: EventEmitter<any> = new EventEmitter();
   @Output() restart: EventEmitter<any> = new EventEmitter();
 
+  private hintStatus: boolean = false;
   onHintClick(): void {
-    if (this.hintsAvailable > 0) {
-      this.hintsAvailable--;
-      this.hints[this.hintsAvailable] = false;
+    if (!this.hintCurrentlyShowing) {
+      if (this.hintsAvailable > 0) {
+        this.hintsAvailable--;
+        this.hints[this.hintsAvailable] = false;
 
-      // inform other components that hint is requested
-      this.mjGameControlService.updateHintStatus(true);
+        // inform other components that hint is requested
+        this.hintCurrentlyShowing = true; //seems like duplication but it is not. it overcomes possible concurrency issues.
+        this.mjGameControlService.updateHintStatus(true);
+      }
+    } else {
+      this.hintCurrentlyShowing = false;
+      this.mjGameControlService.updateHintStatus(false);
     }
   }
 
