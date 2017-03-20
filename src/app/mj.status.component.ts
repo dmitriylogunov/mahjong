@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription'
 @Component({
   selector: 'status',
   template: `
-    <div class="status">
+    <div class="status noselect">
       <span class="hints">
         Hints:
         <span *ngFor="let isAvailable of hints" (click)=onHintClick() class="hint"
@@ -14,9 +14,15 @@ import { Subscription } from 'rxjs/Subscription'
         [class.active]="hintCurrentlyShowing"
         ><i class="fa fa-diamond" aria-hidden="true"></i></span>
       </span>
-      <span class="restart" (click)=restartModal.show()>Restart</span>
       <span class="score">{{score}}</span>
       <span class="timer">{{timer | date:"m:ss"}}</span>
+
+      <span class="sound" (click)=onSoundClick()>
+        <i *ngIf="soundStatus" class="fa fa-volume-up" aria-hidden="true"></i>
+        <i *ngIf="!soundStatus" class="fa fa-volume-off" aria-hidden="true"></i>
+      </span>
+      <span class="restart" (click)=restartModal.show()>Restart</span>
+
       <span class="undoredo">
         <span class="undo" (click)=onUndoClick() [class.disabled]=undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
         <span class="redo" (click)=onRedoClick() [class.disabled]=redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
@@ -43,25 +49,23 @@ export class MjStatusComponent implements OnDestroy  {
   redoStatus: boolean = true;
   hintCurrentlyShowing: boolean = false;
 
-  private undoSubscription: Subscription;
-  private redoSubscription: Subscription;
-  private hintRequestSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
-  constructor(private mjGameControlService: MjGameControlService) {
+  constructor(private gameControlService: MjGameControlService) {
     // subscribe to events
-    mjGameControlService.undoStatusUpdated$.subscribe(
+    this.subscriptions.push(gameControlService.undoStatusUpdated$.subscribe(
       status => {
         this.undoStatus = status;
       }
-    );
+    ));
 
-    mjGameControlService.redoStatusUpdated$.subscribe(
+    this.subscriptions.push(gameControlService.redoStatusUpdated$.subscribe(
       status => {
         this.redoStatus = status;
       }
-    );
+    ));
 
-    this.hintRequestSubscription = mjGameControlService.hintRequestUpdated$.subscribe(
+    this.subscriptions.push(gameControlService.hintRequestUpdated$.subscribe(
       status => {
         if (status) {
           this.hintCurrentlyShowing = true;
@@ -71,20 +75,28 @@ export class MjStatusComponent implements OnDestroy  {
           }).bind(this), 250);
         }
       }
-    );
+    ));
+
+    this.subscriptions.push(gameControlService.soundUpdated$.subscribe(
+      status => {
+        this.soundStatus = status;
+      }
+    ));
 
     this.reset();
   }
 
   ngOnDestroy(): void {
     // prevent memory leak
-    this.undoSubscription.unsubscribe();
-    this.redoSubscription.unsubscribe();
-    this.hintRequestSubscription.unsubscribe();
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   @Input()
   paused: boolean;
+
+  private soundStatus: boolean;
 
   hintsRemaining: number;
   hints: boolean[] = [];
@@ -110,11 +122,11 @@ export class MjStatusComponent implements OnDestroy  {
 
         // inform other components that hint is requested
         this.hintCurrentlyShowing = true; //seems like duplication but it is not. it overcomes possible concurrency issues.
-        this.mjGameControlService.updateHintStatus(true);
+        this.gameControlService.updateHintStatus(true);
       }
     } else {
       this.hintCurrentlyShowing = false;
-      this.mjGameControlService.updateHintStatus(false);
+      this.gameControlService.updateHintStatus(false);
     }
   }
 
@@ -132,6 +144,11 @@ export class MjStatusComponent implements OnDestroy  {
 
   onRestartNoClick() {
     this.restartModal.hide();
+  }
+
+  onSoundClick() {
+    this.soundStatus = !this.soundStatus;
+    this.gameControlService.updateSoundStatus(this.soundStatus);
   }
 
   public reset() {

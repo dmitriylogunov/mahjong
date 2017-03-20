@@ -13,6 +13,7 @@
         'width.px': windowWidth,
         'height.px': windowHeight
       }"
+   [ngClass]="{'shake shake-horizontal shake-little shake-constant': _shakeField}"
   >
 
     <tile *ngFor="let tile of tiles"

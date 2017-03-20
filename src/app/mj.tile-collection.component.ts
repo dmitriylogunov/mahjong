@@ -12,23 +12,39 @@ import { Subscription }   from 'rxjs/Subscription';
 })
 export class MJTileCollectionComponent implements OnDestroy {
 
-  private hintRequestSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
+
   constructor(private _elRef: ElementRef, private gameControlService: MjGameControlService) {
     // every time the window size changes, recalculate field and tile dimensions
     window.addEventListener("resize", (()=>{this.retrieveDimensionsFromElement();}).bind(this));
 
-    // subscribe to the hint request event
-    // listen to changes in hint request status and show hints when requested
-    this.hintRequestSubscription = gameControlService.hintRequestUpdated$.subscribe(
+    // listen to hint requests and show them
+    this.subscriptions.push(gameControlService.hintRequestUpdated$.subscribe(
       status => {
         this.showHints = status;
       }
-    );
+    ));
+
+    // listen to sound setting
+    this.subscriptions.push(gameControlService.soundUpdated$.subscribe(
+      status => {
+        // load basic game sounds
+        if (!this.soundsReady) {
+          this.loadSounds();
+          this.soundsReady = true;
+        }
+
+        // update status
+        this.playSounds = status;
+      }
+    ));
   }
 
   ngOnDestroy(): void {
     // prevent memory leak
-    this.hintRequestSubscription.unsubscribe();
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   // constants
@@ -38,6 +54,7 @@ export class MJTileCollectionComponent implements OnDestroy {
   private elementProportionMin = 0.5;
 
   public tilesReady: boolean = false;
+  private soundsReady: boolean = false;
 
   @Input()
   paused: boolean;
@@ -62,6 +79,25 @@ export class MJTileCollectionComponent implements OnDestroy {
     this.gameStateChanged.emit();
   }
 
+  // TODO - refactor sounds into a library, own or third-party
+
+  private tileLockedSound: any;
+  private tileClearedSound: any;
+
+  //TODO - load in the background, pack sounds into single file
+  private loadSounds() {
+    this.tileLockedSound = new Audio('sounds/no.mp3');
+    this.tileLockedSound.load();
+    this.tileClearedSound = new Audio('sounds/ding.mp3');
+    this.tileClearedSound.load();
+  }
+
+  private playSound(sound: any) {
+    if (this.playSounds && this.soundsReady) {
+      sound.play();
+    }
+  }
+
   @Output() ready: EventEmitter<any> = new EventEmitter();
   @Output() gameStateChanged: EventEmitter<any> = new EventEmitter();
 
@@ -73,7 +109,8 @@ export class MJTileCollectionComponent implements OnDestroy {
 
   public elementPixelWidth: number = 0; // pixel width of tile, with "3d" part, margins etc.
   public elementPixelHeight: number = 0; // no other margins are added to tiles
-  public showHints: boolean = false;
+  private showHints: boolean = false;
+  private playSounds: boolean = false;
 
   public paddingLeft: number = 0;
   public paddingRight: number = 0;
@@ -283,13 +320,14 @@ export class MJTileCollectionComponent implements OnDestroy {
             this.selectedTile = tile;
           }
         } else {
-          // TODO play "blocked" sound and animation
+          this.playSound(this.tileLockedSound);
+          this.shakeField();
         }
       }
     }
   }
 
-  private removeTile(tile: MjTile, saveToLog: boolean = true) {
+  private removeTile(tile: MjTile, saveToLog: boolean = true):void {
     if (tile.active) {
       this.activeTileCount--;
     };
@@ -301,6 +339,15 @@ export class MJTileCollectionComponent implements OnDestroy {
       this.tileRemoveLog.push(tile);
       this.tileRemoveLogCursor++;
     }
+  }
+
+  private _shakeField:boolean = false;
+  private shakeField():void {
+    this._shakeField = true;
+
+    window.setTimeout((()=>{
+      this._shakeField = false;
+    }).bind(this), 50);
   }
 
   private returnTile(tile: MjTile) {
