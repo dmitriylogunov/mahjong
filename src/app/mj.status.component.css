@@ -1,19 +1,39 @@
+/* small screen */
+@media only screen and (max-width : 1024px) {
+  .large-screen-only {
+    display: none;
+  }
+}
+
+/* large screen */
+@media only screen and (min-width : 1025px) {
+  .small-screen-only {
+    display: none;
+  }
+}
+
 .status {
   position: relative;
-  color: white;
-  background-color:#282E34;
+  color: #FEF2C7;
+  background-color:#5C5749;
   /*font-family: "GaramondNineSixDT-Roman", "Lato", Helvetica, Arial, sans-serif;*/
   font-family: museo-slab,Georgia,"Times New Roman",Times,serif;
   width: 100%;
-  background-image: url('img/statusbar-bg.png');
-  background-size: cover;
+  /*background-image: url('img/statusbar-bg.png');
+  background-size: cover;*/
   font-size: 30px;
   line-height: 50px;
   text-align: center;
 }
 
+span.highlight {
+  color: #FFE1A2;
+  cursor: pointer;
+}
+
 .hints {
   float: left;
+  margin-left: 20px;
 }
 
 .timer .score {
@@ -21,71 +41,58 @@
   margin-left: 30px;
 }
 
-.undoredo {
+.restart {
   float: right;
   margin-right: 20px;
-  margin-left: 20px;
+}
+
+.pause {
+  float: right;
+  margin-right: 20px;
 }
 
 .sound {
   float: right;
-  margin-left: 20px;
   margin-right: 20px;
-  width: 20px;
-  text-align: left;
-  cursor: pointer;
 }
 
-.restart {
-  line-height: 30px;
-  margin-top: 7px;
+.undoredo {
   float: right;
-  margin-left: 20px;
-  margin-right: 20px;
-  border-radius: 40%;
-  border: 3px solid orange;
-  color: orange;
-  background-color: yellow;
-  padding-left: 15px;
-  padding-right: 15px;
-  cursor: pointer;
-}
-
-.hint {
-  background-color: grey;
-  color: green;
-  padding: 2px;
-  border: none;
-
-  min-width: 30px;
-  min-height: 30px;
-  margin-top: 7px;
-  line-height: 1px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-left: 5px;
-  margin-right: 5px;
-  vertical-align: top;
-  cursor: pointer;
-}
-
-.hint.available {
-  background-color: yellow;
-  color: orange;
-}
-
-.hint.active {
-  background-color: red;
-  color: pink;
+  margin-right: 40px;
 }
 
 .undo {
   cursor: pointer;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .redo {
   cursor: pointer;
+  margin-left: 10px;
+  margin-right: 10px;
 }
+
+.hint {
+  color: red;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.hint.available {
+  color: lightgreen;
+}
+
+.hint.active {
+  color: orange;
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+
 
 span.disabled {
   color: gray;

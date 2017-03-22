@@ -6,8 +6,8 @@
   cursor: pointer;
 }
 
-.tile.free:hover {
-  transform: scale(1.15,1.15);
+.tile-outer.free:hover, .tile-outer.selected {
+  transform: scale(1.1,1.1);
   z-index: 500; /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
   opacity: .99;
 }
@@ -15,7 +15,7 @@
 .tile-shadow {
   position: absolute;
   border: 1px solid gray;
-  background-color: lightgray;
+  background-color: gray;
   border-radius: 10%;
 }
 
@@ -65,29 +65,29 @@
 }
 
 .tile.layer0  {
-  background-color: lightgreen;
+  background-color: #FEF2C7;
 }
 
 .tile.layer1  {
-  background-color: lightblue;
+  background-color: #FEAA6E;
 }
 
 .tile.layer2 {
-  background-color: lightpink;
+  background-color: #FEF2C7;
 }
 
 .tile.layer3  {
-  background-color: lightyellow;
+  background-color: #FEAA6E;
 }
 
 .tile.layer4 {
-  background-color: lightgreen;
+  background-color: #FEF2C7;
 }
 
 .tile.layer5 {
-  background-color: lightgreen;
+  background-color: #FEAA6E;
 }
 
 .tile.selected {
-  background-color: lightgray;
+  background-color: #BEDDBF;
 }

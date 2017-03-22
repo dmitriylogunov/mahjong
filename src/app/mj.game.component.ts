@@ -18,7 +18,7 @@ import { MjAudioService } from './mj.audio.service';
         width: 100vw;
         height: 80vh;
         padding: 10px;
-        background-color: lightyellow;
+        background-color: #BEDDBF;
       }
     </style>
 
@@ -27,7 +27,6 @@ import { MjAudioService } from './mj.audio.service';
       (redo)=onRedoRequest()
       (restart)=onRestartRequest()
       [hintsCount]=3
-      [paused]=false
       [score]=score
     ></status></div>
 

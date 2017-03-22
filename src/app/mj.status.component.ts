@@ -8,26 +8,53 @@ import { MjAudioService } from './mj.audio.service';
   selector: 'status',
   template: `
     <div class="status noselect">
-      <span class="hints">
+
+      <!-- left side block -->
+      <span class="hints large-screen-only">
         Hints:
-        <span *ngFor="let isAvailable of hints" (click)=onHintClick() class="hint"
+        <span *ngFor="let isAvailable of hints; let i=index;" (click)=onHintClick() class="hint"
         [class.available]="isAvailable"
-        [class.active]="hintCurrentlyShowing"
+        [class.active]="(i==hintsRemaining) && hintCurrentlyShowing"
         ><i class="fa fa-diamond" aria-hidden="true"></i></span>
       </span>
-      <span class="score">{{score}}</span>
-      <span class="timer">{{timer | date:"m:ss"}}</span>
+      <span class="hints small-screen-only">
+        <span (click)=onHintClick() class="hint" [class.active]="hintCurrentlyShowing" [class.available]="hintsRemaining>0">
+          <i class="fa fa-diamond" aria-hidden="true"></i> x{{hintsRemaining}}
+        </span>
+      </span>
 
-      <span class="sound" (click)=onSoundClick()>
+      <!-- middle block -->
+      <span class="score">Score: <span class="highlight">{{score}}</span></span>
+
+      <span class="timer large-screen-only">
+        Bonus <i class="fa fa-clock-o" aria-hidden="true"></i>: <span class="highlight">{{timer | date:"m:ss"}}</span> Play time <span class="highlight">{{timer | date:"m:ss"}}</span>
+      </span>
+      <span class="timer small-screen-only">
+        <i class="fa fa-hourglass-2" aria-hidden="true"></i>: <span class="highlight">{{timer | date:"m:ss"}}</span>
+        <i class="fa fa-clock-o" aria-hidden="true"></i>: <span class="highlight">{{timer | date:"m:ss"}}</span>
+      </span>
+
+      <!-- right side block -->
+      <span class="restart highlight" (click)=restartModal.show()><i class="fa fa-close" aria-hidden="true"></i></span>
+      <span class="pause highlight" (click)=onPauseClick()>
+        <i *ngIf="paused" class="fa fa-play-circle-o" aria-hidden="true"></i>
+        <i *ngIf="!paused" class="fa fa-pause-circle-o" aria-hidden="true"></i>
+      </span>
+
+      <span class="sound highlight"><i class="fa fa-music" aria-hidden="true"></i></span>
+
+      <span class="sound highlight" (click)=onSoundClick()>
         <i *ngIf="soundStatus" class="fa fa-volume-up" aria-hidden="true"></i>
         <i *ngIf="!soundStatus" class="fa fa-volume-off" aria-hidden="true"></i>
       </span>
-      <span class="restart" (click)=restartModal.show()>Restart</span>
 
-      <span class="undoredo">
+      <span class="undoredo highlight">
         <span class="undo" (click)=onUndoClick() [class.disabled]=undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
         <span class="redo" (click)=onRedoClick() [class.disabled]=redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
       </span>
+    </div>
+
+    <div class="status noselect small-screen-only">
     </div>
 
     <app-modal [actions]=restartGameModalActions>
@@ -49,6 +76,13 @@ export class MjStatusComponent implements OnDestroy  {
   undoStatus: boolean = true;
   redoStatus: boolean = true;
   hintCurrentlyShowing: boolean = false;
+  paused: boolean = false;
+
+  public reset() {
+    this.hintsRemaining = this.hints.length;
+    this.timer = new Date();
+    this.paused = false;
+  }
 
   private subscriptions: Subscription[] = [];
 
@@ -56,7 +90,6 @@ export class MjStatusComponent implements OnDestroy  {
     // subscribe to events
     this.subscriptions.push(gameControlService.undoStatusUpdated$.subscribe(
       status => {
-        console.log("test",status);
         this.undoStatus = status;
       }
     ));
@@ -94,9 +127,6 @@ export class MjStatusComponent implements OnDestroy  {
       subscription.unsubscribe();
     }
   }
-
-  @Input()
-  paused: boolean;
 
   private soundStatus: boolean;
 
@@ -164,8 +194,8 @@ export class MjStatusComponent implements OnDestroy  {
     this.gameControlService.updateSoundStatus(this.soundStatus);
   }
 
-  public reset() {
-    this.hintsRemaining = this.hints.length;
-    this.timer = new Date();
+  onPauseClick() {
+    this.paused = !this.paused;
+    this.gameControlService.pause(this.paused);
   }
 }
