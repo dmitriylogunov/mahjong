@@ -1,8 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { MjStatusComponent }  from './mj.status.component';
 import { MJTileCollectionComponent } from './mj.tile-collection.component';
 import { MjGameControlService } from './mj.game.control.service';
 import { MjAudioService } from './mj.audio.service';
+import { Subscription }   from 'rxjs/Subscription';
 
 @Component({
   selector: 'mj-game',
@@ -43,7 +44,13 @@ import { MjAudioService } from './mj.audio.service';
   providers: [MjGameControlService, MjAudioService]
 })
 export class MjGameComponent {
+  private soundsReadySubscription: Subscription;
   constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
+  }
+
+  ngOnDestroy(): void {
+    // prevent memory leak
+    this.soundsReadySubscription.unsubscribe();
   }
 
   @ViewChild(MJTileCollectionComponent)
@@ -61,6 +68,10 @@ export class MjGameComponent {
     // load layout
     console.log("loading started");     // TODO show "loading"
     this.currentLayout = "dragon";
+  }
+
+  onSoundsReady(): void {
+
   }
 
   onTileCollectionReady():void {

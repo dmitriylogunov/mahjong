@@ -13,8 +13,7 @@ import { MjAudioService } from './mj.audio.service';
       <span class="hints large-screen-only">
         Hints:
         <span *ngFor="let isAvailable of hints; let i=index;" (click)=onHintClick() class="hint"
-        [class.available]="isAvailable"
-        [class.active]="(i==hintsRemaining) && hintCurrentlyShowing"
+        [ngClass]="{'active blinking': (i==hintsRemaining) && hintCurrentlyShowing, 'available': isAvailable}"
         ><i class="fa fa-diamond" aria-hidden="true"></i></span>
       </span>
       <span class="hints small-screen-only">
@@ -64,7 +63,7 @@ import { MjAudioService } from './mj.audio.service';
   styleUrls: ['app/mj.status.component.css']
 })
 
-export class MjStatusComponent implements OnDestroy  {
+export class MjStatusComponent implements OnDestroy {
   @ViewChild(ModalComponent)
   public readonly restartModal: ModalComponent;
 
@@ -103,8 +102,10 @@ export class MjStatusComponent implements OnDestroy  {
     this.subscriptions.push(gameControlService.hintRequestUpdated$.subscribe(
       status => {
         if (status) {
+          this.audioService.play("boom", 100);
           this.hintCurrentlyShowing = true;
         } else {
+          this.audioService.play("blip", 100);
           window.setTimeout((()=>{
             this.hintCurrentlyShowing = false;
           }).bind(this), 250);
@@ -135,7 +136,7 @@ export class MjStatusComponent implements OnDestroy  {
   @Input()
   set hintsCount(hintsCount: number) {
     this.hints = Array(hintsCount).fill(true);
-    this.hintsRemaining = hintsCount;
+    this.hintsRemaining = hintsCount -1; // -1 for debug
   }
 
   @Input()
@@ -150,8 +151,7 @@ export class MjStatusComponent implements OnDestroy  {
   onHintClick(): void {
     if (!this.hintCurrentlyShowing) {
       if (this.hintsRemaining > 0) {
-        this.audioService.play("boom", 100);
-        this.hintsRemaining--;
+        // this.hintsRemaining--;
         this.hints[this.hintsRemaining] = false;
 
         // inform other components that hint is requested
@@ -159,7 +159,6 @@ export class MjStatusComponent implements OnDestroy  {
         this.gameControlService.updateHintStatus(true);
       }
     } else {
-      this.audioService.play("blip", 100);
       this.hintCurrentlyShowing = false;
       this.gameControlService.updateHintStatus(false);
     }
