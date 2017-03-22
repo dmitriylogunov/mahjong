@@ -68,16 +68,19 @@ export class MjGameComponent {
     console.log("loading finished"); // TODO hide "loading"
   }
 
-  onTileNumberChange($event: any, diff: number): void {
+  onTileNumberChange(diff: number): void {
     let status = this.getGameEndStatus();
     if (status==="win") {
-      // trigger win
+      this.audioService.play("win", 100);
     } else if (status==="lose") {
-      // trigger lose
+      this.audioService.play("lose", 100);
+    } else {
+      if (diff<0) {
+        this.audioService.play("coin", 100);
+      } else if (diff>0) {
+        this.audioService.play("undo", 100);
+      }
     }
-
-    this.gameControlService.updateUndoStatus(true);
-    this.gameControlService.updateRedoStatus(false);
   }
 
   private getGameEndStatus(): string {
@@ -89,20 +92,12 @@ export class MjGameComponent {
     }
   }
 
-  private undoStatus = false;
   public onUndoRequest() {
-    let undoStatus = this.tileCollection.undo();
-
-    this.gameControlService.updateUndoStatus(undoStatus);
-    this.gameControlService.updateRedoStatus(true);
+    this.tileCollection.undo();
   }
 
-  private redoStatus = false;
   public onRedoRequest() {
-    let redoStatus = this.tileCollection.redo();
-
-    this.gameControlService.updateRedoStatus(redoStatus);
-    this.gameControlService.updateUndoStatus(true);
+    this.tileCollection.redo();
   }
 
   public onRestartRequest() {

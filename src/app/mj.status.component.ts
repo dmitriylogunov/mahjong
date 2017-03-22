@@ -56,6 +56,7 @@ export class MjStatusComponent implements OnDestroy  {
     // subscribe to events
     this.subscriptions.push(gameControlService.undoStatusUpdated$.subscribe(
       status => {
+        console.log("test",status);
         this.undoStatus = status;
       }
     ));
@@ -119,6 +120,7 @@ export class MjStatusComponent implements OnDestroy  {
   onHintClick(): void {
     if (!this.hintCurrentlyShowing) {
       if (this.hintsRemaining > 0) {
+        this.audioService.play("boom", 100);
         this.hintsRemaining--;
         this.hints[this.hintsRemaining] = false;
 
@@ -127,17 +129,26 @@ export class MjStatusComponent implements OnDestroy  {
         this.gameControlService.updateHintStatus(true);
       }
     } else {
+      this.audioService.play("blip", 100);
       this.hintCurrentlyShowing = false;
       this.gameControlService.updateHintStatus(false);
     }
   }
 
   onUndoClick() {
-    this.undo.emit(null);
+    if (this.undoStatus) {
+      this.undo.emit(null);
+    } else {
+      this.audioService.play("wrong", 100);
+    }
   }
 
   onRedoClick() {
-    this.redo.emit(null);
+    if (this.redoStatus) {
+      this.redo.emit(null);
+    } else {
+      this.audioService.play("wrong", 100);
+    }
   }
 
   onRestartClick() {

@@ -10,9 +10,17 @@ declare var createjs: any;
 @Injectable()
 export class MjAudioService {
   private soundConfiguration: SoundConfiguration = {
-    "coin": ["sounds/coin1.wav", "sounds/coin2.wav"],
+    "coin": ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
     "blip": ["sounds/blip.wav"],
-    "wrong": ["sounds/wrong.wav"]
+    "undo": ["sounds/back.wav"],
+    "bonus": ["sounds/bonus.wav"],
+    "boom": ["sounds/boom.wav"],
+    "wrong": ["sounds/wrong.wav"],
+    "lose": ["sounds/lose.wav"],
+    "win": ["sounds/win.wav"],
+    "click": ["sounds/click1.wav"], //, "sounds/click2.wav"
+    "unclick": ["sounds/click-reverse.wav"],
+    "question": ["sounds/question.wav"]
   };
 
   constructor() {
@@ -36,12 +44,18 @@ export class MjAudioService {
     }
   }
 
-  public play(soundGroupId: string): void {
+  public play(soundGroupId: string, delay: number = null, repeat: boolean = false): void {
     let count = this.soundConfiguration[soundGroupId].length;
     let soundIndex = AppToolbox.random(count);
 
     try {
-      createjs.Sound.play(soundGroupId + soundIndex.toString());
+      if (delay) {
+        window.setTimeout((()=>{
+          createjs.Sound.play(soundGroupId + soundIndex.toString());
+        }).bind(this), delay);
+      } else {
+        createjs.Sound.play(soundGroupId + soundIndex.toString());
+      }
     } catch (err) {
       // ignore errors
     }

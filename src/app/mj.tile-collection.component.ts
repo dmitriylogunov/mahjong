@@ -263,6 +263,8 @@ export class MJTileCollectionComponent implements OnDestroy {
     // reset game state data
     this.activeTileCount = this.tiles.length;
     this.tileRemoveLog.length = 0;
+    this.gameControlService.updateUndoStatus(false);
+    this.gameControlService.updateRedoStatus(false);
 
     // notify listeners of changes
     this.onFieldUpdate(0);
@@ -273,6 +275,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     // checking .active because still can get clicks on the tile while "hiding" animation is playing
     if (tile.active) {
       if (tile.selected) {
+        this.audioService.play("unclick", 100);
         tile.unselect();
         this.selectedTile = null;
       } else {
@@ -290,15 +293,15 @@ export class MJTileCollectionComponent implements OnDestroy {
             } else {
               this.selectedTile.unselect();
               this.selectedTile = tile;
+              this.audioService.play("click", 100);
             }
           } else {
             this.selectedTile = tile;
+            this.audioService.play("click", 100);
           }
         } else {
           this.shakeField();
-          window.setTimeout((()=>{
-            this.audioService.play("wrong");
-          }).bind(this), 100);
+          this.audioService.play("wrong", 100);
         }
       }
     }
@@ -376,25 +379,35 @@ export class MJTileCollectionComponent implements OnDestroy {
 
   public undo(): boolean {
     if (this.tileRemoveLogCursor<=0) {
+      this.gameControlService.updateUndoStatus(false);
       return false;
     } else {
       this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-1]);
       this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-2]);
-      this.tileNumberChange.emit(-2);
+      this.tileNumberChange.emit(2);
       this.tileRemoveLogCursor-=2;
-      return (this.tileRemoveLogCursor>0);
+
+      let moreUndoAvailable = this.tileRemoveLogCursor>0;
+      this.gameControlService.updateUndoStatus(moreUndoAvailable);
+      this.gameControlService.updateRedoStatus(true);
+      return (moreUndoAvailable);
     }
   }
 
   public redo(): boolean {
     if (this.tileRemoveLogCursor>=this.tileRemoveLog.length) {
+      this.gameControlService.updateRedoStatus(false);
       return false;
     } else {
       this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor], false);
       this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor+1], false);
       this.tileRemoveLogCursor+=2;
-      this.tileNumberChange.emit(2);
-      return (this.tileRemoveLogCursor<this.tileRemoveLog.length);
+      this.tileNumberChange.emit(-2);
+
+      let moreRedoAvailable = this.tileRemoveLogCursor<this.tileRemoveLog.length;
+      this.gameControlService.updateRedoStatus(moreRedoAvailable);
+      this.gameControlService.updateUndoStatus(true);
+      return (moreRedoAvailable);
     }
   }
 
