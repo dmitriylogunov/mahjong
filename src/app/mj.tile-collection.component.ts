@@ -4,6 +4,7 @@ import { MjTile, MjTileType } from './mj.tile';
 import { AppToolbox } from './app.toolbox';
 import { MjGameControlService } from './mj.game.control.service';
 import { Subscription }   from 'rxjs/Subscription';
+import { MjAudioService } from './mj.audio.service';
 
 @Component({
   selector: 'tile-collection',
@@ -14,7 +15,7 @@ export class MJTileCollectionComponent implements OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private _elRef: ElementRef, private gameControlService: MjGameControlService) {
+  constructor(private _elRef: ElementRef, private gameControlService: MjGameControlService, private audioService: MjAudioService) {
     // every time the window size changes, recalculate field and tile dimensions
     window.addEventListener("resize", (()=>{this.retrieveDimensionsFromElement();}).bind(this));
 
@@ -28,12 +29,6 @@ export class MJTileCollectionComponent implements OnDestroy {
     // listen to sound setting
     this.subscriptions.push(gameControlService.soundUpdated$.subscribe(
       status => {
-        // load basic game sounds
-        if (!this.soundsReady) {
-          this.loadSounds();
-          this.soundsReady = true;
-        }
-
         // update status
         this.playSounds = status;
       }
@@ -54,7 +49,6 @@ export class MJTileCollectionComponent implements OnDestroy {
   private elementProportionMin = 0.5;
 
   public tilesReady: boolean = false;
-  private soundsReady: boolean = false;
 
   @Input()
   paused: boolean;
@@ -76,30 +70,11 @@ export class MJTileCollectionComponent implements OnDestroy {
     this.ready.emit();
 
     // also trigger first state change event (from zero to initial tile layout)
-    this.gameStateChanged.emit();
-  }
-
-  // TODO - refactor sounds into a library, own or third-party
-
-  private tileLockedSound: any;
-  private tileClearedSound: any;
-
-  //TODO - load in the background, pack sounds into single file
-  private loadSounds() {
-    this.tileLockedSound = new Audio('sounds/no.mp3');
-    this.tileLockedSound.load();
-    this.tileClearedSound = new Audio('sounds/ding.mp3');
-    this.tileClearedSound.load();
-  }
-
-  private playSound(sound: any) {
-    if (this.playSounds && this.soundsReady) {
-      sound.play();
-    }
+    this.tileNumberChange.emit(0);
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
-  @Output() gameStateChanged: EventEmitter<any> = new EventEmitter();
+  @Output() tileNumberChange: EventEmitter<number> = new EventEmitter();
 
   public tiles: MjTile[] = [];
   private selectedTile: MjTile = null;
@@ -290,7 +265,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     this.tileRemoveLog.length = 0;
 
     // notify listeners of changes
-    this.onFieldUpdate();
+    this.onFieldUpdate(0);
   }
 
   onTileSelect(tile: MjTile) : void {
@@ -311,7 +286,7 @@ export class MJTileCollectionComponent implements OnDestroy {
               this.removeTile(this.selectedTile);
               this.selectedTile = null;
 
-              this.onFieldUpdate();
+              this.onFieldUpdate(-2);
             } else {
               this.selectedTile.unselect();
               this.selectedTile = tile;
@@ -320,8 +295,10 @@ export class MJTileCollectionComponent implements OnDestroy {
             this.selectedTile = tile;
           }
         } else {
-          this.playSound(this.tileLockedSound);
           this.shakeField();
+          window.setTimeout((()=>{
+            this.audioService.play("wrong");
+          }).bind(this), 100);
         }
       }
     }
@@ -360,11 +337,11 @@ export class MJTileCollectionComponent implements OnDestroy {
   public freePairs: [MjTile, MjTile][] = [];
   public activeTileCount: number = 0;
 
-  private onFieldUpdate(): void {
+  private onFieldUpdate(diff: number): void {
     this.gameControlService.updateHintStatus(false);
     this.updateFreePairs();
     if (this.tilesReady) {
-      this.gameStateChanged.emit();
+      this.tileNumberChange.emit(diff);
     }
   }
 
@@ -403,6 +380,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     } else {
       this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-1]);
       this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-2]);
+      this.tileNumberChange.emit(-2);
       this.tileRemoveLogCursor-=2;
       return (this.tileRemoveLogCursor>0);
     }
@@ -415,6 +393,7 @@ export class MJTileCollectionComponent implements OnDestroy {
       this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor], false);
       this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor+1], false);
       this.tileRemoveLogCursor+=2;
+      this.tileNumberChange.emit(2);
       return (this.tileRemoveLogCursor<this.tileRemoveLog.length);
     }
   }

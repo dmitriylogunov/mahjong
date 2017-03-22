@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@a
 import { ModalComponent, ModalAction } from './app.modal.component';
 import { MjGameControlService } from './mj.game.control.service';
 import { Subscription } from 'rxjs/Subscription'
+import { MjAudioService } from './mj.audio.service';
 
 @Component({
   selector: 'status',
@@ -51,7 +52,7 @@ export class MjStatusComponent implements OnDestroy  {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private gameControlService: MjGameControlService) {
+  constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
     // subscribe to events
     this.subscriptions.push(gameControlService.undoStatusUpdated$.subscribe(
       status => {
@@ -106,7 +107,8 @@ export class MjStatusComponent implements OnDestroy  {
     this.hintsRemaining = hintsCount;
   }
 
-  private score: number = 0;
+  @Input()
+  private score: number;
   private timer: Date = new Date();
 
   @Output() undo: EventEmitter<any> = new EventEmitter();
@@ -154,6 +156,5 @@ export class MjStatusComponent implements OnDestroy  {
   public reset() {
     this.hintsRemaining = this.hints.length;
     this.timer = new Date();
-    this.score = 0;
   }
 }

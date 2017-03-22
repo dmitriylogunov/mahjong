@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MjStatusComponent }  from './mj.status.component';
 import { MJTileCollectionComponent } from './mj.tile-collection.component';
 import { MjGameControlService } from './mj.game.control.service';
+import { MjAudioService } from './mj.audio.service';
 
 @Component({
   selector: 'mj-game',
@@ -27,22 +28,23 @@ import { MjGameControlService } from './mj.game.control.service';
       (restart)=onRestartRequest()
       [hintsCount]=3
       [paused]=false
+      [score]=score
     ></status></div>
 
     <div class="gamefield noselect"><tile-collection
       [layout]=currentLayout
       (ready)=onTileCollectionReady()
-      (gameStateChanged)=onGameStateChanged()
+      (tileNumberChange)=onTileNumberChange($event)
       (click)=onClick()
       [paused]=false
       ></tile-collection></div>
 
     <options></options>
   `,
-  providers: [MjGameControlService]
+  providers: [MjGameControlService, MjAudioService]
 })
 export class MjGameComponent {
-  constructor(private gameControlService: MjGameControlService) {
+  constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
   }
 
   @ViewChild(MJTileCollectionComponent)
@@ -54,6 +56,7 @@ export class MjGameComponent {
   public currentLayout: string = null;
 
   ngOnInit(): void {
+    this.audioService.load();
     this.gameControlService.updateSoundStatus(true);
 
     // load layout
@@ -65,7 +68,7 @@ export class MjGameComponent {
     console.log("loading finished"); // TODO hide "loading"
   }
 
-  onGameStateChanged(): void {
+  onTileNumberChange($event: any, diff: number): void {
     let status = this.getGameEndStatus();
     if (status==="win") {
       // trigger win
@@ -111,4 +114,6 @@ export class MjGameComponent {
     // stop hint animation
     this.gameControlService.updateHintStatus(false);
   }
+
+  private score: number = 0;
 }

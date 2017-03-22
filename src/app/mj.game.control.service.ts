@@ -8,12 +8,14 @@ export class MjGameControlService {
   private redoStatus = new Subject<boolean>();
   private hintRequestStatus = new Subject<boolean>();
   private soundStatus = new Subject<boolean>();
+  private score = new Subject<number>();
 
   // Observable streams
   undoStatusUpdated$ = this.undoStatus.asObservable();
   redoStatusUpdated$ = this.redoStatus.asObservable();
   hintRequestUpdated$ = this.hintRequestStatus.asObservable();
   soundUpdated$ = this.soundStatus.asObservable();
+  scoreUpdated$ = this.score.asObservable();
 
   // Service commands
   updateUndoStatus(status: boolean) {
@@ -30,5 +32,9 @@ export class MjGameControlService {
 
   updateSoundStatus(status: boolean) {
     this.soundStatus.next(status);
+  }
+
+  addScore(diff: number) {
+    this.score.next(diff);
   }
 }
