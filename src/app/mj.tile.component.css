@@ -69,15 +69,15 @@
 }
 
 .tile.layer1  {
-  background-color: #FEAA6E;
+  background-color: #BEDDBF;
 }
 
 .tile.layer2 {
-  background-color: #FEF2C7;
+  background-color: #FFE1A2;
 }
 
 .tile.layer3  {
-  background-color: #FEAA6E;
+  background-color: #FEF2C7;
 }
 
 .tile.layer4 {
@@ -89,5 +89,5 @@
 }
 
 .tile.selected {
-  background-color: #BEDDBF;
+  background-color: #FEAA6E;
 }

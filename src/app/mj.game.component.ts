@@ -97,7 +97,6 @@ export class MjGameComponent {
   }
 
   onTileCleared(): void {
-    alert ("A");
     this.gameControlService.updateUndoStatus(true);
     this.gameControlService.updateRedoStatus(false);
 

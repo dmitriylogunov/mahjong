@@ -54,6 +54,8 @@ span.highlight {
 .sound {
   float: right;
   margin-right: 20px;
+  width: 28px;
+  text-align: left;
 }
 
 .undoredo {
@@ -88,8 +90,6 @@ span.highlight {
 .hint.active {
   color: orange;
 }
-
-
 
 span.disabled {
   color: gray;
