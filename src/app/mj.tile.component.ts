@@ -8,7 +8,7 @@ import { MjTile, MjTileType } from './mj.tile';
 })
 export class MjTileComponent {
   // constants
-  public shiftProportion: number = 0.24; // how much shift tile face from tile bottom to create pseudo 3d effect
+  public shiftProportion: number = 0.12; // how much shift tile face from tile bottom to create pseudo 3d effect
   public debug: boolean = false;
 
   //   <div class="test" [innerHTML]="tileUnicode"></div>

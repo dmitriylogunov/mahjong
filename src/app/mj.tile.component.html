@@ -18,16 +18,16 @@
       }">&nbsp;</div>
   <div class="tile-shadow tile-shadow2"
     [ngStyle]="{
-      'top.px': -shiftX/2,
-      'left.px': shiftY/2,
+      'top.px': -shiftX,
+      'left.px': shiftY,
       'width.px': _elementPixelWidth*2 - 2,
       'height.px': _elementPixelHeight*2 - 2
     }">&nbsp;</div>
 
   <div class="tile" *ngIf="_type"
     [ngStyle]="{
-      'top.px': -shiftX,
-      'left.px': shiftY,
+      'top.px': -shiftX*2,
+      'left.px': shiftY*2,
       'width.px': _elementPixelWidth*2 - 4,
       'height.px': _elementPixelHeight*2 - 4,
       'color': (_selected?'#5C5749':_type.getColor()),
