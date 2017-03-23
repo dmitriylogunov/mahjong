@@ -47,9 +47,9 @@ import { MjAudioService } from './mj.audio.service';
         <i *ngIf="!soundStatus" class="fa fa-volume-off" aria-hidden="true"></i>
       </span>
 
-      <span class="undoredo highlight">
-        <span class="undo" (click)=onUndoClick() [class.disabled]=undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
-        <span class="redo" (click)=onRedoClick() [class.disabled]=redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
+      <span class="undoredo">
+        <span class="undo" (click)=onUndoClick() [class.disabled]=!undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
+        <span class="redo" (click)=onRedoClick() [class.disabled]=!redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
       </span>
     </div>
 
@@ -72,15 +72,18 @@ export class MjStatusComponent implements OnDestroy {
     new ModalAction("No", this.onRestartNoClick)
   ];
 
-  undoStatus: boolean = true;
-  redoStatus: boolean = true;
+  undoStatus: boolean = false;
+  redoStatus: boolean = false;
   hintCurrentlyShowing: boolean = false;
   paused: boolean = false;
 
   public reset() {
     this.hintsRemaining = this.hints.length;
+    this.gameControlService.updateHintStatus(false);
     this.timer = new Date();
     this.paused = false;
+    this.undoStatus = false;
+    this.redoStatus = false;
   }
 
   private subscriptions: Subscription[] = [];
@@ -90,13 +93,14 @@ export class MjStatusComponent implements OnDestroy {
     this.subscriptions.push(gameControlService.undoStatusUpdated$.subscribe(
       status => {
         this.undoStatus = status;
-        console.log(status);
+        console.log("undostatus",status);
       }
     ));
 
     this.subscriptions.push(gameControlService.redoStatusUpdated$.subscribe(
       status => {
         this.redoStatus = status;
+        console.log("redostatus",status);
       }
     ));
 

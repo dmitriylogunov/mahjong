@@ -5,6 +5,7 @@ import { AppToolbox } from './app.toolbox';
 import { MjGameControlService } from './mj.game.control.service';
 import { Subscription }   from 'rxjs/Subscription';
 import { MjAudioService } from './mj.audio.service';
+import { MjUndoQueue } from './mj.undo.queue'
 
 @Component({
   selector: 'tile-collection',
@@ -14,6 +15,7 @@ import { MjAudioService } from './mj.audio.service';
 export class MJTileCollectionComponent implements OnDestroy {
 
   private subscriptions: Subscription[] = [];
+  private undoQueue: MjUndoQueue;
 
   constructor(private _elRef: ElementRef, private gameControlService: MjGameControlService, private audioService: MjAudioService) {
     // every time the window size changes, recalculate field and tile dimensions
@@ -33,6 +35,8 @@ export class MJTileCollectionComponent implements OnDestroy {
         this.playSounds = status;
       }
     ));
+
+    this.undoQueue = new MjUndoQueue();
   }
 
   ngOnDestroy(): void {
@@ -62,19 +66,15 @@ export class MJTileCollectionComponent implements OnDestroy {
 
   private init(layout: [number, number][]) {
     this.initTiles(layout);
-
     this.reset();
 
     // notify that controller is ready
     this.tilesReady = true;
     this.ready.emit();
-
-    // also trigger first state change event (from zero to initial tile layout)
-    this.tileCollectionChanged.emit(0);
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
-  @Output() tileCollectionChanged: EventEmitter<any> = new EventEmitter();
+  @Output() tileCleared: EventEmitter<any> = new EventEmitter();
 
   public tiles: MjTile[] = [];
   private selectedTile: MjTile = null;
@@ -259,15 +259,10 @@ export class MJTileCollectionComponent implements OnDestroy {
       tile.reset();
     }
     this.shuffleTypesFisherYates();
+    this.onFieldUpdate();
 
-    // reset game state data
     this.activeTileCount = this.tiles.length;
-    this.tileRemoveLog.length = 0;
-    this.gameControlService.updateUndoStatus(false);
-    this.gameControlService.updateRedoStatus(false);
-
-    // notify listeners of changes
-    this.onFieldUpdate(0);
+    this.undoQueue.reset();
   }
 
   onTileSelect(tile: MjTile) : void {
@@ -285,10 +280,15 @@ export class MJTileCollectionComponent implements OnDestroy {
           if (this.selectedTile) {
             // console.log("Currently selected: ", this.selectedTile, this.selectedTile.type.toString());
             if (tile.matches(this.selectedTile)) {
-              this.removeTile(tile);
-              this.removeTile(this.selectedTile);
+              this.undoQueue.push([tile, this.selectedTile]);
+              tile.remove();
+              this.selectedTile.remove();
+              this.activeTileCount-=2;
+
               this.selectedTile = null;
+
               this.onFieldUpdate();
+              this.tileCleared.emit();
             } else {
               this.selectedTile.unselect();
               this.selectedTile = tile;
@@ -303,20 +303,6 @@ export class MJTileCollectionComponent implements OnDestroy {
           this.audioService.play("wrong", 100);
         }
       }
-    }
-  }
-
-  private removeTile(tile: MjTile, saveToLog: boolean = true):void {
-    if (tile.active) {
-      this.activeTileCount--;
-    };
-    tile.remove();
-    if (saveToLog) {
-      if (this.tileRemoveLog.length>this.tileRemoveLogCursor) {
-        this.tileRemoveLog.splice(this.tileRemoveLogCursor, this.tileRemoveLog.length-this.tileRemoveLogCursor);
-      }
-      this.tileRemoveLog.push(tile);
-      this.tileRemoveLogCursor++;
     }
   }
 
@@ -342,9 +328,6 @@ export class MJTileCollectionComponent implements OnDestroy {
   private onFieldUpdate(): void {
     this.gameControlService.updateHintStatus(false);
     this.updateFreePairs();
-    if (this.tilesReady) {
-      this.tileCollectionChanged.emit();
-    }
   }
 
   private updateFreePairs(): void {
@@ -373,41 +356,23 @@ export class MJTileCollectionComponent implements OnDestroy {
     }
   }
 
-  private tileRemoveLog: MjTile[] = [];
-  private tileRemoveLogCursor = 0;
-
   public undo(): boolean {
-    if (this.tileRemoveLogCursor<=0) {
-      this.gameControlService.updateUndoStatus(false);
-      return false;
-    } else {
-      this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-1]);
-      this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-2]);
-      this.tileCollectionChanged.emit();
-      this.tileRemoveLogCursor-=2;
-
-      let moreUndoAvailable = this.tileRemoveLogCursor>0;
-      this.gameControlService.updateUndoStatus(moreUndoAvailable);
-      this.gameControlService.updateRedoStatus(true);
-      return (moreUndoAvailable);
+    let tiles: MjTile[] = this.undoQueue.undo();
+    for (let tile of tiles) {
+      tile.returnToField();
     }
+    this.activeTileCount+=tiles.length;
+    return (this.undoQueue.getUndoStatus());
   }
 
-  public redo(): boolean {
-    if (this.tileRemoveLogCursor>=this.tileRemoveLog.length) {
-      this.gameControlService.updateRedoStatus(false);
-      return false;
-    } else {
-      this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor], false);
-      this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor+1], false);
-      this.tileRemoveLogCursor+=2;
-      this.tileCollectionChanged.emit(-2);
 
-      let moreRedoAvailable = this.tileRemoveLogCursor<this.tileRemoveLog.length;
-      this.gameControlService.updateRedoStatus(moreRedoAvailable);
-      this.gameControlService.updateUndoStatus(true);
-      return (moreRedoAvailable);
+  public redo(): boolean {
+    let tiles: MjTile[] = this.undoQueue.redo();
+    for (let tile of tiles) {
+      tile.remove();
     }
+    this.activeTileCount-=tiles.length;
+    return (this.undoQueue.getRedoStatus());
   }
 
   // Handle click on to empty area

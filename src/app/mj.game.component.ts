@@ -34,7 +34,7 @@ import { Subscription }   from 'rxjs/Subscription';
     <div class="gamefield noselect"><tile-collection
       [layout]=currentLayout
       (ready)=onTileCollectionReady()
-      (tileCollectionChanged)=onTileCollectionChange()
+      (tileCleared)=onTileCleared()
       (click)=onClick()
       [paused]=false
       ></tile-collection></div>
@@ -79,33 +79,29 @@ export class MjGameComponent {
     this.currentLayout = "dragon";
   }
 
-  onSoundsReady(): void {
-
-  }
-
   onTileCollectionReady():void {
     console.log("loading finished"); // TODO hide "loading"
   }
 
-  onTileCollectionChange(): void {
-    let status = this.getGameEndStatus();
-    if (status==="win") {
+  private checkGameStatus():void {
+    if (this.tileCollection.activeTileCount==0) {
+      // win
       this.audioService.play("win", 100);
-    } else if (status==="lose") {
+    } else if (this.tileCollection.freePairs.length==0) {
+      // lose
       this.audioService.play("lose", 100);
     } else {
-      this.gameControlService.updateUndoStatus(true);
+      // keep on playing
       this.audioService.play("coin", 100);
     }
   }
 
-  private getGameEndStatus(): string {
-    if (this.tileCollection.activeTileCount==0) {
-      return "win";
-    }
-    if (this.tileCollection.freePairs.length==0) {
-      return "lose";
-    }
+  onTileCleared(): void {
+    alert ("A");
+    this.gameControlService.updateUndoStatus(true);
+    this.gameControlService.updateRedoStatus(false);
+
+    this.checkGameStatus();
   }
 
   public onUndoRequest() {
@@ -119,7 +115,7 @@ export class MjGameComponent {
     let redoStatus = this.tileCollection.redo();
     this.gameControlService.updateUndoStatus(true);
     this.gameControlService.updateRedoStatus(redoStatus);
-    this.audioService.play("coin", 100);
+    this.checkGameStatus();
   }
 
   public onRestartRequest() {

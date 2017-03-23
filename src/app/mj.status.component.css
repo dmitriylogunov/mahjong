@@ -59,6 +59,7 @@ span.highlight {
 .undoredo {
   float: right;
   margin-right: 40px;
+  color: lightgreen;
 }
 
 .undo {
