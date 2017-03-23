@@ -35,15 +35,20 @@ export class MjTileComponent {
   public fontSizePrimary: number;
   public fontSizeSecondary: number;
 
+  // TODO this could be outside tile component
   private recalculateFontSizes() {
+    if (!this._elementPixelHeight || !this._elementPixelWidth) {
+      return;
+    }
+
     let adjustedElementSize = Math.min(
       this._elementPixelHeight,
-      this._elementPixelWidth*1.4 // this is approximate proportion of tile font height to font width
+      this._elementPixelWidth*1.5 // this is approximate proportion of tile font height to font width
     );
 
     this.fontSizePrimary =  Math.floor(adjustedElementSize*1.5);
     this.fontSizeSecondary = Math.floor(adjustedElementSize / 3);
-    console.log(this.fontSizePrimary);
+    // console.log(adjustedElementSize);
   }
 
   @Input()

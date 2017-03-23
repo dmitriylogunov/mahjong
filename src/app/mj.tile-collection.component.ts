@@ -167,7 +167,7 @@ export class MJTileCollectionComponent implements OnDestroy {
 
     // too much "Portrait"
     if (currentProportion<this.elementProportionMin) {
-        this.elementPixelHeight = Math.floor(this.elementPixelWidth / this.elementProportionMax);
+        this.elementPixelHeight = Math.floor(this.elementPixelWidth / this.elementProportionMin);
     }
 
     // too much "Landscape"

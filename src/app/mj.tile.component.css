@@ -7,10 +7,16 @@
   cursor: pointer;
 }
 
-.tile-outer.free:hover, .tile-outer.selected {
+ /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
+/*.tile-outer.free:hover, .tile-outer.selected {
+
   transform: scale(1.1,1.1);
-  z-index: 500; /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
+  z-index: 500;
   opacity: .99;
+}*/
+
+.tile-outer.free > .tile:hover {
+  background-color: lightgray;
 }
 
 .tile-shadow {
