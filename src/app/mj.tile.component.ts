@@ -8,7 +8,7 @@ import { MjTile, MjTileType } from './mj.tile';
 })
 export class MjTileComponent {
   // constants
-  public shiftProportion: number = 0.12;
+  public shiftProportion: number = 0.24; // how much shift tile face from tile bottom to create pseudo 3d effect
   public debug: boolean = false;
 
   //   <div class="test" [innerHTML]="tileUnicode"></div>
@@ -27,29 +27,40 @@ export class MjTileComponent {
   @Input()
   hasFreePair: boolean;
 
+
   public _elementPixelWidth: number;
   public shiftX: number;
+  public _elementPixelHeight: number;
+  public shiftY: number;
+  public fontSizePrimary: number;
+  public fontSizeSecondary: number;
+
+  private recalculateFontSizes() {
+    let adjustedElementSize = Math.min(
+      this._elementPixelHeight,
+      this._elementPixelWidth*1.4 // this is approximate proportion of tile font height to font width
+    );
+
+    this.fontSizePrimary =  Math.floor(adjustedElementSize*1.5);
+    this.fontSizeSecondary = Math.floor(adjustedElementSize / 3);
+    console.log(this.fontSizePrimary);
+  }
 
   @Input()
   set elementPixelWidth(elementPixelWidth: number) {
     this._elementPixelWidth = elementPixelWidth;
     this.shiftX = Math.floor(elementPixelWidth*this.shiftProportion);
     // console.log(this.shiftX);
-  }
+    this.recalculateFontSizes();
 
-  public _elementPixelHeight: number;
-  public shiftY: number;
-  public fontSizePrimary: number;
-  public fontSizeSecondary: number;
+  }
 
   @Input()
   set elementPixelHeight(elementPixelHeight: number) {
     this._elementPixelHeight = elementPixelHeight;
     this.shiftY = Math.floor(elementPixelHeight*this.shiftProportion);
     // console.log(this.shiftY);
-    this.fontSizePrimary =  Math.floor(elementPixelHeight*1.4);
-    this.fontSizeSecondary = Math.floor(elementPixelHeight / 3);
-    // console.log(this.fontSizePrimary);
+    this.recalculateFontSizes();
   }
 
   @Input()

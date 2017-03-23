@@ -1,5 +1,6 @@
 .tile-outer {
   position: absolute;
+  font-family: FreeSerifNF;
 }
 
 .tile-outer.free > .tile {
@@ -15,7 +16,7 @@
 .tile-shadow {
   position: absolute;
   border: 1px solid gray;
-  background-color: gray;
+  background-color: lightgray;
   border-radius: 10%;
 }
 
@@ -34,7 +35,6 @@
   border: 2px solid gray;
   position: absolute;
   border-radius: 10%;
-  font-size: 25px;
   cursor: default;
 }
 

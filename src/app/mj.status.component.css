@@ -3,12 +3,22 @@
   .large-screen-only {
     display: none;
   }
+
+  .timer, .score {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
 }
 
 /* large screen */
 @media only screen and (min-width : 1025px) {
   .small-screen-only {
     display: none;
+  }
+
+  .timer, .score {
+    margin-right: 30px;
+    margin-left: 30px;
   }
 }
 
@@ -34,11 +44,6 @@ span.highlight {
 .hints {
   float: left;
   margin-left: 20px;
-}
-
-.timer .score {
-  margin-right: 30px;
-  margin-left: 30px;
 }
 
 .restart {
@@ -94,3 +99,29 @@ span.highlight {
 span.disabled {
   color: gray;
 }
+
+/*.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+    width: 120px;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.tooltip .tooltiptext {
+    visibility: visible;
+}*/

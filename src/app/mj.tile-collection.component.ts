@@ -92,7 +92,6 @@ export class MJTileCollectionComponent implements OnDestroy {
   public paddingTop: number = 0;
   public paddingBottom: number = 0;
 
-
   // TODO wrap into MjTileType class
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
   private tileSetDescriptor: [string, number, boolean][] = [

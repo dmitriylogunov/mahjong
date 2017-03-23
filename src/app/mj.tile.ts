@@ -26,7 +26,7 @@ export class MjTile {
     this.z = this.getTileZCoordinate(collection);
 
     // collection will be sorted later: by Z asc, then by Y asc, then by X desc
-    this.sortingOrder = this.z*10000 + this.y*100 - this.x;
+    this.sortingOrder = this.z*10000 - this.x*100 + this.y;
   }
 
   // determine layer (z coordinate) of the tile
@@ -189,7 +189,7 @@ export class MjTileType {
       ["&#x1F014","5","green"], ["&#x1F015","6","green"], ["&#x1F016","7","green"], ["&#x1F017","8","green"], ["&#x1F018","9","green"] ],
     "num": [["&#x1F007","1","red"], ["&#x1F008","2","red"], ["&#x1F009","3","red"], ["&#x1F00A","4","red"],
       ["&#x1F00B","5","red"], ["&#x1F00C","6","red"], ["&#x1F00D","7","red"], ["&#x1F00E","8","red"], ["&#x1F00F","9","red"] ],
-    "season": [["&#x1F026", "spring", "green"], ["&#x1F027", "summer", "yellow"], ["&#x1F028", "autumn", "orange"], ["&#x1F029", "winter", "blue"]],
+    "season": [["&#x1F026", "spring", "green"], ["&#x1F027", "summer", "darkyellow"], ["&#x1F028", "autumn", "orange"], ["&#x1F029", "winter", "blue"]],
     "wind": [["&#x1F000", "east", "black"], ["&#x1F001", "south", "black"], ["&#x1F002", "west", "black"], ["&#x1F003", "north", "black"]],
     "flower": [["&#x1F022", "plum", "pink"], ["&#x1F023", "orchid", "green"], ["&#x1F024", "bamboo", "green"], ["&#x1F025", "mum", "red"]],
     "dragon": [["&#x1F004", "dragon", "red"], ["&#x1F005", "dragon", "green"], ["&#x1F006", "dragon", "blue"]]

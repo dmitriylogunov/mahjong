@@ -23,14 +23,15 @@ import { MjAudioService } from './mj.audio.service';
       </span>
 
       <!-- middle block -->
-      <span class="score">Score: <span class="highlight">{{score}}</span></span>
-
-      <span class="timer large-screen-only">
-        Bonus <i class="fa fa-clock-o" aria-hidden="true"></i>: <span class="highlight">{{timer | date:"m:ss"}}</span> Play time <span class="highlight">{{timer | date:"m:ss"}}</span>
+      <span class="score"><i class="fa fa-tachometer" aria-hidden="true"></i>
+        <span class="highlight">{{score}}</span>
       </span>
-      <span class="timer small-screen-only">
-        <i class="fa fa-hourglass-2" aria-hidden="true"></i>: <span class="highlight">{{timer | date:"m:ss"}}</span>
-        <i class="fa fa-clock-o" aria-hidden="true"></i>: <span class="highlight">{{timer | date:"m:ss"}}</span>
+
+      <span class="timer" *ngIf="bonustimer>0">
+        <i class="fa fa-trophy" aria-hidden="true"></i> <span class="highlight">{{bonustimer | date:"m:ss"}}</span>
+      </span>
+      <span class="timer">
+        <i class="fa fa-clock-o" aria-hidden="true"></i> <span class="highlight">{{timer | date:"m:ss"}}</span>
       </span>
 
       <!-- right side block -->
@@ -80,6 +81,8 @@ export class MjStatusComponent implements OnDestroy {
   public reset() {
     this.hintsRemaining = this.hints.length;
     this.gameControlService.updateHintStatus(false);
+    this.startTime = new Date();
+    this.bonustimer = new Date();
     this.timer = new Date();
     this.paused = false;
     this.undoStatus = false;
@@ -134,6 +137,12 @@ export class MjStatusComponent implements OnDestroy {
     }
   }
 
+  ngOnInit(): void {
+    window.setInterval((()=>{
+      // this.timer = this.startTime - new Date();
+    }).bind(this), 1000);
+  }
+
   private soundStatus: boolean;
 
   hintsRemaining: number;
@@ -146,7 +155,10 @@ export class MjStatusComponent implements OnDestroy {
 
   @Input()
   private score: number;
-  private timer: Date = new Date();
+
+  private startTime: Date = null;
+  private timer: Date = null;
+  private bonustimer: Date = null;
 
   @Output() undo: EventEmitter<any> = new EventEmitter();
   @Output() redo: EventEmitter<any> = new EventEmitter();

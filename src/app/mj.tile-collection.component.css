@@ -3,5 +3,6 @@
 }
 
 .tile-field {
+  margin: 10px;
   position: relative;
 }

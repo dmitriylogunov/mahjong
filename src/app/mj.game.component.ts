@@ -18,7 +18,6 @@ import { Subscription }   from 'rxjs/Subscription';
         position: relative;
         width: 100vw;
         height: 80vh;
-        padding: 10px;
         background-color: #BEDDBF;
       }
     </style>
