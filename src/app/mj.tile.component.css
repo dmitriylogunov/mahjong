@@ -2,7 +2,7 @@
   position: absolute;
 }
 
-.tile.free {
+.tile-outer.free > .tile {
   cursor: pointer;
 }
 

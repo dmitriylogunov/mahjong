@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs/Subject';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class MjGameControlService {
   private musicStatus = new Subject<boolean>();
   private score = new Subject<number>();
   private paused = new Subject<boolean>();
-  private soundsReady = new Subject<boolean>();
+
 
   // Observable streams
   undoStatusUpdated$ = this.undoStatus.asObservable();
@@ -21,7 +21,6 @@ export class MjGameControlService {
   musicUpdated$ = this.musicStatus.asObservable();
   scoreUpdated$ = this.score.asObservable();
   paused$ = this.paused.asObservable();
-  soundsReady$ = this.soundsReady.asObservable();
 
   // Service commands
   updateUndoStatus(status: boolean) {
@@ -46,10 +45,6 @@ export class MjGameControlService {
 
   addScore(diff: number) {
     this.score.next(diff);
-  }
-
-  triggerSoundsReady() {
-    this.soundsReady.next(true);
   }
 
   pause(paused: boolean) {

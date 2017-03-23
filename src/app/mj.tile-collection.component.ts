@@ -70,11 +70,11 @@ export class MJTileCollectionComponent implements OnDestroy {
     this.ready.emit();
 
     // also trigger first state change event (from zero to initial tile layout)
-    this.tileNumberChange.emit(0);
+    this.tileCollectionChanged.emit(0);
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
-  @Output() tileNumberChange: EventEmitter<number> = new EventEmitter();
+  @Output() tileCollectionChanged: EventEmitter<any> = new EventEmitter();
 
   public tiles: MjTile[] = [];
   private selectedTile: MjTile = null;
@@ -288,8 +288,7 @@ export class MJTileCollectionComponent implements OnDestroy {
               this.removeTile(tile);
               this.removeTile(this.selectedTile);
               this.selectedTile = null;
-
-              this.onFieldUpdate(-2);
+              this.onFieldUpdate();
             } else {
               this.selectedTile.unselect();
               this.selectedTile = tile;
@@ -340,11 +339,11 @@ export class MJTileCollectionComponent implements OnDestroy {
   public freePairs: [MjTile, MjTile][] = [];
   public activeTileCount: number = 0;
 
-  private onFieldUpdate(diff: number): void {
+  private onFieldUpdate(): void {
     this.gameControlService.updateHintStatus(false);
     this.updateFreePairs();
     if (this.tilesReady) {
-      this.tileNumberChange.emit(diff);
+      this.tileCollectionChanged.emit();
     }
   }
 
@@ -384,7 +383,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     } else {
       this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-1]);
       this.returnTile(this.tileRemoveLog[this.tileRemoveLogCursor-2]);
-      this.tileNumberChange.emit(2);
+      this.tileCollectionChanged.emit();
       this.tileRemoveLogCursor-=2;
 
       let moreUndoAvailable = this.tileRemoveLogCursor>0;
@@ -402,7 +401,7 @@ export class MJTileCollectionComponent implements OnDestroy {
       this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor], false);
       this.removeTile(this.tileRemoveLog[this.tileRemoveLogCursor+1], false);
       this.tileRemoveLogCursor+=2;
-      this.tileNumberChange.emit(-2);
+      this.tileCollectionChanged.emit(-2);
 
       let moreRedoAvailable = this.tileRemoveLogCursor<this.tileRemoveLog.length;
       this.gameControlService.updateRedoStatus(moreRedoAvailable);

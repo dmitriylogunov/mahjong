@@ -34,7 +34,7 @@ import { Subscription }   from 'rxjs/Subscription';
     <div class="gamefield noselect"><tile-collection
       [layout]=currentLayout
       (ready)=onTileCollectionReady()
-      (tileNumberChange)=onTileNumberChange($event)
+      (tileCollectionChanged)=onTileCollectionChange()
       (click)=onClick()
       [paused]=false
       ></tile-collection></div>
@@ -44,13 +44,20 @@ import { Subscription }   from 'rxjs/Subscription';
   providers: [MjGameControlService, MjAudioService]
 })
 export class MjGameComponent {
-  private soundsReadySubscription: Subscription;
+  private subscriptions: Subscription[] = [];
   constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
+    this.subscriptions.push(audioService.soundsReady$.subscribe(
+      status => {
+        // TODO start playing music here, if it is on
+      }
+    ));
   }
 
   ngOnDestroy(): void {
     // prevent memory leak
-    this.soundsReadySubscription.unsubscribe();
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   @ViewChild(MJTileCollectionComponent)
@@ -63,6 +70,8 @@ export class MjGameComponent {
 
   ngOnInit(): void {
     this.audioService.load();
+
+    // TODO - read from browser config
     this.gameControlService.updateSoundStatus(true);
 
     // load layout
@@ -78,18 +87,15 @@ export class MjGameComponent {
     console.log("loading finished"); // TODO hide "loading"
   }
 
-  onTileNumberChange(diff: number): void {
+  onTileCollectionChange(): void {
     let status = this.getGameEndStatus();
     if (status==="win") {
       this.audioService.play("win", 100);
     } else if (status==="lose") {
       this.audioService.play("lose", 100);
     } else {
-      if (diff<0) {
-        this.audioService.play("coin", 100);
-      } else if (diff>0) {
-        this.audioService.play("undo", 100);
-      }
+      this.gameControlService.updateUndoStatus(true);
+      this.audioService.play("coin", 100);
     }
   }
 
@@ -103,11 +109,17 @@ export class MjGameComponent {
   }
 
   public onUndoRequest() {
-    this.tileCollection.undo();
+    let undoStatus = this.tileCollection.undo();
+    this.gameControlService.updateUndoStatus(undoStatus);
+    this.gameControlService.updateRedoStatus(true);
+    this.audioService.play("undo", 100);
   }
 
   public onRedoRequest() {
-    this.tileCollection.redo();
+    let redoStatus = this.tileCollection.redo();
+    this.gameControlService.updateUndoStatus(true);
+    this.gameControlService.updateRedoStatus(redoStatus);
+    this.audioService.play("coin", 100);
   }
 
   public onRestartRequest() {

@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { AppToolbox } from './app.toolbox';
 import { Subscription }   from 'rxjs/Subscription';
 import { MjGameControlService } from './mj.game.control.service';
+import { Subject }    from 'rxjs/Subject';
 
 interface SoundConfiguration {
   [id: string]: string[];
@@ -11,6 +12,11 @@ declare var createjs: any;
 
 @Injectable()
 export class MjAudioService implements OnDestroy {
+  private soundsReady = new Subject<boolean>();
+
+  // Observable streams
+  soundsReady$ = this.soundsReady.asObservable();
+
   private soundConfiguration: SoundConfiguration = {
     "coin": ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
     "blip": ["sounds/blip.wav"],
@@ -52,17 +58,19 @@ export class MjAudioService implements OnDestroy {
     }
   }
 
-  private loadedSounds: any = {};
   private soundCount: number;
 
   public load(): void {
+    // init
     createjs.Sound.alternateExtensions = ["mp3"];
-    createjs.Sound.on("fileload", this.handleLoadComplete);
+    createjs.Sound.on("fileload", this.handleLoadComplete.bind(this));
     this.soundCount = 0;
     for (let soundGroupId in this.soundConfiguration) {
       this.soundCount+=this.soundConfiguration[soundGroupId].length;
     }
 
+    // load
+    this.loadedSoundsCount = 0
     for (let soundGroupId in this.soundConfiguration) {
       for (let soundIndex=0;soundIndex<this.soundConfiguration[soundGroupId].length;soundIndex++) {
         createjs.Sound.registerSound(
@@ -75,10 +83,13 @@ export class MjAudioService implements OnDestroy {
     }
   }
 
-  private handleLoadComplete(a: any, b: any) {
+  private loadedSounds: any = {};
+  private loadedSoundsCount: number;
+  private handleLoadComplete(a: any) {
     this.loadedSounds[a.id] = true;
-    if (this.loadedSounds.length == this.soundCount) {
-      this.gameControlService.triggerSoundsReady();
+    this.loadedSoundsCount++;
+    if (this.loadedSoundsCount == this.soundCount) {
+      this.triggerSoundsReady();
     }
   }
 
@@ -104,4 +115,9 @@ export class MjAudioService implements OnDestroy {
       // ignore errors
     }
   }
+
+  triggerSoundsReady() {
+    this.soundsReady.next(true);
+  }
+
 }

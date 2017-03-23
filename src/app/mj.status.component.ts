@@ -90,6 +90,7 @@ export class MjStatusComponent implements OnDestroy {
     this.subscriptions.push(gameControlService.undoStatusUpdated$.subscribe(
       status => {
         this.undoStatus = status;
+        console.log(status);
       }
     ));
 
