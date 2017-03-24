@@ -24,7 +24,7 @@ import { MjAudioService } from './mj.audio.service';
 
       <!-- middle block -->
       <span class="score"><i class="fa fa-trophy" aria-hidden="true"></i>
-        <span class="highlight">{{score}}</span>
+        <span class="highlight">{{((score>0)?score:0) | intval}}</span>
       </span>
 
       <span class="timer">

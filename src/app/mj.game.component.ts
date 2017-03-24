@@ -13,37 +13,53 @@ import { Subscription }   from 'rxjs/Subscription';
       {
         position: relative;
         width: 100vw;
+        height: 5vh;
+        background-color:#5C5749;
       }
       .gamefield {
         position: relative;
         width: 100vw;
-        height: 80vh;
+        height: 95vh;
         background-color: #BEDDBF;
+      }
+
+      .intro {
+        width: 100vw;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background:rgba(0,0,0,0.8);
+        display: none;
       }
     </style>
 
-    <div class="statusfield"><status
-      (undo)=onUndo()
-      (redo)=onRedo()
-      (restart)=onRestart()
-      [hintsCount]=3
-      [score]=score
-      [timer]=timer
-    ></status></div>
+  <div class="statusfield"><status
+    (undo)=onUndo()
+    (redo)=onRedo()
+    (restart)=onRestart()
+    [hintsCount]=3
+    [score]=score
+    [timer]=timer
+  ></status></div>
 
-    <div class="gamefield noselect"><tile-collection
-      [layout]=currentLayout
-      (ready)=onTileCollectionReady()
-      (tileCleared)=onTileCleared()
-      (click)=onClick()
-      [paused]=paused
-      ></tile-collection></div>
+  <div class="gamefield noselect"><tile-collection
+    [layout]=currentLayout
+    (ready)=onTileCollectionReady()
+    (tileCleared)=onTileCleared()
+    (click)=onClick()
+    [paused]=paused
+    ></tile-collection></div>
 
-    <options></options>
+    <div *ngIf="state=='intro'" class="intro">
+      A
+    </div>
   `,
   providers: [MjGameControlService, MjAudioService]
 })
 export class MjGameComponent {
+  private state: string;
+
   private subscriptions: Subscription[] = [];
   constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
     this.subscriptions.push(audioService.soundsReady$.subscribe(
@@ -61,9 +77,7 @@ export class MjGameComponent {
     window.setInterval((()=>{
       if (!this.paused) {
         this.timer += 1;
-        if (this.score>0) {
-          this.score -= 1;
-        }
+        this.score -= 0.1;
       }
     }).bind(this), 1000);
   }
@@ -84,6 +98,9 @@ export class MjGameComponent {
   public currentLayout: string = null;
 
   ngOnInit(): void {
+    this.paused = true;
+    this.state = "intro";
+
     this.audioService.load();
 
     // TODO - read from browser config

@@ -46,14 +46,13 @@
 .status {
   position: relative;
   color: #FEF2C7;
-  background-color:#5C5749;
   /*font-family: "GaramondNineSixDT-Roman", "Lato", Helvetica, Arial, sans-serif;*/
   font-family: museo-slab,Georgia,"Times New Roman",Times,serif;
   width: 100%;
   /*background-image: url('img/statusbar-bg.png');
   background-size: cover;*/
-  font-size: 30px;
-  line-height: 50px;
+  font-size: 3vh;
+  line-height: 5vh;
   text-align: center;
 }
 
