@@ -20,7 +20,9 @@ import { Subscription }   from 'rxjs/Subscription';
         position: relative;
         width: 100vw;
         height: 95vh;
-        background-color: #BEDDBF;
+        /*background-color: #BEDDBF;*/
+        background-size: cover;
+        background-image: url('/img/backgrounds/oriental-1.jpg')
       }
 
       .intro {
@@ -52,7 +54,7 @@ import { Subscription }   from 'rxjs/Subscription';
     ></tile-collection></div>
 
     <div *ngIf="state=='intro'" class="intro">
-      A
+      Logo here
     </div>
   `,
   providers: [MjGameControlService, MjAudioService]
@@ -145,7 +147,7 @@ export class MjGameComponent {
     this.gameControlService.updateUndoStatus(undoStatus);
     this.gameControlService.updateRedoStatus(true);
     this.audioService.play("undo", 100);
-    this.score -= 20;
+    if (this.score>0) { this.score -= 10 };
   }
 
   public onRedo() {
