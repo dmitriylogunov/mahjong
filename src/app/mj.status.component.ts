@@ -23,23 +23,22 @@ import { MjAudioService } from './mj.audio.service';
       </span>
 
       <!-- middle block -->
-      <span class="score"><i class="fa fa-tachometer" aria-hidden="true"></i>
+      <span class="score"><i class="fa fa-trophy" aria-hidden="true"></i>
         <span class="highlight">{{score}}</span>
       </span>
 
-      <span class="timer" *ngIf="bonustimer>0">
-        <i class="fa fa-trophy" aria-hidden="true"></i> <span class="highlight">{{bonustimer | date:"m:ss"}}</span>
-      </span>
       <span class="timer">
-        <i class="fa fa-clock-o" aria-hidden="true"></i> <span class="highlight">{{timer | date:"m:ss"}}</span>
+        <i class="fa fa-clock-o" aria-hidden="true"></i> <span class="highlight">{{timer | intAsTime}}</span>
       </span>
 
-      <!-- right side block -->
-      <span class="restart highlight" (click)=restartModal.show()><i class="fa fa-close" aria-hidden="true"></i></span>
       <span class="pause highlight" (click)=onPauseClick()>
         <i *ngIf="paused" class="fa fa-play-circle-o" aria-hidden="true"></i>
         <i *ngIf="!paused" class="fa fa-pause-circle-o" aria-hidden="true"></i>
       </span>
+
+      <!-- right side block -->
+      <span class="restart highlight" (click)=restartModal.show()><i class="fa fa-close" aria-hidden="true"></i></span>
+
 
       <span class="sound highlight"><i class="fa fa-music" aria-hidden="true"></i></span>
 
@@ -63,31 +62,12 @@ import { MjAudioService } from './mj.audio.service';
   `,
   styleUrls: ['app/mj.status.component.css']
 })
-
 export class MjStatusComponent implements OnDestroy {
-  @ViewChild(ModalComponent)
-  public readonly restartModal: ModalComponent;
+  @Input()
+  private score: number;
 
-  public restartGameModalActions: ModalAction[] = [
-    new ModalAction("Yes", this.onRestartClick),
-    new ModalAction("No", this.onRestartNoClick)
-  ];
-
-  undoStatus: boolean = false;
-  redoStatus: boolean = false;
-  hintCurrentlyShowing: boolean = false;
-  paused: boolean = false;
-
-  public reset() {
-    this.hintsRemaining = this.hints.length;
-    this.gameControlService.updateHintStatus(false);
-    this.startTime = new Date();
-    this.bonustimer = new Date();
-    this.timer = new Date();
-    this.paused = false;
-    this.undoStatus = false;
-    this.redoStatus = false;
-  }
+  @Input()
+  private timer: number;
 
   private subscriptions: Subscription[] = [];
 
@@ -96,14 +76,14 @@ export class MjStatusComponent implements OnDestroy {
     this.subscriptions.push(gameControlService.undoStatusUpdated$.subscribe(
       status => {
         this.undoStatus = status;
-        console.log("undostatus",status);
+        // console.log("undostatus",status);
       }
     ));
 
     this.subscriptions.push(gameControlService.redoStatusUpdated$.subscribe(
       status => {
         this.redoStatus = status;
-        console.log("redostatus",status);
+        // console.log("redostatus",status);
       }
     ));
 
@@ -138,9 +118,27 @@ export class MjStatusComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
-    window.setInterval((()=>{
-      // this.timer = this.startTime - new Date();
-    }).bind(this), 1000);
+  }
+
+  @ViewChild(ModalComponent)
+  public readonly restartModal: ModalComponent;
+
+  public restartGameModalActions: ModalAction[] = [
+    new ModalAction("Yes", this.onRestartClick),
+    new ModalAction("No", this.onRestartNoClick)
+  ];
+
+  private paused: boolean;
+  private undoStatus: boolean = false;
+  private redoStatus: boolean = false;
+  private hintCurrentlyShowing: boolean = false;
+
+  public reset() {
+    this.hintsRemaining = this.hints.length;
+    this.gameControlService.updateHintStatus(false);
+    this.undoStatus = false;
+    this.redoStatus = false;
+    this.paused = false;
   }
 
   private soundStatus: boolean;
@@ -152,13 +150,6 @@ export class MjStatusComponent implements OnDestroy {
     this.hints = Array(hintsCount).fill(true);
     this.hintsRemaining = hintsCount -1; // -1 for debug
   }
-
-  @Input()
-  private score: number;
-
-  private startTime: Date = null;
-  private timer: Date = null;
-  private bonustimer: Date = null;
 
   @Output() undo: EventEmitter<any> = new EventEmitter();
   @Output() redo: EventEmitter<any> = new EventEmitter();

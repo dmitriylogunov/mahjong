@@ -8,9 +8,14 @@ import { MJTileCollectionComponent } from './mj.tile-collection.component';
 import { MjTileComponent } from './mj.tile.component';
 import { ModalComponent } from './app.modal.component';
 
+import { IntAsTimePipe } from './int.as.time.pipe';
+
 @NgModule({
   imports:      [ BrowserModule ],
-  declarations: [ MjGameComponent, MjStatusComponent, MJTileCollectionComponent, MjTileComponent, MjOptionsComponent, ModalComponent ],
+  declarations: [
+    MjGameComponent, MjStatusComponent, MJTileCollectionComponent, MjTileComponent, MjOptionsComponent, ModalComponent,
+    IntAsTimePipe
+  ],
   bootstrap:    [ MjGameComponent ]
 })
 export class AppModule { }

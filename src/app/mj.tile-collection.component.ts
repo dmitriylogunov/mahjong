@@ -50,7 +50,7 @@ export class MJTileCollectionComponent implements OnDestroy {
   // constraints in tile scaling (tile == 2x2 elements), proportion = width / Height
   // 1 is square, 0.5 is 2:1 etc
   private elementProportionMax = 0.8; // almost square, which is 1
-  private elementProportionMin = 0.5;
+  private elementProportionMin = 0.7;
 
   public tilesReady: boolean = false;
 

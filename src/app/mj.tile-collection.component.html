@@ -6,8 +6,11 @@
 'padding-bottom.px': paddingBottom
 }"
 >
+  <div class="paused" *ngIf="paused">
+      Game paused
+  </div>
   <div class="tile-field"
-    *ngIf="tilesReady"
+    *ngIf="tilesReady && !paused"
     (click)="onFieldClick()"
     [ngStyle]="{
         'width.px': windowWidth,

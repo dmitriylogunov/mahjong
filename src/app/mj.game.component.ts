@@ -23,11 +23,12 @@ import { Subscription }   from 'rxjs/Subscription';
     </style>
 
     <div class="statusfield"><status
-      (undo)=onUndoRequest()
-      (redo)=onRedoRequest()
-      (restart)=onRestartRequest()
+      (undo)=onUndo()
+      (redo)=onRedo()
+      (restart)=onRestart()
       [hintsCount]=3
       [score]=score
+      [timer]=timer
     ></status></div>
 
     <div class="gamefield noselect"><tile-collection
@@ -35,7 +36,7 @@ import { Subscription }   from 'rxjs/Subscription';
       (ready)=onTileCollectionReady()
       (tileCleared)=onTileCleared()
       (click)=onClick()
-      [paused]=false
+      [paused]=paused
       ></tile-collection></div>
 
     <options></options>
@@ -50,6 +51,21 @@ export class MjGameComponent {
         // TODO start playing music here, if it is on
       }
     ));
+
+    this.subscriptions.push(gameControlService.paused$.subscribe(
+      status => {
+        this.paused = status;
+      }
+    ));
+
+    window.setInterval((()=>{
+      if (!this.paused) {
+        this.timer += 1;
+        if (this.score>0) {
+          this.score -= 1;
+        }
+      }
+    }).bind(this), 1000);
   }
 
   ngOnDestroy(): void {
@@ -74,12 +90,17 @@ export class MjGameComponent {
     this.gameControlService.updateSoundStatus(true);
 
     // load layout
-    console.log("loading started");     // TODO show "loading"
-    this.currentLayout = "dragon";
+    // TODO show "loading"
+    // console.log("loading started");
+    this.currentLayout = "dragon"; // update of layout will trigger initialisation of layout controller and tile field
+
+    // start game now
+    this.initGameValues();
   }
 
   onTileCollectionReady():void {
-    console.log("loading finished"); // TODO hide "loading"
+    // TODO hide "loading"
+    // console.log("loading finished");
   }
 
   private checkGameStatus():void {
@@ -98,27 +119,38 @@ export class MjGameComponent {
   onTileCleared(): void {
     this.gameControlService.updateUndoStatus(true);
     this.gameControlService.updateRedoStatus(false);
-
+    this.score += 10;
     this.checkGameStatus();
   }
 
-  public onUndoRequest() {
+  public onUndo() {
     let undoStatus = this.tileCollection.undo();
     this.gameControlService.updateUndoStatus(undoStatus);
     this.gameControlService.updateRedoStatus(true);
     this.audioService.play("undo", 100);
+    this.score -= 20;
   }
 
-  public onRedoRequest() {
+  public onRedo() {
     let redoStatus = this.tileCollection.redo();
     this.gameControlService.updateUndoStatus(true);
     this.gameControlService.updateRedoStatus(redoStatus);
     this.checkGameStatus();
+    this.score += 10;
   }
 
-  public onRestartRequest() {
+  // a.k.a. this.restart()
+  public onRestart() {
+    this.initGameValues();
     this.tileCollection.reset();
     this.status.reset();
+  }
+
+  private initGameValues() {
+    this.score = 0;
+    this.timer = 0;
+    this.paused = false;
+    this.gameControlService.pause(false);
   }
 
   private onClick() {
@@ -126,5 +158,7 @@ export class MjGameComponent {
     this.gameControlService.updateHintStatus(false);
   }
 
-  private score: number = 0;
+  private score: number;
+  private timer: number;
+  private paused: boolean;
 }

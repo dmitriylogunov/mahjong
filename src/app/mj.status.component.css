@@ -4,7 +4,7 @@
     display: none;
   }
 
-  .timer, .score {
+  .timer, .score, .pause {
     margin-right: 5px;
     margin-left: 5px;
   }
@@ -16,10 +16,31 @@
     display: none;
   }
 
-  .timer, .score {
+  .timer, .score, .pause {
     margin-right: 30px;
     margin-left: 30px;
+    display: inline-block;
   }
+
+  .pause {
+    min-width: 100px;
+  }
+
+  .timer {
+    min-width: 120px;
+  }
+
+  .score {
+    min-width: 100px;
+  }
+}
+
+.score, .timer {
+  text-align: left;
+}
+
+.pause {
+  text-align: center;
 }
 
 .status {
@@ -47,11 +68,6 @@ span.highlight {
 }
 
 .restart {
-  float: right;
-  margin-right: 20px;
-}
-
-.pause {
   float: right;
   margin-right: 20px;
 }
