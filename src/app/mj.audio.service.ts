@@ -4,8 +4,12 @@ import { Subscription }   from 'rxjs/Subscription';
 import { MjGameControlService } from './mj.game.control.service';
 import { Subject }    from 'rxjs/Subject';
 
-interface SoundConfiguration {
+export interface SoundConfiguration {
   [id: string]: string[];
+}
+
+interface SoundData {
+  [id: string]: number; // for the moment, just keep number of sounds in a group
 }
 
 declare var createjs: any;
@@ -16,20 +20,6 @@ export class MjAudioService implements OnDestroy {
 
   // Observable streams
   soundsReady$ = this.soundsReady.asObservable();
-
-  private soundConfiguration: SoundConfiguration = {
-    "coin": ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
-    "blip": ["sounds/blip.wav"],
-    "undo": ["sounds/back.wav"],
-    "bonus": ["sounds/bonus.wav"],
-    "boom": ["sounds/boom.wav"],
-    "wrong": ["sounds/wrong.wav"],
-    "lose": ["sounds/lose.wav"],
-    "win": ["sounds/win.wav"],
-    "click": ["sounds/click1.wav"], //, "sounds/click2.wav"
-    "unclick": ["sounds/click-reverse.wav"],
-    "question": ["sounds/question.wav"]
-  };
 
   private subscriptions: Subscription[] = [];
   private soundStatus: boolean = false;
@@ -59,23 +49,25 @@ export class MjAudioService implements OnDestroy {
   }
 
   private soundCount: number;
+  private soundData: SoundData = {};
 
-  public load(): void {
+  public load(soundConfiguration: SoundConfiguration): void {
     // init
     createjs.Sound.alternateExtensions = ["mp3"];
     createjs.Sound.on("fileload", this.handleLoadComplete.bind(this));
     this.soundCount = 0;
-    for (let soundGroupId in this.soundConfiguration) {
-      this.soundCount+=this.soundConfiguration[soundGroupId].length;
+    for (let soundGroupId in soundConfiguration) {
+      this.soundData[soundGroupId] = soundConfiguration[soundGroupId].length;
+      this.soundCount+=this.soundData[soundGroupId];
     }
 
     // load
     this.loadedSoundsCount = 0
-    for (let soundGroupId in this.soundConfiguration) {
-      for (let soundIndex=0;soundIndex<this.soundConfiguration[soundGroupId].length;soundIndex++) {
+    for (let soundGroupId in soundConfiguration) {
+      for (let soundIndex=0;soundIndex<soundConfiguration[soundGroupId].length;soundIndex++) {
         createjs.Sound.registerSound(
           {
-            src: this.soundConfiguration[soundGroupId][soundIndex],
+            src: soundConfiguration[soundGroupId][soundIndex],
             id: soundGroupId + soundIndex.toString()
           }
         );
@@ -100,7 +92,7 @@ export class MjAudioService implements OnDestroy {
     }
 
     // otherwise, play
-    let count = this.soundConfiguration[soundGroupId].length;
+    let count = this.soundData[soundGroupId];
     let soundIndex = AppToolbox.random(count);
 
     try {
@@ -118,6 +110,11 @@ export class MjAudioService implements OnDestroy {
 
   triggerSoundsReady() {
     this.soundsReady.next(true);
+  }
+
+  // load and play audio file
+  public playFile(location: string) {
+    // TODO implement
   }
 
 }

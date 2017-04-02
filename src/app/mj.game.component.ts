@@ -2,7 +2,7 @@ import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { MjStatusComponent }  from './mj.status.component';
 import { MJTileCollectionComponent } from './mj.tile-collection.component';
 import { MjGameControlService } from './mj.game.control.service';
-import { MjAudioService } from './mj.audio.service';
+import { MjAudioService, SoundConfiguration } from './mj.audio.service';
 import { Subscription }   from 'rxjs/Subscription';
 
 @Component({
@@ -61,12 +61,29 @@ import { Subscription }   from 'rxjs/Subscription';
 })
 export class MjGameComponent {
   private state: string;
+  private score: number;
+  private timer: number;
+  private paused: boolean;
+
+  private soundConfiguration: SoundConfiguration = {
+    "coin": ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
+    "blip": ["sounds/blip.wav"],
+    "undo": ["sounds/back.wav"],
+    "bonus": ["sounds/bonus.wav"],
+    "boom": ["sounds/boom.wav"],
+    "wrong": ["sounds/wrong.wav"],
+    "lose": ["sounds/lose.wav"],
+    "win": ["sounds/win.wav"],
+    "click": ["sounds/click1.wav"], //, "sounds/click2.wav"
+    "unclick": ["sounds/click-reverse.wav"],
+    "question": ["sounds/question.wav"]
+  };
 
   private subscriptions: Subscription[] = [];
   constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
     this.subscriptions.push(audioService.soundsReady$.subscribe(
       status => {
-        // TODO start playing music here, if it is on
+        this.playMusic();
       }
     ));
 
@@ -103,7 +120,7 @@ export class MjGameComponent {
     this.paused = true;
     this.state = "intro";
 
-    this.audioService.load();
+    this.audioService.load(this.soundConfiguration);
 
     // TODO - read from browser config
     this.gameControlService.updateSoundStatus(true);
@@ -177,7 +194,11 @@ export class MjGameComponent {
     this.gameControlService.updateHintStatus(false);
   }
 
-  private score: number;
-  private timer: number;
-  private paused: boolean;
+  private playMusic(): void {
+    // this.audioService.playFile("music/");
+  }
+
+  private stopMusic(): void {
+
+  }
 }
