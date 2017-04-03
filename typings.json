@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "gsap": "registry:dt/gsap#1.19.0+20170130020606"
+  }
+}
