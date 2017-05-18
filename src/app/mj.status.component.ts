@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
-import { ModalComponent, ModalAction } from './app.modal.component';
 import { MjGameControlService } from './mj.game.control.service';
 import { Subscription } from 'rxjs/Subscription'
 import { MjAudioService } from './mj.audio.service';
@@ -31,16 +30,15 @@ import { MjAudioService } from './mj.audio.service';
         <i class="fa fa-clock-o" aria-hidden="true"></i> <span class="highlight">{{timer | intAsTime}}</span>
       </span>
 
+      <!-- right side block -->
+      <span class="restart highlight" (click)=restart.emit(null)><i class="fa fa-close" aria-hidden="true"></i></span>
+
       <span class="pause highlight" (click)=onPauseClick()>
         <i *ngIf="paused" class="fa fa-play-circle-o" aria-hidden="true"></i>
         <i *ngIf="!paused" class="fa fa-pause-circle-o" aria-hidden="true"></i>
       </span>
 
-      <!-- right side block -->
-      <span class="restart highlight" (click)=restartModal.show()><i class="fa fa-close" aria-hidden="true"></i></span>
-
-
-      <span class="sound highlight"><i class="fa fa-music" aria-hidden="true"></i></span>
+      <span class="music highlight"><i class="fa fa-music" aria-hidden="true"></i></span>
 
       <span class="sound highlight" (click)=onSoundClick()>
         <i *ngIf="soundStatus" class="fa fa-volume-up" aria-hidden="true"></i>
@@ -55,10 +53,6 @@ import { MjAudioService } from './mj.audio.service';
 
     <div class="status noselect small-screen-only">
     </div>
-
-    <app-modal [actions]=restartGameModalActions>
-        Restart game?
-    </app-modal>
   `,
   styleUrls: ['app/mj.status.component.css']
 })
@@ -120,14 +114,6 @@ export class MjStatusComponent implements OnDestroy {
   ngOnInit(): void {
   }
 
-  @ViewChild(ModalComponent)
-  public readonly restartModal: ModalComponent;
-
-  public restartGameModalActions: ModalAction[] = [
-    new ModalAction("Yes", this.onRestartClick),
-    new ModalAction("No", this.onRestartNoClick)
-  ];
-
   private paused: boolean;
   private undoStatus: boolean = false;
   private redoStatus: boolean = false;
@@ -186,14 +172,6 @@ export class MjStatusComponent implements OnDestroy {
     } else {
       this.audioService.play("wrong", 100);
     }
-  }
-
-  onRestartClick() {
-    this.restart.emit(null);
-  }
-
-  onRestartNoClick() {
-    this.restartModal.hide();
   }
 
   onSoundClick() {

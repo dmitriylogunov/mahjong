@@ -62,8 +62,5 @@
     "@types/node": "^6.0.46",
     "@types/jasmine": "2.5.36"
   },
-  "repository": {},
-  "files": [
-    "typings/index.d.ts"
-  ]
+  "repository": {}
 }

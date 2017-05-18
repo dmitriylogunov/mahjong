@@ -1,15 +1,45 @@
-import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ViewChildren, OnDestroy, QueryList } from '@angular/core';
 import { MjStatusComponent }  from './mj.status.component';
 import { MJTileCollectionComponent } from './mj.tile-collection.component';
 import { MjGameControlService } from './mj.game.control.service';
 import { MjAudioService, SoundConfiguration } from './mj.audio.service';
+import { ModalComponent, ModalAction } from './app.modal.component';
 import { Subscription } from 'rxjs/Subscription';
-// import { TweenLite } from 'gsap';
+import { TweenLite } from 'gsap';
 
 @Component({
   selector: 'mj-game',
   template: `
-    <style>
+  <!-- main menu -->
+  <modal [actions]=[]></modal>
+
+  <!-- restart dialog -->
+  <modal [actions]=restartGameModalActions>
+      Restart game?
+  </modal>
+
+  <div class="statusfield"><status
+    (undo)=onUndo()
+    (redo)=onRedo()
+    (restart)=onRestart()
+    [hintsCount]=3
+    [score]=score
+    [timer]=timer
+  ></status></div>
+
+  <div class="gamefield noselect"><tile-collection
+    [layout]=currentLayout
+    (ready)=onTileCollectionReady()
+    (tileCleared)=onTileCleared()
+    (click)=onClick()
+    [paused]=paused
+    ></tile-collection></div>
+
+    <div *ngIf="state=='intro'" class="intro">
+      Logo here
+    </div>
+  `,
+  styles: [`
       .statusfield
       {
         position: relative;
@@ -35,29 +65,7 @@ import { Subscription } from 'rxjs/Subscription';
         background:rgba(0,0,0,0.8);
         display: none;
       }
-    </style>
-
-  <div class="statusfield"><status
-    (undo)=onUndo()
-    (redo)=onRedo()
-    (restart)=onRestart()
-    [hintsCount]=3
-    [score]=score
-    [timer]=timer
-  ></status></div>
-
-  <div class="gamefield noselect"><tile-collection
-    [layout]=currentLayout
-    (ready)=onTileCollectionReady()
-    (tileCleared)=onTileCleared()
-    (click)=onClick()
-    [paused]=paused
-    ></tile-collection></div>
-
-    <div *ngIf="state=='intro'" class="intro">
-      Logo here
-    </div>
-  `,
+  `],
   providers: [MjGameControlService, MjAudioService]
 })
 export class MjGameComponent {
@@ -135,6 +143,25 @@ export class MjGameComponent {
     this.initGameValues();
   }
 
+  public restartGameModalActions: ModalAction[] = [
+    new ModalAction("Yes", this.onRestartYesClick),
+    new ModalAction("No", this.onRestartNoClick)
+  ];
+
+  @ViewChildren(ModalComponent)
+  public readonly modals: QueryList<ModalComponent>;
+
+  private menuModal: ModalComponent;
+  private restartModal: ModalComponent;
+
+  ngAfterViewInit(): void {
+    // this.menuModal = this.modals[0];
+    // this.restartModal = this.modals[1];
+    console.log(this.modals);
+    console.log(this.menuModal);
+    console.log(this.restartModal);
+  }
+
   onTileCollectionReady():void {
     // TODO hide "loading"
     // console.log("loading finished");
@@ -178,9 +205,17 @@ export class MjGameComponent {
 
   // a.k.a. this.restart()
   public onRestart() {
+    this.restartModal.show();
+  }
+
+  onRestartYesClick() {
     this.initGameValues();
     this.tileCollection.reset();
     this.status.reset();
+  }
+
+  onRestartNoClick() {
+    this.restartModal.hide();
   }
 
   private initGameValues() {

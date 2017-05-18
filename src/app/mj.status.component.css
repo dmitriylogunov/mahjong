@@ -16,14 +16,10 @@
     display: none;
   }
 
-  .timer, .score, .pause {
+  .timer, .score {
     margin-right: 30px;
     margin-left: 30px;
     display: inline-block;
-  }
-
-  .pause {
-    min-width: 100px;
   }
 
   .timer {
@@ -40,6 +36,7 @@
 }
 
 .pause {
+  float: right;
   text-align: center;
 }
 
@@ -66,15 +63,13 @@ span.highlight {
   margin-left: 20px;
 }
 
-.restart {
+.restart, .pause, .sound, .music {
   float: right;
   margin-right: 20px;
 }
 
 .sound {
-  float: right;
-  margin-right: 20px;
-  width: 28px;
+  width: 18px;
   text-align: left;
 }
 

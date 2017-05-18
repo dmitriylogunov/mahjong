@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 // TODO make modal juicy and jumping out with animation
 @Component({
-  selector: 'app-modal',
+  selector: 'modal',
   template: `
   <div (click)="hide()" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}"
        [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
