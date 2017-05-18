@@ -12,13 +12,16 @@
 }
 
 .modal-dialog {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 25% auto; /* 25% from the top and centered */
   padding: 20px;
-  border: 1px solid #888;
   width: 60%; /* Could be more or less, depending on screen size */
-  border-radius: 25px;
-  border: 3px solid grey;
+  /*border-radius: 25px;*/
+  min-height: 50%;
+  color: #FFE1A2;
+  border-radius: 10%;
+  border: 2px solid #FFE1A2;
+  text-align: center;
+  background-color: #5C5749;
 }
 
 .modal-content {
@@ -26,8 +29,15 @@
   border-bottom: none;
 }
 
+.modal-actions-wrapper {
+  width: 100%;
+}
+
 .modal-actions {
-  float: right;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80%;
 }
 
 .btn {
@@ -35,14 +45,14 @@
   line-height: 28px;
   border-radius: 10px;
   cursor: pointer;
-  border: 1px solid black;
-  background-color: lightgrey;
+  border: 1px solid #FFE1A2;
+  background-color: #FEF2C7;
+  color: #5C5749;
 }
 
 .btn-default {
 }
 
 .btn-primary {
-  background-color: blue;
-  color: white;
+  background-color: lightgreen;
 }

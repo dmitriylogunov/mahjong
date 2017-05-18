@@ -155,8 +155,9 @@ export class MjGameComponent {
   private restartModal: ModalComponent;
 
   ngAfterViewInit(): void {
-    // this.menuModal = this.modals[0];
-    // this.restartModal = this.modals[1];
+    let arModals: ModalComponent[] = this.modals.toArray();
+    this.menuModal = arModals[0];
+    this.restartModal = arModals[1];
     console.log(this.modals);
     console.log(this.menuModal);
     console.log(this.restartModal);
