@@ -12,7 +12,7 @@ import { Component, Input } from '@angular/core';
       <div class="modal-actions-wrapper">
         <div class="modal-actions">
           <span *ngFor="let action of actions">
-            <button type="button" class="btn" (click)=action.callback>{{action.name}}</button>
+            <button type="button" class="btn" (click)=action.callback()>{{action.name}}</button>
           </span>
         </div>
       </div>

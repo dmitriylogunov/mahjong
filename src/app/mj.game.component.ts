@@ -21,7 +21,7 @@ import { TweenLite } from 'gsap';
   <div class="statusfield"><status
     (undo)=onUndo()
     (redo)=onRedo()
-    (restart)=onRestart()
+    (restart)=onRestartRequest()
     [hintsCount]=3
     [score]=score
     [timer]=timer
@@ -144,8 +144,8 @@ export class MjGameComponent {
   }
 
   public restartGameModalActions: ModalAction[] = [
-    new ModalAction("Yes", this.onRestartYesClick),
-    new ModalAction("No", this.onRestartNoClick)
+    new ModalAction("Yes", (()=>{this.onRestartYesClick();}).bind(this)),
+    new ModalAction("No", (()=>{this.onRestartNoClick();}).bind(this))
   ];
 
   @ViewChildren(ModalComponent)
@@ -158,9 +158,6 @@ export class MjGameComponent {
     let arModals: ModalComponent[] = this.modals.toArray();
     this.menuModal = arModals[0];
     this.restartModal = arModals[1];
-    console.log(this.modals);
-    console.log(this.menuModal);
-    console.log(this.restartModal);
   }
 
   onTileCollectionReady():void {
@@ -205,7 +202,7 @@ export class MjGameComponent {
   }
 
   // a.k.a. this.restart()
-  public onRestart() {
+  public onRestartRequest() {
     this.restartModal.show();
   }
 
