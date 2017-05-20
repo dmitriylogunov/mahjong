@@ -9,6 +9,7 @@ import { Component, Input } from '@angular/core';
       <div class="modal-content">
         <ng-content></ng-content>
       </div>
+      <div class="clear"></div>
       <div class="modal-actions-wrapper">
         <div class="modal-actions">
           <span *ngFor="let action of actions">

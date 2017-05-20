@@ -55,7 +55,6 @@ import { TweenLite } from 'gsap';
         background-size: cover;
         background-image: url('/img/backgrounds/oriental-1.jpg')
       }
-
       .intro {
         width: 100vw;
         height: 100%;

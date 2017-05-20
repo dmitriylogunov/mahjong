@@ -12,13 +12,13 @@
 }
 
 .modal-dialog {
-  margin: 25% auto; /* 25% from the top and centered */
+  margin: 200px auto; /* offset from the top and centered */
   padding: 20px;
   width: 60%; /* Could be more or less, depending on screen size */
   /*border-radius: 25px;*/
-  min-height: 50%;
+  min-height: 200px;
   color: #FFE1A2;
-  border-radius: 10%;
+  border-radius: 25px;
   border: 2px solid #FFE1A2;
   text-align: center;
   background-color: #5C5749;
@@ -27,6 +27,7 @@
 .modal-content {
   float: left;
   border-bottom: none;
+  min-height: 180px;
 }
 
 .modal-actions-wrapper {
@@ -37,7 +38,6 @@
   width: 50%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 80%;
 }
 
 .btn {

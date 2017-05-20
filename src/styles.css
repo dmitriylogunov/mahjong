@@ -37,6 +37,10 @@ body {
     animation-iteration-count: infinite;
 }
 
+.clear {
+    clear: both;
+}
+
 @-moz-keyframes blinker {
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
