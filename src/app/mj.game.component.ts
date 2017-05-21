@@ -11,11 +11,18 @@ import { TweenLite } from 'gsap';
   selector: 'mj-game',
   template: `
   <!-- main menu -->
-  <modal [actions]=[]></modal>
+  <modal [actions]=mainMenuModalActions>
+    <h1>MAHJONGG<br/>SOLITAIRE</h1>
+  </modal>
 
   <!-- restart dialog -->
   <modal [actions]=restartGameModalActions>
       Restart game?
+  </modal>
+
+  <!-- game result -->
+  <modal [actions]=gameResultModalActions>
+    Game result
   </modal>
 
   <div class="statusfield"><status
@@ -125,7 +132,6 @@ export class MjGameComponent {
   public currentLayout: string = null;
 
   ngOnInit(): void {
-    this.paused = true;
     this.state = "intro";
 
     this.audioService.load(this.soundConfiguration);
@@ -138,25 +144,37 @@ export class MjGameComponent {
     // console.log("loading started");
     this.currentLayout = "dragon"; // update of layout will trigger initialisation of layout controller and tile field
 
-    // start game now
-    this.initGameValues();
+    // initialisation sequence continued in ngAfterViewInit
   }
+
+  public mainMenuModalActions: ModalAction[] = [
+    new ModalAction("Start", (()=>{this.onStartGameClick();}).bind(this))
+  ];
 
   public restartGameModalActions: ModalAction[] = [
     new ModalAction("Yes", (()=>{this.onRestartYesClick();}).bind(this)),
     new ModalAction("No", (()=>{this.onRestartNoClick();}).bind(this))
   ];
 
+  public gameResultModalActions: ModalAction[] = [
+    new ModalAction("Play Again", (()=>{this.onRestartYesClick();}).bind(this))
+  ]
+
   @ViewChildren(ModalComponent)
   public readonly modals: QueryList<ModalComponent>;
 
-  private menuModal: ModalComponent;
+  private mainMenuModal: ModalComponent;
   private restartModal: ModalComponent;
+  private gameResultModal: ModalComponent;
 
   ngAfterViewInit(): void {
     let arModals: ModalComponent[] = this.modals.toArray();
-    this.menuModal = arModals[0];
+    this.mainMenuModal = arModals[0];
     this.restartModal = arModals[1];
+    this.gameResultModal = arModals[2];
+
+    // show main menu
+    this.mainMenuModal.show();
   }
 
   onTileCollectionReady():void {
@@ -200,19 +218,27 @@ export class MjGameComponent {
     this.score += 10;
   }
 
-  // a.k.a. this.restart()
   public onRestartRequest() {
     this.restartModal.show();
   }
 
-  onRestartYesClick() {
+  private startGame(): void {
+    this.state = "game";
     this.initGameValues();
-    this.tileCollection.reset();
     this.status.reset();
   }
 
+  onStartGameClick() {
+    this.startGame();
+  }
+
+  onRestartYesClick() {
+    this.tileCollection.reset();
+    this.startGame();
+  }
+
   onRestartNoClick() {
-    this.restartModal.hide();
+    // this.restartModal.hide();
   }
 
   private initGameValues() {
