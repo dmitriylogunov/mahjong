@@ -51,12 +51,14 @@
 }
 
 .tile-content .primary-character-wrap {
-  width: 100%;
+  /*width: 100%;*/
   text-align: center;
 }
 
 .tile-content .primary-character {
-  margin: 0;
+  margin-top: -1px;
+  margin-right: 0px;
+  margin-bottom: 0px;
 }
 
 .tile-content .clear {

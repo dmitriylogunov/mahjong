@@ -6,7 +6,7 @@ import { MjAudioService } from './mj.audio.service';
 @Component({
   selector: 'status',
   template: `
-    <div class="status noselect">
+    <div *ngIf="isVisible" class="status noselect">
 
       <!-- left side block -->
       <span class="hints large-screen-only">
@@ -49,9 +49,6 @@ import { MjAudioService } from './mj.audio.service';
         <span class="undo" (click)=onUndoClick() [class.disabled]=!undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
         <span class="redo" (click)=onRedoClick() [class.disabled]=!redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
       </span>
-    </div>
-
-    <div class="status noselect small-screen-only">
     </div>
   `,
   styleUrls: ['app/mj.status.component.css']
@@ -114,10 +111,19 @@ export class MjStatusComponent implements OnDestroy {
   ngOnInit(): void {
   }
 
+  private isVisible: boolean = false;
   private paused: boolean;
   private undoStatus: boolean = false;
   private redoStatus: boolean = false;
   private hintCurrentlyShowing: boolean = false;
+
+  public show(): void {
+    this.isVisible = true;
+  }
+
+  public hide(): void {
+    this.isVisible = false;
+  }
 
   public reset() {
     this.hintsRemaining = this.hints.length;

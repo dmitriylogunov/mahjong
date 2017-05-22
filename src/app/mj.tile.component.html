@@ -45,7 +45,11 @@
         }"
       >{{_type.getSecondaryCharacter()}}</div>
 
-      <div class="primary-character-wrap">
+      <div class="primary-character-wrap"
+        [ngStyle] = "{
+          'width.px': primaryWrapperWidth,
+          'margin-left.px': -primaryWrapperLeftShift
+        }">
         <span class="primary-character"
           [ngStyle]="{
             'font-size.px': fontSizePrimary,

@@ -12,7 +12,7 @@ import { TweenLite } from 'gsap';
   template: `
   <!-- main menu -->
   <modal [actions]=mainMenuModalActions>
-    <h1>MAHJONGG<br/>SOLITAIRE</h1>
+    <h1 class="gametitle">Mahjong<br/>Solitaire</h1>
   </modal>
 
   <!-- restart dialog -->
@@ -70,6 +70,16 @@ import { TweenLite } from 'gsap';
         top: 0;
         background:rgba(0,0,0,0.8);
         display: none;
+      }
+      h1 {
+        width: 100%;
+        text-align: center;
+        font-size: 55px;
+        text-transform: uppercase;
+      }
+      .gametitle {
+        color: lightgreen;
+        font-family: "Palatino", "Garamond", "Courier new";
       }
   `],
   providers: [MjGameControlService, MjAudioService]
@@ -226,6 +236,7 @@ export class MjGameComponent {
     this.state = "game";
     this.initGameValues();
     this.status.reset();
+    this.status.show();
   }
 
   onStartGameClick() {

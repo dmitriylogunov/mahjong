@@ -34,6 +34,8 @@ export class MjTileComponent {
   public shiftY: number;
   public fontSizePrimary: number;
   public fontSizeSecondary: number;
+  public primaryWrapperWidth: number;
+  public primaryWrapperLeftShift: number;
 
   // TODO this could be outside tile component
   private recalculateFontSizes() {
@@ -49,6 +51,11 @@ export class MjTileComponent {
     this.fontSizePrimary =  Math.floor(adjustedElementSize*1.5);
     this.fontSizeSecondary = Math.floor(adjustedElementSize / 3);
     // console.log(adjustedElementSize);
+
+    // Primary tile character horizontal centering
+    let primaryCharacterAreaWidth = (this._elementPixelWidth*2) - 10; // -2*margin of tile
+    this.primaryWrapperWidth = 4*this._elementPixelWidth;
+    this.primaryWrapperLeftShift = Math.floor((this.primaryWrapperWidth - primaryCharacterAreaWidth)/2);
   }
 
   @Input()
