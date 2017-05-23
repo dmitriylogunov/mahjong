@@ -10,7 +10,7 @@
       Game paused
   </div>
   <div class="tile-field"
-    *ngIf="tilesReady && !paused"
+    *ngIf="tilesReady && !paused && isVisible"
     (click)="onFieldClick()"
     [ngStyle]="{
         'width.px': windowWidth,
@@ -20,7 +20,7 @@
   >
 
     <tile *ngFor="let tile of tiles"
-      (tileClicked)="onTileSelect(tile)"
+      (tileClicked)="onTileClick(tile)"
       [x]=tile.x
       [y]=tile.y
       [z]=tile.z

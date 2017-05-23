@@ -17,12 +17,23 @@ import { TweenLite } from 'gsap';
 
   <!-- restart dialog -->
   <modal [actions]=restartGameModalActions>
-      Restart game?
+      <h1>Restart game?</h1>
   </modal>
 
-  <!-- game result -->
-  <modal [actions]=gameResultModalActions>
-    Game result
+  <!-- win -->
+  <modal [actions]=winModalActions>
+    <h1>Congratulations, you win.</h1>
+    <p>Your score is {{score}}.</p>
+  </modal>
+
+  <!-- no more free tiles -->
+  <modal [actions]=tieModalActions>
+    There are no more free tiles left. From here you can:
+    <ul>
+      <li>Continue playing, undo the latest moves and try a different strategy</li>
+      <li>Replay the game with same layout</li>
+      <li>Restart the game with different layout</li>
+    </ul>
   </modal>
 
   <div class="statusfield"><status
@@ -162,26 +173,34 @@ export class MjGameComponent {
   ];
 
   public restartGameModalActions: ModalAction[] = [
-    new ModalAction("Yes", (()=>{this.onRestartYesClick();}).bind(this)),
-    new ModalAction("No", (()=>{this.onRestartNoClick();}).bind(this))
+    new ModalAction("Yes", (()=>{this.onRestartYesClick();}).bind(this))
+    // new ModalAction("No", (()=>{}))
   ];
 
-  public gameResultModalActions: ModalAction[] = [
+  public tieModalActions: ModalAction[] = [
+    // new ModalAction("Continue", (()=>{})), // do nothing
+    new ModalAction("Restart", (()=>{this.onTieRestartClick();}).bind(this)),
+    new ModalAction("New game", (()=>{this.onRestartYesClick();}).bind(this))
+  ];
+
+  public winModalActions: ModalAction[] = [
     new ModalAction("Play Again", (()=>{this.onRestartYesClick();}).bind(this))
-  ]
+  ];
 
   @ViewChildren(ModalComponent)
   public readonly modals: QueryList<ModalComponent>;
 
   private mainMenuModal: ModalComponent;
   private restartModal: ModalComponent;
-  private gameResultModal: ModalComponent;
+  private tieModal: ModalComponent;
+  private winModal: ModalComponent;
 
   ngAfterViewInit(): void {
     let arModals: ModalComponent[] = this.modals.toArray();
     this.mainMenuModal = arModals[0];
     this.restartModal = arModals[1];
-    this.gameResultModal = arModals[2];
+    this.tieModal = arModals[2];
+    this.winModal = arModals[3];
 
     // show main menu
     this.mainMenuModal.show();
@@ -196,12 +215,14 @@ export class MjGameComponent {
     if (this.tileCollection.activeTileCount==0) {
       // win
       this.audioService.play("win", 100);
+      this.state = "win";
+      this.status.hide();
+      this.tileCollection.hide();
+      this.winModal.show();
     } else if (this.tileCollection.freePairs.length==0) {
       // lose
       this.audioService.play("lose", 100);
-    } else {
-      // keep on playing
-      this.audioService.play("coin", 100);
+      this.tieModal.show();
     }
   }
 
@@ -209,6 +230,7 @@ export class MjGameComponent {
     this.gameControlService.updateUndoStatus(true);
     this.gameControlService.updateRedoStatus(false);
     this.score += 10;
+    this.audioService.play("coin", 100);
     this.checkGameStatus();
   }
 
@@ -228,6 +250,10 @@ export class MjGameComponent {
     this.score += 10;
   }
 
+  public onClearPair() {
+    this.tileCollection.clearTilePair();
+  }
+
   public onRestartRequest() {
     this.restartModal.show();
   }
@@ -237,6 +263,7 @@ export class MjGameComponent {
     this.initGameValues();
     this.status.reset();
     this.status.show();
+    this.tileCollection.show();
   }
 
   onStartGameClick() {
@@ -248,8 +275,9 @@ export class MjGameComponent {
     this.startGame();
   }
 
-  onRestartNoClick() {
-    // this.restartModal.hide();
+  onTieRestartClick() {
+    this.tileCollection.reset(false);
+    this.startGame();
   }
 
   private initGameValues() {

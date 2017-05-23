@@ -92,6 +92,16 @@ export class MJTileCollectionComponent implements OnDestroy {
   public paddingTop: number = 0;
   public paddingBottom: number = 0;
 
+  private isVisible: boolean = false;
+
+  public show() {
+    this.isVisible = true;
+  }
+
+  public hide() {
+    this.isVisible = false;
+  }
+
   // TODO wrap into MjTileType class
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
   private tileSetDescriptor: [string, number, boolean][] = [
@@ -252,20 +262,36 @@ export class MJTileCollectionComponent implements OnDestroy {
     }
   }
 
-  public reset() {
+  public reset(doShuffle: boolean = true) {
     // reset tiles
     for (let tile of this.tiles) {
       tile.reset();
     }
-    this.shuffleTypesFisherYates();
+    if (doShuffle) {
+      this.shuffleTypesFisherYates();
+    }
     this.onFieldUpdate();
 
     this.activeTileCount = this.tiles.length;
     this.undoQueue.reset();
   }
 
-  onTileSelect(tile: MjTile) : void {
-    // console.log("onTileSelect", tile, tile.type.toString());
+  // This is a debug function used to clear first available free tile pair
+  clearTilePair() {
+    if (this.freePairs.length>0) {
+      let tile1: MjTile = this.freePairs[0][0];
+      let tile2: MjTile = this.freePairs[0][1];
+      this.selectTile(tile1);
+      this.selectTile(tile2);
+    }
+  }
+
+  onTileClick(tile: MjTile) : void {
+    this.selectTile(tile);
+  }
+
+  selectTile(tile: MjTile) : void {
+    // console.log("selectTile", tile, tile.type.toString());
     // checking .active because still can get clicks on the tile while "hiding" animation is playing
     if (tile.active) {
       if (tile.selected) {
@@ -338,10 +364,10 @@ export class MJTileCollectionComponent implements OnDestroy {
 
     for (let i=0; i<this.tiles.length-1; i++) {
       let tile1 = this.tiles[i];
-      if (tile1.isFree()) {
+      if (tile1.active && tile1.isFree()) {
         for (let j=i+1; j<this.tiles.length; j++) {
           let tile2 = this.tiles[j];
-          if (tile2.isFree() && tile1.matches(tile2)) {
+          if (tile2.active && tile2.isFree() && tile1.matches(tile2)) {
             this.freePairs.push([tile1, tile2]);
             tile1.hasFreePair = true;
             tile2.hasFreePair = true;
