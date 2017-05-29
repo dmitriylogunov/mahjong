@@ -36,13 +36,15 @@ import { TweenLite } from 'gsap';
     </ul>
   </modal>
 
+  <!-- sort of App configuration here in the settings of status component -->
   <div class="statusfield"><status
     (undo)=onUndo()
     (redo)=onRedo()
     (restart)=onRestartRequest()
-    [hintsCount]=3
+    [hintsCount]=numberOfHints
     [score]=score
     [timer]=timer
+    [showDebugFields]=showDebugFields
   ></status></div>
 
   <div class="gamefield noselect"><tile-collection
@@ -96,6 +98,11 @@ import { TweenLite } from 'gsap';
   providers: [MjGameControlService, MjAudioService]
 })
 export class MjGameComponent {
+  //config 
+  public numberOfHints = 3;
+  public showDebugFields = true;
+
+  //
   private state: string;
   private score: number;
   private timer: number;
@@ -117,15 +124,22 @@ export class MjGameComponent {
 
   private subscriptions: Subscription[] = [];
   constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
+    // Global game event subscriptions
     this.subscriptions.push(audioService.soundsReady$.subscribe(
-      status => {
+      dummyVariable => {
         this.playMusic();
       }
     ));
 
     this.subscriptions.push(gameControlService.paused$.subscribe(
-      status => {
-        this.paused = status;
+      pauseStatus => {
+        this.paused = pauseStatus;
+      }
+    ));
+
+    this.subscriptions.push(gameControlService.debugCommand$.subscribe(
+      command => {
+        this.onDebugCommand(command);
       }
     ));
 
@@ -298,5 +312,9 @@ export class MjGameComponent {
 
   private stopMusic(): void {
 
+  }
+
+  private onDebugCommand(command: string) {
+    console.log(command);
   }
 }

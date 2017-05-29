@@ -22,13 +22,14 @@
     display: inline-block;
   }
 
-  .timer {
-    min-width: 120px;
-  }
-
   .score {
     min-width: 100px;
   }
+}
+
+.timer {
+  width: 95px;
+  overflow: hidden;
 }
 
 .score, .timer {
@@ -74,8 +75,8 @@ span.highlight {
 }
 
 .undoredo {
-  float: right;
-  margin-right: 40px;
+  float: left;
+  margin-left: 10px;
   color: lightgreen;
 }
 
@@ -108,6 +109,22 @@ span.highlight {
 
 span.disabled {
   color: gray;
+}
+
+.middle-block {
+  width: 200px;
+  text-align: center;
+  margin: 0 auto 0 auto;
+}
+
+.debug-block {
+  position: absolute;
+  x: 0;
+  y: 0;
+  width: 400px;
+  text-align: left;
+  margin: 0 auto 0 auto;
+  z-index: 500;
 }
 
 /*.tooltip {
