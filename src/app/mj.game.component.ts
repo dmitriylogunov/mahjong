@@ -19,13 +19,7 @@ import { TweenLite } from 'gsap';
   <modal [actions]=restartGameModalActions>
       <h1>Restart game?</h1>
   </modal>
-
-  <!-- win -->
-  <modal [actions]=winModalActions>
-    <h1>Congratulations, you win.</h1>
-    <p>Your score is {{score}}.</p>
-  </modal>
-
+  
   <!-- no more free tiles -->
   <modal [actions]=tieModalActions>
     There are no more free tiles left. From here you can:
@@ -36,7 +30,12 @@ import { TweenLite } from 'gsap';
     </ul>
   </modal>
 
-  <!-- sort of App configuration here in the settings of status component -->
+  <!-- win -->
+  <modal [actions]=winModalActions>
+    <h1>Congratulations, you win.</h1>
+    <p>Your score is {{score}}.</p>
+  </modal>
+
   <div class="statusfield"><status
     (undo)=onUndo()
     (redo)=onRedo()
@@ -98,7 +97,7 @@ import { TweenLite } from 'gsap';
   providers: [MjGameControlService, MjAudioService]
 })
 export class MjGameComponent {
-  //config 
+  //config
   public numberOfHints = 3;
   public showDebugFields = true;
 
@@ -226,17 +225,19 @@ export class MjGameComponent {
   }
 
   private checkGameStatus():void {
-    if (this.tileCollection.activeTileCount==0) {
-      // win
-      this.audioService.play("win", 100);
-      this.state = "win";
-      this.status.hide();
-      this.tileCollection.hide();
-      this.winModal.show();
-    } else if (this.tileCollection.freePairs.length==0) {
-      // lose
-      this.audioService.play("lose", 100);
-      this.tieModal.show();
+    if (!this.tileCollection.hasFreePairs()) {
+      if (this.tileCollection.visibleTileCount==0) {
+        // win
+        this.audioService.play("win", 100);
+        this.state = "win";
+        this.status.hide();
+        this.tileCollection.hide();
+        this.winModal.show();
+      } else {
+        // lose
+        this.audioService.play("lose", 100);
+        this.tieModal.show();
+      }
     }
   }
 
@@ -315,6 +316,14 @@ export class MjGameComponent {
   }
 
   private onDebugCommand(command: string) {
-    console.log(command);
+    if (command=='step') {
+      this.tileCollection.clearTilePair();
+    }
+
+    if (command=='solve') {
+      while (this.tileCollection.hasFreePairs()) {
+        this.tileCollection.clearTilePair();
+      }
+    }
   }
 }

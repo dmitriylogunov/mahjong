@@ -272,7 +272,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     }
     this.onFieldUpdate();
 
-    this.activeTileCount = this.tiles.length;
+    this.visibleTileCount = this.tiles.length;
     this.undoQueue.reset();
   }
 
@@ -308,7 +308,7 @@ export class MJTileCollectionComponent implements OnDestroy {
               this.undoQueue.push([tile, this.selectedTile]);
               tile.remove();
               this.selectedTile.remove();
-              this.activeTileCount-=2;
+              this.visibleTileCount-=2;
 
               this.selectedTile = null;
 
@@ -342,13 +342,13 @@ export class MJTileCollectionComponent implements OnDestroy {
 
   private returnTile(tile: MjTile) {
     if (!tile.active) {
-      this.activeTileCount++;
+      this.visibleTileCount++;
     };
     tile.returnToField();
   }
 
   public freePairs: [MjTile, MjTile][] = [];
-  public activeTileCount: number = 0;
+  public visibleTileCount: number = 0;
 
   private onFieldUpdate(): void {
     this.gameControlService.updateHintStatus(false);
@@ -377,7 +377,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     }
 
     if (this.tiles[this.tiles.length-1].active) {
-      this.activeTileCount++;
+      this.visibleTileCount++;
     }
   }
 
@@ -386,7 +386,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     for (let tile of tiles) {
       tile.returnToField();
     }
-    this.activeTileCount+=tiles.length;
+    this.visibleTileCount+=tiles.length;
     return (this.undoQueue.getUndoStatus());
   }
 
@@ -396,7 +396,7 @@ export class MJTileCollectionComponent implements OnDestroy {
     for (let tile of tiles) {
       tile.remove();
     }
-    this.activeTileCount-=tiles.length;
+    this.visibleTileCount-=tiles.length;
     return (this.undoQueue.getRedoStatus());
   }
 
@@ -406,5 +406,9 @@ export class MJTileCollectionComponent implements OnDestroy {
       this.selectedTile.unselect();
       this.selectedTile = null;
     }
+  }
+
+  public hasFreePairs(): boolean {
+    return this.freePairs.length>0;
   }
 }
