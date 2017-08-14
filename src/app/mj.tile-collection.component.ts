@@ -1,16 +1,16 @@
 import { Component, Input, OnDestroy, Output, EventEmitter, ElementRef } from '@angular/core';
 import { MjTileComponent } from './mj.tile.component';
-import { MjTile, MjTileType } from './mj.tile';
-import { AppToolbox } from './app.toolbox';
-import { MjGameControlService } from './mj.game.control.service';
+import { MjTile, MjTileType } from './classes/mj.tile';
+import { AppToolbox } from './classes/app.toolbox';
+import { MjGameControlService } from './services/mj.game.control.service';
 import { Subscription }   from 'rxjs/Subscription';
-import { MjAudioService } from './mj.audio.service';
-import { MjUndoQueue } from './mj.undo.queue'
+import { MjAudioService } from './services/mj.audio.service';
+import { MjUndoQueue } from './classes/mj.undo.queue'
 
 @Component({
   selector: 'tile-collection',
-  templateUrl: 'app/mj.tile-collection.component.html',
-  styleUrls: ['app/mj.tile-collection.component.css']
+  templateUrl: 'templates/mj.tile-collection.component.html',
+  styleUrls: ['styles/mj.tile-collection.component.css']
 })
 export class MJTileCollectionComponent implements OnDestroy {
 

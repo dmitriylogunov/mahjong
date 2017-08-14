@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MjTile, MjTileType } from './mj.tile';
+import { MjTile, MjTileType } from './classes/mj.tile';
 
 @Component({
   selector: 'tile',
-  templateUrl: 'app/mj.tile.component.html',
-  styleUrls: ['app/mj.tile.component.css']
+  templateUrl: 'templates/mj.tile.component.html',
+  styleUrls: ['styles/mj.tile.component.css']
 })
 export class MjTileComponent {
   // constants

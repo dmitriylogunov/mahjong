@@ -1,8 +1,8 @@
 import { Component, ViewChild, ViewChildren, OnDestroy, QueryList } from '@angular/core';
 import { MjStatusComponent }  from './mj.status.component';
 import { MJTileCollectionComponent } from './mj.tile-collection.component';
-import { MjGameControlService } from './mj.game.control.service';
-import { MjAudioService, SoundConfiguration } from './mj.audio.service';
+import { MjGameControlService } from './services/mj.game.control.service';
+import { MjAudioService, SoundConfiguration } from './services/mj.audio.service';
 import { ModalComponent, ModalAction } from './app.modal.component';
 import { Subscription } from 'rxjs/Subscription';
 import { TweenLite } from 'gsap';
@@ -19,7 +19,7 @@ import { TweenLite } from 'gsap';
   <modal [actions]=restartGameModalActions>
       <h1>Restart game?</h1>
   </modal>
-  
+
   <!-- no more free tiles -->
   <modal [actions]=tieModalActions>
     There are no more free tiles left. From here you can:

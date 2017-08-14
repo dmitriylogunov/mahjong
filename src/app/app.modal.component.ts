@@ -21,7 +21,7 @@ import { Component, Input } from '@angular/core';
     </div>
   </div>
   `,
-  styleUrls: ['app/app.modal.component.css'],
+  styleUrls: ['styles/app.modal.component.css'],
 })
 export class ModalComponent {
   @Input()

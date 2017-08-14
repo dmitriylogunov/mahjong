@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { AppToolbox } from './app.toolbox';
+import { AppToolbox } from './../classes/app.toolbox';
 import { Subscription }   from 'rxjs/Subscription';
 import { MjGameControlService } from './mj.game.control.service';
 import { Subject }    from 'rxjs/Subject';

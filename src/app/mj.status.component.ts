@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
-import { MjGameControlService } from './mj.game.control.service';
+import { MjGameControlService } from './services/mj.game.control.service';
 import { Subscription } from 'rxjs/Subscription'
-import { MjAudioService } from './mj.audio.service';
+import { MjAudioService } from './services/mj.audio.service';
 
 @Component({
   selector: 'status',
@@ -68,7 +68,7 @@ import { MjAudioService } from './mj.audio.service';
 
     </div>
   `,
-  styleUrls: ['app/mj.status.component.css']
+  styleUrls: ['styles/mj.status.component.css']
 })
 export class MjStatusComponent implements OnDestroy {
   @Input()
