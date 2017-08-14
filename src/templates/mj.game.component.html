@@ -1,0 +1,47 @@
+<!-- main menu -->
+<modal [actions]=mainMenuModalActions>
+  <h1 class="gametitle">Mahjong<br/>Solitaire</h1>
+</modal>
+
+<!-- restart dialog -->
+<modal [actions]=restartGameModalActions>
+    <h1>Restart game?</h1>
+</modal>
+
+<!-- no more free tiles -->
+<modal [actions]=tieModalActions>
+  There are no more free tiles left. From here you can:
+  <ul>
+    <li>Continue playing, undo the latest moves and try a different strategy</li>
+    <li>Replay the game with same layout</li>
+    <li>Restart the game with different layout</li>
+  </ul>
+</modal>
+
+<!-- win -->
+<modal [actions]=winModalActions>
+  <h1>Congratulations, you win.</h1>
+  <p>Your score is {{score}}.</p>
+</modal>
+
+<div class="statusfield"><status
+  (undo)=onUndo()
+  (redo)=onRedo()
+  (restart)=onRestartRequest()
+  [hintsCount]=numberOfHints
+  [score]=score
+  [timer]=timer
+  [showDebugFields]=showDebugFields
+></status></div>
+
+<div class="gamefield noselect"><tile-field
+  [layout]=currentLayout
+  (ready)=onTileCollectionReady()
+  (tileCleared)=onTileCleared()
+  (click)=onClick()
+  [paused]=paused
+  ></tile-field></div>
+
+  <div *ngIf="state=='intro'" class="intro">
+    Logo here
+  </div>

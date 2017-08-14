@@ -1,0 +1,34 @@
+.statusfield
+{
+  position: relative;
+  width: 100vw;
+  height: 5vh;
+  background-color:#5C5749;
+}
+.gamefield {
+  position: relative;
+  width: 100vw;
+  height: 95vh;
+  /*background-color: #BEDDBF;*/
+  background-size: cover;
+  background-image: url('/img/backgrounds/oriental-1.jpg')
+}
+.intro {
+  width: 100vw;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background:rgba(0,0,0,0.8);
+  display: none;
+}
+h1 {
+  width: 100%;
+  text-align: center;
+  font-size: 55px;
+  text-transform: uppercase;
+}
+.gametitle {
+  color: lightgreen;
+  font-family: "Palatino", "Garamond", "Courier new";
+}
