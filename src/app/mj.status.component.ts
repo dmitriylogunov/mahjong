@@ -5,69 +5,7 @@ import { MjAudioService } from './services/mj.audio.service';
 
 @Component({
   selector: 'status',
-  template: `
-    <div *ngIf="isVisible" class="status noselect">
-
-      <!-- left side block -->
-      <div class="left-block">
-        <span class="hints large-screen-only">
-          Hints:
-          <span *ngFor="let isAvailable of hints; let i=index;" (click)=onHintClick() class="hint"
-          [ngClass]="{'active blinking': (i==hintsRemaining) && hintCurrentlyShowing, 'available': isAvailable}"
-          ><i class="fa fa-diamond" aria-hidden="true"></i></span>
-        </span>
-        <span class="hints small-screen-only">
-          <span (click)=onHintClick() class="hint" [class.active]="hintCurrentlyShowing" [class.available]="hintsRemaining>0">
-            <i class="fa fa-diamond" aria-hidden="true"></i> x{{hintsRemaining}}
-          </span>
-        </span>
-
-        <span class="undoredo">
-          <span class="undo" (click)=onUndoClick() [class.disabled]=!undoStatus><i class="fa fa-undo" aria-hidden="true"></i></span>
-          <span class="redo" (click)=onRedoClick() [class.disabled]=!redoStatus><i class="fa fa-repeat" aria-hidden="true"></i></span>
-        </span>
-      </div>
-
-      <!-- right side block -->
-      <div class="right-block">
-        <span class="restart highlight" (click)=restart.emit(null)><i class="fa fa-close" aria-hidden="true"></i></span>
-
-        <span class="pause highlight" (click)=onPauseClick()>
-          <i *ngIf="paused" class="fa fa-play-circle-o" aria-hidden="true"></i>
-          <i *ngIf="!paused" class="fa fa-pause-circle-o" aria-hidden="true"></i>
-        </span>
-
-        <span class="music highlight"><i class="fa fa-music" aria-hidden="true"></i></span>
-
-        <span class="sound highlight" (click)=onSoundClick()>
-          <i *ngIf="soundStatus" class="fa fa-volume-up" aria-hidden="true"></i>
-          <i *ngIf="!soundStatus" class="fa fa-volume-off" aria-hidden="true"></i>
-        </span>
-      </div>
-
-      <!-- middle block -->
-      <div class="middle-block">
-        <span class="score"><i class="fa fa-trophy" aria-hidden="true"></i>
-          <span class="highlight">{{((score>0)?score:0) | intval}}</span>
-        </span>
-
-        <span class="timer">
-          <i class="fa fa-clock-o" aria-hidden="true"></i> <span class="highlight">{{timer | intAsTime}}</span>
-        </span>
-      </div>
-
-      <div class="debug-block" *ngIf="showDebugFields" >
-        <span class="highlight" (click)=onStepClick()>
-          Click to make one step: <i class="fa fa-play-circle-o" aria-hidden="true"></i>
-        </span>
-        <br/>
-        <span class="highlight" (click)=onSolveClick()>
-          Click to solve: <i class="fa fa-play-circle-o" aria-hidden="true"></i>
-        </span>
-      </div>
-
-    </div>
-  `,
+  templateUrl: 'templates/mj.status.component.html',
   styleUrls: ['styles/mj.status.component.css']
 })
 export class MjStatusComponent implements OnDestroy {
