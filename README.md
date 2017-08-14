@@ -29,6 +29,10 @@ We recommend [nvm](https://github.com/creationix/nvm) for managing multiple vers
 Install the npm packages described in the `package.json` and verify that it works:
 
 ```shell
+sudo npm install -g stylus
+```
+
+```shell
 npm install
 npm start
 ```
