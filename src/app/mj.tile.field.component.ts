@@ -5,7 +5,8 @@ import { AppToolbox } from './classes/app.toolbox';
 import { MjGameControlService } from './services/mj.game.control.service';
 import { Subscription }   from 'rxjs/Subscription';
 import { MjAudioService } from './services/mj.audio.service';
-import { MjUndoQueue } from './classes/mj.undo.queue'
+import { MjUndoQueue } from './classes/mj.undo.queue';
+import { MjTileCollection } from './classes/mj.tile.collection';
 
 @Component({
   selector: 'tile-field',
@@ -16,6 +17,25 @@ export class MJTileFieldComponent implements OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private undoQueue: MjUndoQueue;
+  private collection: MjTileCollection;
+
+  // constants
+  // constraints in tile scaling (tile == 2x2 elements), proportion = width / Height
+  // 1 is square, 0.5 is 2:1 etc
+  private elementProportionMax = 0.8; // almost square, which is 1
+  private elementProportionMin = 0.7;
+
+  public tilesReady: boolean = false; // local var to let template know that it can draw tiles
+
+  @Input()
+  paused: boolean;
+
+  @Input()
+  set layout(layout: string) {
+    if (layout==="dragon") {
+      this.init(this.dragonLayout);
+    }
+  }
 
   constructor(private _elRef: ElementRef, private gameControlService: MjGameControlService, private audioService: MjAudioService) {
     // every time the window size changes, recalculate field and tile dimensions
@@ -37,30 +57,13 @@ export class MJTileFieldComponent implements OnDestroy {
     ));
 
     this.undoQueue = new MjUndoQueue();
+    this.collection = new MjTileCollection();
   }
 
   ngOnDestroy(): void {
     // prevent memory leak
     for (let subscription of this.subscriptions) {
       subscription.unsubscribe();
-    }
-  }
-
-  // constants
-  // constraints in tile scaling (tile == 2x2 elements), proportion = width / Height
-  // 1 is square, 0.5 is 2:1 etc
-  private elementProportionMax = 0.8; // almost square, which is 1
-  private elementProportionMin = 0.7;
-
-  public tilesReady: boolean = false;
-
-  @Input()
-  paused: boolean;
-
-  @Input()
-  set layout(layout: string) {
-    if (layout==="dragon") {
-      this.init(this.dragonLayout);
     }
   }
 
