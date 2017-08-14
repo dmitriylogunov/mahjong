@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewChildren, OnDestroy, QueryList } from '@angular/core';
 import { MjStatusComponent }  from './mj.status.component';
-import { MJTileCollectionComponent } from './mj.tile-collection.component';
+import { MJTileFieldComponent } from './mj.tile.field.component';
 import { MjGameControlService } from './services/mj.game.control.service';
 import { MjAudioService, SoundConfiguration } from './services/mj.audio.service';
 import { ModalComponent, ModalAction } from './app.modal.component';
@@ -46,13 +46,13 @@ import { TweenLite } from 'gsap';
     [showDebugFields]=showDebugFields
   ></status></div>
 
-  <div class="gamefield noselect"><tile-collection
+  <div class="gamefield noselect"><tile-field
     [layout]=currentLayout
     (ready)=onTileCollectionReady()
     (tileCleared)=onTileCleared()
     (click)=onClick()
     [paused]=paused
-    ></tile-collection></div>
+    ></tile-field></div>
 
     <div *ngIf="state=='intro'" class="intro">
       Logo here
@@ -157,8 +157,8 @@ export class MjGameComponent {
     }
   }
 
-  @ViewChild(MJTileCollectionComponent)
-  private tileCollection: MJTileCollectionComponent;
+  @ViewChild(MJTileFieldComponent)
+  private tileField: MJTileFieldComponent;
 
   @ViewChild(MjStatusComponent)
   private status: MjStatusComponent;
@@ -225,13 +225,13 @@ export class MjGameComponent {
   }
 
   private checkGameStatus():void {
-    if (!this.tileCollection.hasFreePairs()) {
-      if (this.tileCollection.visibleTileCount==0) {
+    if (!this.tileField.hasFreePairs()) {
+      if (this.tileField.visibleTileCount==0) {
         // win
         this.audioService.play("win", 100);
         this.state = "win";
         this.status.hide();
-        this.tileCollection.hide();
+        this.tileField.hide();
         this.winModal.show();
       } else {
         // lose
@@ -250,7 +250,7 @@ export class MjGameComponent {
   }
 
   public onUndo() {
-    let undoStatus = this.tileCollection.undo();
+    let undoStatus = this.tileField.undo();
     this.gameControlService.updateUndoStatus(undoStatus);
     this.gameControlService.updateRedoStatus(true);
     this.audioService.play("undo", 100);
@@ -258,7 +258,7 @@ export class MjGameComponent {
   }
 
   public onRedo() {
-    let redoStatus = this.tileCollection.redo();
+    let redoStatus = this.tileField.redo();
     this.gameControlService.updateUndoStatus(true);
     this.gameControlService.updateRedoStatus(redoStatus);
     this.checkGameStatus();
@@ -266,7 +266,7 @@ export class MjGameComponent {
   }
 
   public onClearPair() {
-    this.tileCollection.clearTilePair();
+    this.tileField.clearTilePair();
   }
 
   public onRestartRequest() {
@@ -278,7 +278,7 @@ export class MjGameComponent {
     this.initGameValues();
     this.status.reset();
     this.status.show();
-    this.tileCollection.show();
+    this.tileField.show();
   }
 
   onStartGameClick() {
@@ -286,12 +286,12 @@ export class MjGameComponent {
   }
 
   onRestartYesClick() {
-    this.tileCollection.reset();
+    this.tileField.reset();
     this.startGame();
   }
 
   onTieRestartClick() {
-    this.tileCollection.reset(false);
+    this.tileField.reset(false);
     this.startGame();
   }
 
@@ -317,12 +317,12 @@ export class MjGameComponent {
 
   private onDebugCommand(command: string) {
     if (command=='step') {
-      this.tileCollection.clearTilePair();
+      this.tileField.clearTilePair();
     }
 
     if (command=='solve') {
-      while (this.tileCollection.hasFreePairs()) {
-        this.tileCollection.clearTilePair();
+      while (this.tileField.hasFreePairs()) {
+        this.tileField.clearTilePair();
       }
     }
   }

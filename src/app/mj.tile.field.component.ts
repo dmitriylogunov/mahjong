@@ -8,11 +8,11 @@ import { MjAudioService } from './services/mj.audio.service';
 import { MjUndoQueue } from './classes/mj.undo.queue'
 
 @Component({
-  selector: 'tile-collection',
-  templateUrl: 'templates/mj.tile-collection.component.html',
-  styleUrls: ['styles/mj.tile-collection.component.css']
+  selector: 'tile-field',
+  templateUrl: 'templates/mj.tile.field.component.html',
+  styleUrls: ['styles/mj.tile.field.component.css']
 })
-export class MJTileCollectionComponent implements OnDestroy {
+export class MJTileFieldComponent implements OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private undoQueue: MjUndoQueue;
