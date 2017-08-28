@@ -1,3 +1,6 @@
+@require 'includes/index.styl'
+
+
 .tile-outer {
   position: absolute;
   font-family: FreeSerifNF;
@@ -15,25 +18,27 @@
   opacity: .99;
 }*/
 
-.tile-outer.free > .tile:hover {
-  background-color: lightgray;
-}
+.tile-outer
+  position relative
 
-.tile-shadow {
-  position: absolute;
-  border: 1px solid gray;
-  background-color: lightgray;
-  border-radius: 10%;
-}
+  &.free
+    .tile:hover
+      background-color lightgray
 
-.tile-shadow1 {
-  top: 0px;
-  left: 0px;
-}
+.tile-shadow
+  width 100%
+  position absolute
+  border 1px solid gray
+  background-color lightgray
+  border-radius 10%
+  box-sizing border-box
 
-.tile-shadow2 {
-  opacity: .99;
-}
+  &.tile-shadow1
+    top 0px
+    left 0px
+
+  &.tile-shadow2
+    opacity: .99
 
 .tile {
   overflow: hidden;

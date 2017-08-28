@@ -1,36 +1,38 @@
 @require 'includes/index.styl'
 
 .statusfield
-{
-  position: relative;
-  width: 100vw;
-  height: 5vh;
-  background-color:#5C5749;
-}
-.gamefield {
-  position: relative;
-  width: 100vw;
-  height: 95vh;
-  /*background-color: #BEDDBF;*/
-  background-size: cover;
-  background-image: url('/img/backgrounds/oriental-1.jpg')
-}
-.intro {
-  width: 100vw;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background:rgba(0,0,0,0.8);
-  display: none;
-}
-h1 {
-  width: 100%;
-  text-align: center;
-  font-size: 55px;
-  text-transform: uppercase;
-}
-.gametitle {
-  color: lightgreen;
-  font-family: "Palatino", "Garamond", "Courier new";
-}
+  z-index 1000
+  position absolute
+  top 0
+  left 0
+  width 100vw
+  height statusfield_height
+  background-color:#5C5749
+
+.gamefield
+  position absolute
+  top 0
+  left 0
+  width 100vw
+  height 100vh
+  padding-top statusfield_height
+  background-color #BEDDBF
+  background-size cover
+  background-image url('/img/backgrounds/oriental-1.jpg')
+
+h1.gametitle
+  width 100%
+  text-align center
+  font-size 55px
+  text-transform uppercase
+  color lightgreen
+  font-family "Palatino", "Garamond", "Courier new"
+
+.intro
+  position absolute
+  top 0
+  left 0
+  width 100vw
+  height 100vh
+  background rgba(0,0,0,0.8)
+  display none

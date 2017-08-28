@@ -6,32 +6,29 @@
 'padding-bottom.px': paddingBottom
 }"
 >
-  <div class="paused" *ngIf="paused">
+  <div class="paused-box" *ngIf="paused">
       Game paused
   </div>
   <div class="tile-field"
-    *ngIf="tilesReady && !paused && isVisible"
+    *ngIf="tilesReady"
     (click)="onFieldClick()"
     [ngStyle]="{
         'width.px': windowWidth,
-        'height.px': windowHeight
+        'height.px': windowHeight,
+        'display': (isVisible && !paused)?'block':'none'
       }"
    [ngClass]="{'shake shake-horizontal shake-little shake-constant': _shakeField}"
   >
 
     <tile *ngFor="let tile of tiles"
       (tileClicked)="onTileClick(tile)"
-      [x]=tile.x
-      [y]=tile.y
-      [z]=tile.z
-      [elementPixelWidth] = elementPixelWidth
-      [elementPixelHeight] = elementPixelHeight
-      [active]=tile.active
-      [selected]=tile.selected
+      [isVisible]=tile.active
       [type]=tile.type
-      [isFree]=tile.isFree()
-      [showHints]=showHints
-      [hasFreePair]=tile.hasFreePair
+      [isFree]=tile.isFree
+      [top]=tile.y*elementPixelHeight
+      [left]=tile.x*elementPixelWidth
+      [height]=elementPixelHeight*2
+      [width]=elementPixelWidth*2
     ></tile>
   </div>
 </div>

@@ -1,108 +1,105 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { MjGameControlService } from './services/mj.game.control.service';
 import { MjTile, MjTileType } from './classes/mj.tile';
+import { Subscription } from 'rxjs/Subscription'
 
+// shadow 2
+// 'top.px': -shiftX,
+// 'left.px': shiftY,
+
+// tile
+// 'top.px': -shiftX*2,
+// 'left.px': shiftY*2,
+
+
+// Tile must be minimal because there are many and if they have lots of inputs,
+// it slows down browser
 @Component({
   selector: 'tile',
   templateUrl: 'templates/mj.tile.component.html',
   styleUrls: ['styles/mj.tile.component.css']
 })
-export class MjTileComponent {
+export class MjTileComponent implements OnDestroy {
   // constants
-  public shiftProportion: number = 0.14; // how much shift tile face from tile bottom to create pseudo 3d effect
   public debug: boolean = false;
 
-  //   <div class="test" [innerHTML]="tileUnicode"></div>
-  @Input()
-  x: number;
-
-  @Input()
-  y: number;
-
-  @Input()
-  z: number;
-
-  @Input()
-  showHints: boolean;
-
-  @Input()
-  hasFreePair: boolean;
-
-
-  public _elementPixelWidth: number;
-  public shiftX: number;
-  public _elementPixelHeight: number;
-  public shiftY: number;
-  public fontSizePrimary: number;
-  public fontSizeSecondary: number;
-  public primaryWrapperWidth: number;
-  public primaryWrapperLeftShift: number;
-
-  // TODO this could be outside tile component
-  private recalculateFontSizes() {
-    if (!this._elementPixelHeight || !this._elementPixelWidth) {
-      return;
-    }
-
-    let adjustedElementSize = Math.min(
-      this._elementPixelHeight,
-      this._elementPixelWidth*1.5 // this is approximate proportion of tile font height to font width
-    );
-
-    this.fontSizePrimary =  Math.floor(adjustedElementSize*1.5);
-    this.fontSizeSecondary = Math.floor(adjustedElementSize / 3);
-    // console.log(adjustedElementSize);
-
-    // Primary tile character horizontal centering
-    let primaryCharacterAreaWidth = (this._elementPixelWidth*2) - 10; // -2*margin of tile
-    this.primaryWrapperWidth = 4*this._elementPixelWidth;
-    this.primaryWrapperLeftShift = Math.floor((this.primaryWrapperWidth - primaryCharacterAreaWidth)/2);
-  }
-
-  @Input()
-  set elementPixelWidth(elementPixelWidth: number) {
-    this._elementPixelWidth = elementPixelWidth;
-    this.shiftX = Math.floor(elementPixelWidth*this.shiftProportion);
-    // console.log(this.shiftX);
-    this.recalculateFontSizes();
-
-  }
-
-  @Input()
-  set elementPixelHeight(elementPixelHeight: number) {
-    this._elementPixelHeight = elementPixelHeight;
-    this.shiftY = Math.floor(elementPixelHeight*this.shiftProportion);
-    // console.log(this.shiftY);
-    this.recalculateFontSizes();
-  }
-
-  @Input()
-  active: boolean;
-
-  _selected: boolean = false;
-  @Input()
-  set selected(selected: boolean) {
-    if (!this._selected && selected) {
-      // play "select" animation
-    } else if (this._selected && !selected){
-      // play "unselect"
-    }
-    this._selected = selected;
-  }
+  // just the tile object with all metadata. It doesn't change often
+  // @Input()
+  // tile: MjTile;
 
   @Input()
   isFree: boolean;
 
   @Input()
-  set type(type: MjTileType) {
-    this._type = type;
-  }
+  isVisible: boolean;
 
-  public _type: MjTileType;
+  // this input does not change
+  @Input()
+  top: number;
+
+  // this input does not change
+  @Input()
+  left: number;
+
+  @Input()
+  height: number;
+
+  @Input()
+  width: number;
+
+  @Input()
+  type: MjTileType;
+
+  // <div class="test" [innerHTML]="tileUnicode"></div>
+
+  // @Input()
+  // showHints: boolean;
+
+
+  // @Input()
+  // set elementPixelHeight(elementPixelHeight: number) {
+  //   this._elementPixelHeight = elementPixelHeight;
+  // }
+
+  public selected: boolean = false;
+  // @Input()
+  // set selected(selected: boolean) {
+  //   if (!this._selected && selected) {
+  //     // play "select" animation
+  //   } else if (this._selected && !selected){
+  //     // play "unselect"
+  //   }
+  //   this._selected = selected;
+  // }
+
+  // @Input()
+  // set t*/ype(type: MjTileType) {
+  //   this._type = type;
+  // }
+  //
+  // public _type: MjTileType;
 
   @Output() tileClicked: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
+  private subscriptions: Subscription[] = [];
+
+  constructor(private gameControlService: MjGameControlService) {
+    // subscribe to events
+    this.subscriptions.push(gameControlService.updateAllTileSelection$.subscribe(
+      selected => {
+        this.selected = selected
+      }
+    ));
+
+
     // console.log("New tile");
+  }
+
+  ngOnDestroy(): void {
+    // prevent memory leak
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   onClick(event: any) {

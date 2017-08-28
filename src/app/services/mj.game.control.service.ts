@@ -11,9 +11,10 @@ export class MjGameControlService {
   private musicStatus = new Subject<boolean>();
   private score = new Subject<number>();
   private paused = new Subject<boolean>();
-
   private debugCommand = new Subject<string>();
+  private showingHints = new Subject<boolean>();
 
+  private updateAllTileSelection = new Subject<boolean>();
 
   // Observable streams
   undoStatusUpdated$ = this.undoStatus.asObservable();
@@ -24,6 +25,8 @@ export class MjGameControlService {
   scoreUpdated$ = this.score.asObservable();
   paused$ = this.paused.asObservable();
   debugCommand$ = this.debugCommand.asObservable();
+  showingHints$ = this.showingHints.asObservable();
+  updateAllTileSelection$ = this.updateAllTileSelection.asObservable();
 
   // Service commands
   updateUndoStatus(status: boolean) {
@@ -56,5 +59,13 @@ export class MjGameControlService {
 
   debug(command: string) {
     this.debugCommand.next(command);
+  }
+
+  updateHintsVisibility(visibility: boolean) {
+    this.showingHints.next(visibility);
+  }
+
+  unselectAllTiles() {
+    this.updateAllTileSelection.next(false);
   }
 }

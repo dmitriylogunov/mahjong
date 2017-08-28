@@ -8,6 +8,11 @@ import { MjAudioService } from './services/mj.audio.service';
 import { MjUndoQueue } from './classes/mj.undo.queue';
 import { MjTileCollection } from './classes/mj.tile.collection';
 
+// 'left.px': tile.x*_elementPixelWidth+tile.z*shiftX,
+// 'top.px': tile.y*_elementPixelHeight-tile.z*shiftY,
+// 'width.px': _elementPixelWidth*2,
+// 'height.px': _elementPixelHeight*2
+
 @Component({
   selector: 'tile-field',
   templateUrl: 'templates/mj.tile.field.component.html',
@@ -24,6 +29,7 @@ export class MJTileFieldComponent implements OnDestroy {
   // 1 is square, 0.5 is 2:1 etc
   private elementProportionMax = 0.8; // almost square, which is 1
   private elementProportionMin = 0.7;
+  public shiftProportion: number = 0.14; // how much shift tile face from tile bottom to create pseudo 3d effect
 
   public tilesReady: boolean = false; // local var to let template know that it can draw tiles
 
@@ -82,11 +88,19 @@ export class MJTileFieldComponent implements OnDestroy {
   public tiles: MjTile[] = [];
   private selectedTile: MjTile = null;
 
+  // just some random default values. they will be re-calculated from field dimensions anyway
   public fieldDimensionX = 0;
   public fieldDimensionY = 0;
+  public fontSizePrimary: number = 2;
+  public fontSizeSecondary: number = 1;
+  public primaryWrapperWidth: number = 40;
+  public primaryWrapperLeftShift: number = 0;
 
   public elementPixelWidth: number = 0; // pixel width of tile, with "3d" part, margins etc.
   public elementPixelHeight: number = 0; // no other margins are added to tiles
+  public shiftX: number = 0;
+  public shiftY: number = 0;
+
   private showHints: boolean = false;
   private playSounds: boolean = false;
 
@@ -199,7 +213,37 @@ export class MJTileFieldComponent implements OnDestroy {
 
     // console.log(this.elementPixelWidth);
     // console.log(this.elementPixelHeight);
+
+    // Now calculate dimension parameters for the tile
+    this.shiftX = Math.floor(this.elementPixelWidth*this.shiftProportion);
+    // console.log(this.shiftX);
+    this.recalculateFontSizes();
+
+    this.shiftY = Math.floor(this.elementPixelHeight*this.shiftProportion);
+    // console.log(this.shiftY);
+    this.recalculateFontSizes();
   }
+
+  private recalculateFontSizes() {
+    if (!this.elementPixelHeight || !this.elementPixelWidth) {
+      return;
+    }
+
+    let adjustedElementSize = Math.min(
+      this.elementPixelHeight,
+      this.elementPixelWidth*1.5 // this is approximate proportion of tile font height to font width
+    );
+
+    this.fontSizePrimary =  Math.floor(adjustedElementSize*1.5);
+    this.fontSizeSecondary = Math.floor(adjustedElementSize / 3);
+    // console.log(adjustedElementSize);
+
+    // Primary tile character horizontal centering
+    let primaryCharacterAreaWidth = (this.elementPixelWidth*2) - 10; // -2*margin of tile
+    this.primaryWrapperWidth = 4*this.elementPixelWidth;
+    this.primaryWrapperLeftShift = Math.floor((this.primaryWrapperWidth - primaryCharacterAreaWidth)/2);
+  }
+
 
   // arrange tiles into given layout and detect which tile blocks which
   // this function has to be only called once per layout change, and not called on subsequent game restarts
@@ -302,7 +346,7 @@ export class MJTileFieldComponent implements OnDestroy {
         tile.unselect();
         this.selectedTile = null;
       } else {
-        if (tile.isFree()) {
+        if (tile.isFree) {
           tile.select();
 
           if (this.selectedTile) {
@@ -355,6 +399,13 @@ export class MJTileFieldComponent implements OnDestroy {
 
   private onFieldUpdate(): void {
     this.gameControlService.updateHintStatus(false);
+    this.updateTilesFreeStatus();
+  }
+
+  private updateTilesFreeStatus(): void {
+    for (let tile of this.tiles) {
+      tile.refreshIsFreeStatus();
+    }
     this.updateFreePairs();
   }
 
@@ -367,10 +418,10 @@ export class MJTileFieldComponent implements OnDestroy {
 
     for (let i=0; i<this.tiles.length-1; i++) {
       let tile1 = this.tiles[i];
-      if (tile1.active && tile1.isFree()) {
+      if (tile1.active && tile1.isFree) {
         for (let j=i+1; j<this.tiles.length; j++) {
           let tile2 = this.tiles[j];
-          if (tile2.active && tile2.isFree() && tile1.matches(tile2)) {
+          if (tile2.active && tile2.isFree && tile1.matches(tile2)) {
             this.freePairs.push([tile1, tile2]);
             tile1.hasFreePair = true;
             tile2.hasFreePair = true;

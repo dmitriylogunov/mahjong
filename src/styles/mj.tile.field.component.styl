@@ -1,25 +1,26 @@
-.tile-field-outer {
-  position: relative;
+@require 'includes/index.styl'
+
+:host >>> .tile-shadow {
+  border: 5px solid red
 }
 
-.tile-field {
-  margin-top: 2vh;
-  margin-left: 2vw;
-  position: relative;
-}
+.tile-field-outer
+  position relative
 
-.paused {
-  font-size: 50px;
-  width: 150px;
-  min-height: 50px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 50px;
-  color: #FFE1A2;
-  border: 2px solid #FFE1A2;
-  border-radius: 5%;
-  padding: 20px;
-  text-align: center;
-  background-color: #5C5749;
+  .tile-field
+    position relative
+    padding-top 2vh 2vw 2vh 2vw
 
-}
+  .paused-box
+    font-size: 50px;
+    width: 150px;
+    min-height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    color: #FFE1A2;
+    border: 2px solid #FFE1A2;
+    border-radius: 5%;
+    padding: 20px;
+    text-align: center;
+    background-color: #5C5749;

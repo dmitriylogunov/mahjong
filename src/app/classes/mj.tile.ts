@@ -94,7 +94,13 @@ export class MjTile {
     }
   }
 
-  isFree(): boolean {
+  public isFree: boolean = false;
+
+  public refreshIsFreeStatus(): void {
+    this.isFree = this.getIsFreeStatus();
+  }
+
+  private getIsFreeStatus(): boolean {
     for (let tile of this.blockedBy) {
       if (tile.active) {
         return false;

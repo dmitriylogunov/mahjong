@@ -1,37 +1,33 @@
 <div class="tile-outer"
   [class.hidden]="!active && !_selected"
   [ngStyle]="{
-    'left.px': x*_elementPixelWidth+z*shiftX,
-    'top.px': y*_elementPixelHeight-z*shiftY,
-    'width.px': _elementPixelWidth*2,
-    'height.px': _elementPixelHeight*2
-   }"
-   [class.free]="isFree && !_selected"
-   [class.selected]="_selected"
-   [ngClass]="{'shake shake-rotate shake-constant shake-slow shake-little': hasFreePair && showHints}"
+    'left.px': left,
+    'top.px': top,
+    'width.px': width,
+    'height.px': height
+  }"
+  [class.free]="isFree && !selected"
+  [class.selected]="selected"
+[ngClass]="{'shake shake-rotate shake-constant shake-slow shake-little': hasFreePair && showHints}"
 >
  <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
   <div class="tile-shadow tile-shadow1"
     [ngStyle]="{
-        'width.px': _elementPixelWidth*2 - 2,
-        'height.px': _elementPixelHeight*2 - 2
+        'width.px': width,
+        'height.px': height
       }">&nbsp;</div>
   <div class="tile-shadow tile-shadow2"
     [ngStyle]="{
-      'top.px': -shiftX,
-      'left.px': shiftY,
-      'width.px': _elementPixelWidth*2 - 2,
-      'height.px': _elementPixelHeight*2 - 2
+      'width.px': width,
+      'height.px': height
     }">&nbsp;</div>
 
   <div class="tile" *ngIf="_type"
     [ngStyle]="{
-      'top.px': -shiftX*2,
-      'left.px': shiftY*2,
-      'width.px': _elementPixelWidth*2 - 4,
-      'height.px': _elementPixelHeight*2 - 4,
-      'color': (_selected?'#5C5749':_type.getColor()),
-      'text-shadow': '0 0 ' + _elementPixelWidth*2 + 'px ' + _type.getColor()
+      'width.px': width,
+      'height.px': height,
+      'color': (selected?'#5C5749':_type.getColor()),
+      'text-shadow': '0 0 ' + width + 'px ' + _type.getColor()
     }"
     [class.selected]="_selected"
     [ngClass]="{'layer0': z==0, 'layer1': z==1, 'layer2': z==2, 'layer3': z==3, 'layer4': z==4, 'layer5': z>=5}"
@@ -63,7 +59,7 @@
     <div *ngIf="debug"> <!-- if tile debug property is set, display debug info -->
       <span *ngIf="type">{{type.group}} {{type.index}}<br/></span>
       <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
-      {{tile.isFree()?"Free":"Locked"}}
+      {{isFree?"Free":"Locked"}}
     </div>
   </div>
 </div>
