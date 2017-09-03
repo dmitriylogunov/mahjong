@@ -1,65 +1,62 @@
-<div class="tile-outer"
+<div class="tile-wrapper"
   [class.hidden]="!active && !_selected"
   [ngStyle]="{
     'left.px': left,
-    'top.px': top,
-    'width.px': width,
-    'height.px': height
+    'top.px': top
   }"
-  [class.free]="isFree && !selected"
-  [class.selected]="selected"
-[ngClass]="{'shake shake-rotate shake-constant shake-slow shake-little': hasFreePair && showHints}"
->
- <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
-  <div class="tile-shadow tile-shadow1"
-    [ngStyle]="{
-        'width.px': width,
-        'height.px': height
-      }">&nbsp;</div>
-  <div class="tile-shadow tile-shadow2"
+  >
+  <div class="tile-outer"
+    [class.free]="isFree && !selected"
+    [class.selected]="selected"
+    [ngClass]="{'shake shake-rotate shake-constant shake-slow shake-little': hasFreePair && showHints}"
     [ngStyle]="{
       'width.px': width,
       'height.px': height
-    }">&nbsp;</div>
-
-  <div class="tile" *ngIf="_type"
-    [ngStyle]="{
-      'width.px': width,
-      'height.px': height,
-      'color': (selected?'#5C5749':_type.getColor()),
-      'text-shadow': '0 0 ' + width + 'px ' + _type.getColor()
     }"
-    [class.selected]="_selected"
-    [ngClass]="{'layer0': z==0, 'layer1': z==1, 'layer2': z==2, 'layer3': z==3, 'layer4': z==4, 'layer5': z>=5}"
-    (click)="onClick($event)"
   >
-    <div class="tile-content">
-      <div class="secondary-character"
-        [ngStyle]="{
-          'font-size.px': fontSizeSecondary,
-          'line-height.px': fontSizeSecondary-5
-        }"
-      >{{_type.getSecondaryCharacter()}}</div>
+   <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
+    <div class="tile-shadow tile-shadow1">&nbsp;</div>
+    <div class="tile-shadow tile-shadow2">&nbsp;</div>
 
-      <div class="primary-character-wrap"
-        [ngStyle] = "{
-          'width.px': primaryWrapperWidth,
-          'margin-left.px': -primaryWrapperLeftShift
-        }">
-        <span class="primary-character"
+    <div class="tile-face" *ngIf="_type"
+      [ngStyle]="{
+        'width.px': width,
+        'height.px': height,
+        'color': (selected?'#5C5749':_type.getColor()),
+        'text-shadow': '0 0 ' + width + 'px ' + _type.getColor()
+      }"
+      [class.selected]="_selected"
+      [ngClass]="{'layer0': z==0, 'layer1': z==1, 'layer2': z==2, 'layer3': z==3, 'layer4': z==4, 'layer5': z>=5}"
+      (click)="onClick($event)"
+    >
+      <div class="tile-content">
+        <div class="secondary-character"
           [ngStyle]="{
-            'font-size.px': fontSizePrimary,
-            'line-height.px': fontSizePrimary
+            'font-size.px': fontSizeSecondary,
+            'line-height.px': fontSizeSecondary-5
           }"
-          [innerHTML]="_type.getPrimaryCharacter()"
-        ></span>
-      </div>
-    </div>
+        >{{_type.getSecondaryCharacter()}}</div>
 
-    <div *ngIf="debug"> <!-- if tile debug property is set, display debug info -->
-      <span *ngIf="type">{{type.group}} {{type.index}}<br/></span>
-      <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
-      {{isFree?"Free":"Locked"}}
+        <div class="primary-character-wrap"
+          [ngStyle] = "{
+            'width.px': primaryWrapperWidth,
+            'margin-left.px': -primaryWrapperLeftShift
+          }">
+          <span class="primary-character"
+            [ngStyle]="{
+              'font-size.px': fontSizePrimary,
+              'line-height.px': fontSizePrimary
+            }"
+            [innerHTML]="_type.getPrimaryCharacter()"
+          ></span>
+        </div>
+      </div>
+
+      <div *ngIf="debug"> <!-- if tile debug property is set, display debug info -->
+        <span *ngIf="type">{{type.group}} {{type.index}}<br/></span>
+        <span *ngFor="let adj of tile.adjacentL">LX{{adj.x}}Y{{adj.y}}<br/></span><span *ngFor="let adj of tile.adjacentR">RX{{adj.x}}Y{{adj.y}}<br/></span>
+        {{isFree?"Free":"Locked"}}
+      </div>
     </div>
   </div>
 </div>

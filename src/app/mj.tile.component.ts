@@ -73,7 +73,7 @@ export class MjTileComponent implements OnDestroy {
   // }
 
   // @Input()
-  // set t*/ype(type: MjTileType) {
+  // set type(type: MjTileType) {
   //   this._type = type;
   // }
   //
@@ -90,9 +90,11 @@ export class MjTileComponent implements OnDestroy {
         this.selected = selected
       }
     ));
+  }
 
-
-    // console.log("New tile");
+  ngOnInit():void {
+    console.log("New tile");
+    // console.log
   }
 
   ngOnDestroy(): void {

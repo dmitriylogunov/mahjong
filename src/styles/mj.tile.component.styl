@@ -1,18 +1,12 @@
 @require 'includes/index.styl'
 
+.tile-wrapper
+  position absolute
+  font-family FreeSerifNF // Custom font with mahjong tile glyphs
 
-.tile-outer {
-  position: absolute;
-  font-family: FreeSerifNF;
-}
+/* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
 
-.tile-outer.free > .tile {
-  cursor: pointer;
-}
-
- /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
 /*.tile-outer.free:hover, .tile-outer.selected {
-
   transform: scale(1.1,1.1);
   z-index: 500;
   opacity: .99;
@@ -20,9 +14,18 @@
 
 .tile-outer
   position relative
+  overflow hidden
+  transform-origin 50% 50%
+  border 2px solid gray
+
+  .hidden
+    display none
 
   &.free
-    .tile:hover
+    .tile
+      cursor pointer
+
+      &:hover
       background-color lightgray
 
 .tile-shadow
@@ -40,67 +43,45 @@
   &.tile-shadow2
     opacity: .99
 
-.tile {
-  overflow: hidden;
-  transform-origin: 50% 50%;
-  border: 2px solid gray;
-  position: absolute;
-  border-radius: 10%;
-  cursor: default;
-}
+.tile-face
+  position absolute
+  border-radius 10%
+  cursor default
 
-.tile-content {
-  margin: 5px;
-  padding: 0px;
-  text-align: left;
-}
+  .tile-content
+    margin 5px
+    padding 0px
+    text-align left
 
-.tile-content .primary-character-wrap {
-  /*width: 100%;*/
-  text-align: center;
-}
+    .primary-character-wrap
+      /*width: 100%;*/
+      text-align center
 
-.tile-content .primary-character {
-  margin-top: -1px;
-  margin-right: 0px;
-  margin-bottom: 0px;
-}
+    .primary-character
+      margin-top: -1px
+      margin-right: 0px
+      margin-bottom: 0px
 
-.tile-content .clear {
-  clear: both;
-}
+    .clear
+      clear both
 
-.tile-content .secondary-character {
-}
+  .layer0
+    background-color: #FEF2C7;
 
-.tile-outer.hidden {
-  display: none;
-}
+  .layer1
+    background-color: #BEDDBF;
 
-.tile.layer0  {
-  background-color: #FEF2C7;
-}
+  .layer2
+    background-color: #FFE1A2;
 
-.tile.layer1  {
-  background-color: #BEDDBF;
-}
+  .layer3
+    background-color: #FEF2C7;
 
-.tile.layer2 {
-  background-color: #FFE1A2;
-}
+  .layer4
+    background-color: #FEF2C7;
 
-.tile.layer3  {
-  background-color: #FEF2C7;
-}
+  .layer5
+    background-color: #FEAA6E;
 
-.tile.layer4 {
-  background-color: #FEF2C7;
-}
-
-.tile.layer5 {
-  background-color: #FEAA6E;
-}
-
-.tile.selected {
-  background-color: #FEAA6E;
-}
+  .selected
+    background-color: #FEAA6E;
