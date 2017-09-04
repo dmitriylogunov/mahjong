@@ -3,6 +3,7 @@
 .tile-wrapper
   position absolute
   font-family FreeSerifNF // Custom font with mahjong tile glyphs
+  // left and right are set by angular
 
 /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
 
@@ -17,6 +18,8 @@
   overflow hidden
   transform-origin 50% 50%
   border 2px solid gray
+  background-image: url('img/tile7.png');
+  // width & height are set by angular
 
   .hidden
     display none
@@ -28,28 +31,27 @@
       &:hover
       background-color lightgray
 
-.tile-shadow
-  width 100%
-  position absolute
-  border 1px solid gray
-  background-color lightgray
-  border-radius 10%
-  box-sizing border-box
-
-  &.tile-shadow1
-    top 0px
-    left 0px
-
-  &.tile-shadow2
-    opacity: .99
+// .tile-shadow
+//   width 100%
+//   position absolute
+//   border 1px solid gray
+//   background-color lightgray
+//   border-radius 10%
+//   box-sizing border-box
+//
+//   &.tile-shadow1
+//     top 0px
+//     left 0px
+//
+//   &.tile-shadow2
+//     opacity: .99
 
 .tile-face
-  position absolute
   border-radius 10%
   cursor default
 
   .tile-content
-    margin 5px
+    margin 0 0 7% 7%
     padding 0px
     text-align left
 
@@ -61,6 +63,7 @@
       margin-top: -1px
       margin-right: 0px
       margin-bottom: 0px
+      font-size 2em
 
     .clear
       clear both

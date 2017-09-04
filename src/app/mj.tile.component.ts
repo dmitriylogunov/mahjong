@@ -93,8 +93,7 @@ export class MjTileComponent implements OnDestroy {
   }
 
   ngOnInit():void {
-    console.log("New tile");
-    // console.log
+    // console.log("New tile", this);
   }
 
   ngOnDestroy(): void {

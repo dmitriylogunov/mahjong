@@ -1,5 +1,5 @@
 <div class="tile-wrapper"
-  [class.hidden]="!active && !_selected"
+  [class.hidden]="!isVisible && !selected"
   [ngStyle]="{
     'left.px': left,
     'top.px': top
@@ -14,18 +14,15 @@
       'height.px': height
     }"
   >
-   <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
-    <div class="tile-shadow tile-shadow1">&nbsp;</div>
-    <div class="tile-shadow tile-shadow2">&nbsp;</div>
+    <!-- <div class="tile-shadow tile-shadow1">&nbsp;</div>
+    <div class="tile-shadow tile-shadow2">&nbsp;</div> -->
 
-    <div class="tile-face" *ngIf="_type"
+    <div class="tile-face" *ngIf="type"
       [ngStyle]="{
-        'width.px': width,
-        'height.px': height,
-        'color': (selected?'#5C5749':_type.getColor()),
-        'text-shadow': '0 0 ' + width + 'px ' + _type.getColor()
+        'color': (selected?'#5C5749':type.getColor()),
+        'text-shadow': '0 0 ' + width + 'px ' + type.getColor()
       }"
-      [class.selected]="_selected"
+      [class.selected]="selected"
       [ngClass]="{'layer0': z==0, 'layer1': z==1, 'layer2': z==2, 'layer3': z==3, 'layer4': z==4, 'layer5': z>=5}"
       (click)="onClick($event)"
     >
@@ -35,7 +32,7 @@
             'font-size.px': fontSizeSecondary,
             'line-height.px': fontSizeSecondary-5
           }"
-        >{{_type.getSecondaryCharacter()}}</div>
+        >{{type.getSecondaryCharacter()}}</div>
 
         <div class="primary-character-wrap"
           [ngStyle] = "{
@@ -47,7 +44,7 @@
               'font-size.px': fontSizePrimary,
               'line-height.px': fontSizePrimary
             }"
-            [innerHTML]="_type.getPrimaryCharacter()"
+            [innerHTML]="type.getPrimaryCharacter()"
           ></span>
         </div>
       </div>
