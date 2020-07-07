@@ -25,7 +25,8 @@ export class MjTile {
     this.y = y;
     this.z = this.getTileZCoordinate(collection);
 
-    // collection will be sorted later: by Z asc, then by Y asc, then by X desc
+    // collection will be sorted later: by Z asc, then by Y asc, then by X desc,
+    // sortingOrder is integer that reflect position of tile in above sort
     this.sortingOrder = this.z*10000 - this.x*100 + this.y;
   }
 
@@ -172,7 +173,6 @@ export class MjTile {
     this.showHint = false;
   }
 }
-
 
 interface TileCharacters {
   [group: string]: string[][];

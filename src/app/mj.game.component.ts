@@ -93,7 +93,11 @@ export class MjGameComponent {
     // load layout
     // TODO show "loading"
     // console.log("loading started");
-    this.currentLayout = "dragon"; // update of layout will trigger initialisation of layout controller and tile field
+
+    this.currentLayout = "test";
+    // this.currentLayout = "dragon";
+
+    // update of layout will trigger initialisation of layout controller and tile field
 
     // initialisation sequence continued in ngAfterViewInit
   }
@@ -126,6 +130,7 @@ export class MjGameComponent {
   private winModal: ModalComponent;
 
   ngAfterViewInit(): void {
+    // initialising modals
     let arModals: ModalComponent[] = this.modals.toArray();
     this.mainMenuModal = arModals[0];
     this.restartModal = arModals[1];
@@ -134,6 +139,8 @@ export class MjGameComponent {
 
     // show main menu
     this.mainMenuModal.show();
+
+    // further initialisation, e.g. game start will happen from main menu
   }
 
   onTileCollectionReady():void {

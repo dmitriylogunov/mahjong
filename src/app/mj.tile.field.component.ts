@@ -40,6 +40,8 @@ export class MJTileFieldComponent implements OnDestroy {
   set layout(layout: string) {
     if (layout==="dragon") {
       this.init(this.dragonLayout);
+    } else if (layout==='test') {
+      this.init(this.testLayout);
     }
   }
 
@@ -162,6 +164,10 @@ export class MJTileFieldComponent implements OnDestroy {
     [13,7]
   ];
 
+  private testLayout: [number, number][] = [
+    [0,0]
+  ];
+
   ngOnInit():void {
     this.retrieveDimensionsFromElement();
   }
@@ -271,7 +277,7 @@ export class MJTileFieldComponent implements OnDestroy {
     this.setTileTypes();
 
     // determine which tiles block which
-    this.buildTileRelationsGraph();
+    // this.buildTileRelationsGraph();
   }
 
   private buildTileRelationsGraph() : void {
@@ -298,6 +304,10 @@ export class MJTileFieldComponent implements OnDestroy {
   public setTileTypes() {
     let tileIndex = 0;
     for (let type of this.tileSetDescriptor) {
+      // this will only happen on test sets of tiles which have smaller number of them
+      if (tileIndex>this.tiles.length) {
+        break;
+      }
       for (let i=0;i<type[1];i++) {
         let tileType: MjTileType = new MjTileType(
           type[0],
