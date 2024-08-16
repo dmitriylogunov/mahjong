@@ -4,10 +4,10 @@ Built on Angular framework
 
 # Quickstart
 
-* `npm install`
-* `npm start`
-* Open [http://localhost:3000](http://localhost:3000)
-* `Ctrl-C` to stop
+- `npm install`
+- `npm start`
+- Open [http://localhost:3000](http://localhost:3000)
+- `Ctrl-C` to stop
 
 ## Prerequisites
 
@@ -22,22 +22,7 @@ Older versions produce errors.
 
 We recommend [nvm](https://github.com/creationix/nvm) for managing multiple versions of node and npm.
 
-
-
-> See npm and nvm version notes above
-
-Install the npm packages described in the `package.json` and verify that it works:
-
-```shell
-sudo npm install -g stylus
-```
-
-```shell
-npm install
-npm start
-```
-
->Doesn't work in _Bash for Windows_ which does not support servers as of January, 2017.
+> Doesn't work in _Bash for Windows_ which does not support servers as of January, 2017.
 
 The `npm start` command first compiles the application,
 then simultaneously re-compiles and runs the `lite-server`.
@@ -47,22 +32,22 @@ Game will be running after npm start.
 
 Shut it down manually with `Ctrl-C`.
 
-
 ### npm scripts
 
 We've captured many of the most useful commands in npm scripts defined in the `package.json`:
 
-* `npm start` - runs the compiler and a server at the same time, both in "watch mode".
-* `npm run build` - runs the TypeScript compiler once.
-* `npm run build:w` - runs the TypeScript compiler in watch mode; the process keeps running, awaiting changes to TypeScript files and re-compiling when it sees them.
-* `npm run serve` - runs the [lite-server](https://www.npmjs.com/package/lite-server), a light-weight, static file server, written and maintained by
-[John Papa](https://github.com/johnpapa) and
-[Christopher Martin](https://github.com/cgmartin)
-with excellent support for Angular apps that use routing.
+- `npm start` - runs the compiler and a server at the same time, both in "watch mode".
+- `npm run build` - runs the TypeScript compiler once.
+- `npm run build:w` - runs the TypeScript compiler in watch mode; the process keeps running, awaiting changes to TypeScript files and re-compiling when it sees them.
+- `npm run serve` - runs the [lite-server](https://www.npmjs.com/package/lite-server), a light-weight, static file server, written and maintained by
+  [John Papa](https://github.com/johnpapa) and
+  [Christopher Martin](https://github.com/cgmartin)
+  with excellent support for Angular apps that use routing.
 
 Here are the test related scripts:
-* `npm test` - compiles, runs and watches the karma unit tests
-* `npm run e2e` - compiles and run protractor e2e tests, written in Typescript (*e2e-spec.ts)
+
+- `npm test` - compiles, runs and watches the karma unit tests
+- `npm run e2e` - compiles and run protractor e2e tests, written in Typescript (\*e2e-spec.ts)
 
 ## Testing
 
@@ -71,10 +56,11 @@ This repo adds both karma/jasmine unit test and protractor end-to-end testing su
 
 These tools are configured for specific conventions described below.
 
-*It is unwise and rarely possible to run the application, the unit tests, and the e2e tests at the same time.
-We recommend that you shut down one before starting another.*
+_It is unwise and rarely possible to run the application, the unit tests, and the e2e tests at the same time.
+We recommend that you shut down one before starting another._
 
 ### Unit Tests
+
 TypeScript unit-tests are usually in the `src/app` folder. Their filenames must end in `.spec.ts`.
 
 Look for the example `src/app/app.component.spec.ts`.
@@ -104,10 +90,10 @@ we configured Protractor to find them.
 Thereafter, run them with `npm run e2e`.
 
 That command first compiles, then simultaneously starts the `lite-server` at `localhost:8080`
-and launches Protractor.  
+and launches Protractor.
 
 The pass/fail test results appear at the bottom of the terminal window.
-A custom reporter (see `protractor.config.js`) generates a  `./_test-output/protractor-results.txt` file
+A custom reporter (see `protractor.config.js`) generates a `./_test-output/protractor-results.txt` file
 which is easier to read; this file is excluded from source control.
 
 Shut it down manually with `Ctrl-C`.
