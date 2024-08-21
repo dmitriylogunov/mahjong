@@ -14,7 +14,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var app_toolbox_1 = require('./app.toolbox');
 var mj_game_control_service_1 = require('./mj.game.control.service');
-var createjs = require('@createjs');
 
 var Subject_1 = require('rxjs').Subject;
 var MjAudioService = (function () {

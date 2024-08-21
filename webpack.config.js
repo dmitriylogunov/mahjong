@@ -42,7 +42,9 @@ module.exports = {
       patterns: [
         { from: 'src/index.html', to: 'index.html' },
         { from: 'src/favicon.ico', to: 'favicon.ico' },
-        { from: 'src/templates', to: 'templates/[name][ext]' } 
+        { from: 'src/templates', to: 'templates/[name][ext]' },
+        { from: 'src/sounds', to: 'sounds/[name][ext]' },
+        { from: 'src/js', to: 'js/[name][ext]' } 
       ],
     }),
   ],
