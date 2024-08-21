@@ -1,17 +1,26 @@
-import { Component, ViewChild, ViewChildren, OnDestroy, QueryList } from '@angular/core';
-import { MjStatusComponent }  from './mj.status.component';
-import { MJTileFieldComponent } from './mj.tile.field.component';
-import { MjGameControlService } from './services/mj.game.control.service';
-import { MjAudioService, SoundConfiguration } from './services/mj.audio.service';
-import { ModalComponent, ModalAction } from './app.modal.component';
-import { Subscription } from 'rxjs/Subscription';
-import { TweenLite } from 'gsap';
+import {
+  Component,
+  ViewChild,
+  ViewChildren,
+  OnDestroy,
+  QueryList,
+} from "@angular/core";
+import { MjStatusComponent } from "./mj.status.component";
+import { MJTileFieldComponent } from "./mj.tile.field.component";
+import { MjGameControlService } from "./services/mj.game.control.service";
+import {
+  MjAudioService,
+  SoundConfiguration,
+} from "./services/mj.audio.service";
+import { ModalComponent, ModalAction } from "./app.modal.component";
+import { Subscription } from "rxjs/Subscription";
+import { TweenLite } from "gsap";
 
 @Component({
-  selector: 'mj-game',
-  templateUrl: 'templates/mj.game.component.html',
-  styleUrls: ['styles/mj.game.component.css'],
-  providers: [MjGameControlService, MjAudioService]
+  selector: "mj-game",
+  templateUrl: "templates/mj.game.component.html",
+  styleUrls: ["styles/mj.game.component.css"],
+  providers: [MjGameControlService, MjAudioService],
 })
 export class MjGameComponent {
   //config
@@ -25,46 +34,52 @@ export class MjGameComponent {
   private paused: boolean;
 
   private soundConfiguration: SoundConfiguration = {
-    "coin": ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
-    "blip": ["sounds/blip.wav"],
-    "undo": ["sounds/back.wav"],
-    "bonus": ["sounds/bonus.wav"],
-    "boom": ["sounds/boom.wav"],
-    "wrong": ["sounds/wrong.wav"],
-    "lose": ["sounds/lose.wav"],
-    "win": ["sounds/win.wav"],
-    "click": ["sounds/click1.wav"], //, "sounds/click2.wav"
-    "unclick": ["sounds/click-reverse.wav"],
-    "question": ["sounds/question.wav"]
+    coin: ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
+    blip: ["sounds/blip.wav"],
+    undo: ["sounds/back.wav"],
+    bonus: ["sounds/bonus.wav"],
+    boom: ["sounds/boom.wav"],
+    wrong: ["sounds/wrong.wav"],
+    lose: ["sounds/lose.wav"],
+    win: ["sounds/win.wav"],
+    click: ["sounds/click1.wav"], //, "sounds/click2.wav"
+    unclick: ["sounds/click-reverse.wav"],
+    question: ["sounds/question.wav"],
   };
 
   private subscriptions: Subscription[] = [];
-  constructor(private gameControlService: MjGameControlService, private audioService: MjAudioService) {
+  constructor(
+    private gameControlService: MjGameControlService,
+    private audioService: MjAudioService
+  ) {
     // Global game event subscriptions
-    this.subscriptions.push(audioService.soundsReady$.subscribe(
-      dummyVariable => {
+    this.subscriptions.push(
+      audioService.soundsReady$.subscribe((dummyVariable) => {
         this.playMusic();
-      }
-    ));
+      })
+    );
 
-    this.subscriptions.push(gameControlService.paused$.subscribe(
-      pauseStatus => {
+    this.subscriptions.push(
+      gameControlService.paused$.subscribe((pauseStatus) => {
         this.paused = pauseStatus;
-      }
-    ));
+      })
+    );
 
-    this.subscriptions.push(gameControlService.debugCommand$.subscribe(
-      command => {
+    this.subscriptions.push(
+      gameControlService.debugCommand$.subscribe((command) => {
         this.onDebugCommand(command);
-      }
-    ));
+      })
+    );
 
-    window.setInterval((()=>{
-      if (!this.paused) {
-        this.timer += 1;
-        this.score -= 0.1;
-      }
-    }).bind(this), 1000);
+    window.setInterval(
+      (() => {
+        if (!this.paused) {
+          this.timer += 1;
+          this.score -= 0.1;
+        }
+      }).bind(this),
+      1000
+    );
   }
 
   ngOnDestroy(): void {
@@ -99,22 +114,47 @@ export class MjGameComponent {
   }
 
   public mainMenuModalActions: ModalAction[] = [
-    new ModalAction("Start", (()=>{this.onStartGameClick();}).bind(this))
+    new ModalAction(
+      "Start",
+      (() => {
+        this.onStartGameClick();
+      }).bind(this)
+    ),
   ];
 
   public restartGameModalActions: ModalAction[] = [
-    new ModalAction("Yes", (()=>{this.onRestartYesClick();}).bind(this))
+    new ModalAction(
+      "Yes",
+      (() => {
+        this.onRestartYesClick();
+      }).bind(this)
+    ),
     // new ModalAction("No", (()=>{}))
   ];
 
   public tieModalActions: ModalAction[] = [
     // new ModalAction("Continue", (()=>{})), // do nothing
-    new ModalAction("Restart", (()=>{this.onTieRestartClick();}).bind(this)),
-    new ModalAction("New game", (()=>{this.onRestartYesClick();}).bind(this))
+    new ModalAction(
+      "Restart",
+      (() => {
+        this.onTieRestartClick();
+      }).bind(this)
+    ),
+    new ModalAction(
+      "New game",
+      (() => {
+        this.onRestartYesClick();
+      }).bind(this)
+    ),
   ];
 
   public winModalActions: ModalAction[] = [
-    new ModalAction("Play Again", (()=>{this.onRestartYesClick();}).bind(this))
+    new ModalAction(
+      "Play Again",
+      (() => {
+        this.onRestartYesClick();
+      }).bind(this)
+    ),
   ];
 
   @ViewChildren(ModalComponent)
@@ -136,14 +176,14 @@ export class MjGameComponent {
     this.mainMenuModal.show();
   }
 
-  onTileCollectionReady():void {
+  onTileCollectionReady(): void {
     // TODO hide "loading"
     // console.log("loading finished");
   }
 
-  private checkGameStatus():void {
+  private checkGameStatus(): void {
     if (!this.tileField.hasFreePairs()) {
-      if (this.tileField.visibleTileCount==0) {
+      if (this.tileField.visibleTileCount == 0) {
         // win
         this.audioService.play("win", 100);
         this.state = "win";
@@ -171,7 +211,9 @@ export class MjGameComponent {
     this.gameControlService.updateUndoStatus(undoStatus);
     this.gameControlService.updateRedoStatus(true);
     this.audioService.play("undo", 100);
-    if (this.score>0) { this.score -= 10 };
+    if (this.score > 0) {
+      this.score -= 10;
+    }
   }
 
   public onRedo() {
@@ -228,16 +270,14 @@ export class MjGameComponent {
     // this.audioService.playFile("music/");
   }
 
-  private stopMusic(): void {
-
-  }
+  private stopMusic(): void {}
 
   private onDebugCommand(command: string) {
-    if (command=='step') {
+    if (command == "step") {
       this.tileField.clearTilePair();
     }
 
-    if (command=='solve') {
+    if (command == "solve") {
       while (this.tileField.hasFreePairs()) {
         this.tileField.clearTilePair();
       }

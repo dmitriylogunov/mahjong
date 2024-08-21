@@ -1,11 +1,11 @@
-# In-browser Mahjong Solitaire game
+# Overview
 
-Built on Angular framework
+In-browser Mahjong Solitaire game, built on Angular JS framework
 
 # Quickstart
 
 - `npm install`
-- `npm start`
+- `npm run dev`
 - Open [http://localhost:3000](http://localhost:3000)
 - `Ctrl-C` to stop
 
@@ -24,7 +24,7 @@ We recommend [nvm](https://github.com/creationix/nvm) for managing multiple vers
 
 > Doesn't work in _Bash for Windows_ which does not support servers as of January, 2017.
 
-The `npm start` command first compiles the application,
+The `npm run dev` command first compiles the application,
 then simultaneously re-compiles and runs the `lite-server`.
 Both the compiler and the server watch for file changes.
 
@@ -36,9 +36,9 @@ Shut it down manually with `Ctrl-C`.
 
 We've captured many of the most useful commands in npm scripts defined in the `package.json`:
 
-- `npm start` - runs the compiler and a server at the same time, both in "watch mode".
-- `npm run build` - runs the TypeScript compiler once.
-- `npm run build:w` - runs the TypeScript compiler in watch mode; the process keeps running, awaiting changes to TypeScript files and re-compiling when it sees them.
+- `npm run dev` - runs the compiler and a server at the same time, both in "watch mode".
+- `npm run tsc` - runs the TypeScript compiler once.
+- `npm run tsc:w` - runs the TypeScript compiler in watch mode; the process keeps running, awaiting changes to TypeScript files and re-compiling when it sees them.
 - `npm run serve` - runs the [lite-server](https://www.npmjs.com/package/lite-server), a light-weight, static file server, written and maintained by
   [John Papa](https://github.com/johnpapa) and
   [Christopher Martin](https://github.com/cgmartin)

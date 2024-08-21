@@ -1,20 +1,26 @@
-import { Component, Input, OnDestroy, Output, EventEmitter, ElementRef } from '@angular/core';
-import { MjTileComponent } from './mj.tile.component';
-import { MjTile, MjTileType } from './classes/mj.tile';
-import { AppToolbox } from './classes/app.toolbox';
-import { MjGameControlService } from './services/mj.game.control.service';
-import { Subscription }   from 'rxjs/Subscription';
-import { MjAudioService } from './services/mj.audio.service';
-import { MjUndoQueue } from './classes/mj.undo.queue';
-import { MjTileCollection } from './classes/mj.tile.collection';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  Output,
+  EventEmitter,
+  ElementRef,
+} from "@angular/core";
+import { MjTileComponent } from "./mj.tile.component";
+import { MjTile, MjTileType } from "./classes/mj.tile";
+import { AppToolbox } from "./classes/app.toolbox";
+import { MjGameControlService } from "./services/mj.game.control.service";
+import { Subscription } from "rxjs/Subscription";
+import { MjAudioService } from "./services/mj.audio.service";
+import { MjUndoQueue } from "./classes/mj.undo.queue";
+import { MjTileCollection } from "./classes/mj.tile.collection";
 
 @Component({
-  selector: 'tile-field',
-  templateUrl: 'templates/mj.tile.field.component.html',
-  styleUrls: ['styles/mj.tile.field.component.css']
+  selector: "tile-field",
+  templateUrl: "templates/mj.tile.field.component.html",
+  styleUrls: ["styles/mj.tile.field.component.css"],
 })
 export class MJTileFieldComponent implements OnDestroy {
-
   private subscriptions: Subscription[] = [];
   private undoQueue: MjUndoQueue;
   private collection: MjTileCollection;
@@ -32,29 +38,38 @@ export class MJTileFieldComponent implements OnDestroy {
 
   @Input()
   set layout(layout: string) {
-    if (layout==="dragon") {
+    if (layout === "dragon") {
       this.init(this.dragonLayout);
     }
   }
 
-  constructor(private _elRef: ElementRef, private gameControlService: MjGameControlService, private audioService: MjAudioService) {
+  constructor(
+    private _elRef: ElementRef,
+    private gameControlService: MjGameControlService,
+    private audioService: MjAudioService
+  ) {
     // every time the window size changes, recalculate field and tile dimensions
-    window.addEventListener("resize", (()=>{this.retrieveDimensionsFromElement();}).bind(this));
+    window.addEventListener(
+      "resize",
+      (() => {
+        this.retrieveDimensionsFromElement();
+      }).bind(this)
+    );
 
     // listen to hint requests and show them
-    this.subscriptions.push(gameControlService.hintRequestUpdated$.subscribe(
-      status => {
+    this.subscriptions.push(
+      gameControlService.hintRequestUpdated$.subscribe((status) => {
         this.showHints = status;
-      }
-    ));
+      })
+    );
 
     // listen to sound setting
-    this.subscriptions.push(gameControlService.soundUpdated$.subscribe(
-      status => {
+    this.subscriptions.push(
+      gameControlService.soundUpdated$.subscribe((status) => {
         // update status
         this.playSounds = status;
-      }
-    ));
+      })
+    );
 
     this.undoQueue = new MjUndoQueue();
     this.collection = new MjTileCollection();
@@ -108,47 +123,184 @@ export class MJTileFieldComponent implements OnDestroy {
   // TODO wrap into MjTileType class
   // tile type group name / number of tiles in a group / can any tile of the group match another of same group or not
   private tileSetDescriptor: [string, number, boolean][] = [
-    ["ball",9,false],["ball",9,false],["ball",9,false],["ball",9,false],
-    ["bam",9,false],["bam",9,false],["bam",9,false],["bam",9,false],
-    ["num",9,false],["num",9,false],["num",9,false],["num",9,false],
-    ["season",4,true],
-    ["wind",4,false],["wind",4,false],["wind",4,false],["wind",4,false],
-    ["flower",4,true],
-    ["dragon",3,false],["dragon",3,false],["dragon",3,false],["dragon",3,false]
+    ["ball", 9, false],
+    ["ball", 9, false],
+    ["ball", 9, false],
+    ["ball", 9, false],
+    ["bam", 9, false],
+    ["bam", 9, false],
+    ["bam", 9, false],
+    ["bam", 9, false],
+    ["num", 9, false],
+    ["num", 9, false],
+    ["num", 9, false],
+    ["num", 9, false],
+    ["season", 4, true],
+    ["wind", 4, false],
+    ["wind", 4, false],
+    ["wind", 4, false],
+    ["wind", 4, false],
+    ["flower", 4, true],
+    ["dragon", 3, false],
+    ["dragon", 3, false],
+    ["dragon", 3, false],
+    ["dragon", 3, false],
   ];
 
   // layout description only, no other data here. Just an array of tile 2d coordinates
   private dragonLayout: [number, number][] = [
     // layer 0
-    [2,0],[4,0],[6,0],[8,0],[10,0],[12,0],[14,0],[16,0],[18,0],[20,0],[22,0],[24,0],
-                [6,2],[8,2],[10,2],[12,2],[14,2],[16,2],[18,2],[20,2],
-          [4,4],[6,4],[8,4],[10,4],[12,4],[14,4],[16,4],[18,4],[20,4],[22,4],
-    [2,6],[4,6],[6,6],[8,6],[10,6],[12,6],[14,6],[16,6],[18,6],[20,6],[22,6],[24,6],
-    [0,7],[26,7],[28,7],
-    [2,8],[4,8],[6,8],[8,8],[10,8],[12,8],[14,8],[16,8],[18,8],[20,8],[22,8],[24,8],
-           [4,10],[6,10],[8,10],[10,10],[12,10],[14,10],[16,10],[18,10],[20,10],[22,10],
-                  [6,12],[8,12],[10,12],[12,12],[14,12],[16,12],[18,12],[20,12],
-    [2,14],[4,14],[6,14],[8,14],[10,14],[12,14],[14,14],[16,14],[18,14],[20,14],[22,14],[24,14],
+    [2, 0],
+    [4, 0],
+    [6, 0],
+    [8, 0],
+    [10, 0],
+    [12, 0],
+    [14, 0],
+    [16, 0],
+    [18, 0],
+    [20, 0],
+    [22, 0],
+    [24, 0],
+    [6, 2],
+    [8, 2],
+    [10, 2],
+    [12, 2],
+    [14, 2],
+    [16, 2],
+    [18, 2],
+    [20, 2],
+    [4, 4],
+    [6, 4],
+    [8, 4],
+    [10, 4],
+    [12, 4],
+    [14, 4],
+    [16, 4],
+    [18, 4],
+    [20, 4],
+    [22, 4],
+    [2, 6],
+    [4, 6],
+    [6, 6],
+    [8, 6],
+    [10, 6],
+    [12, 6],
+    [14, 6],
+    [16, 6],
+    [18, 6],
+    [20, 6],
+    [22, 6],
+    [24, 6],
+    [0, 7],
+    [26, 7],
+    [28, 7],
+    [2, 8],
+    [4, 8],
+    [6, 8],
+    [8, 8],
+    [10, 8],
+    [12, 8],
+    [14, 8],
+    [16, 8],
+    [18, 8],
+    [20, 8],
+    [22, 8],
+    [24, 8],
+    [4, 10],
+    [6, 10],
+    [8, 10],
+    [10, 10],
+    [12, 10],
+    [14, 10],
+    [16, 10],
+    [18, 10],
+    [20, 10],
+    [22, 10],
+    [6, 12],
+    [8, 12],
+    [10, 12],
+    [12, 12],
+    [14, 12],
+    [16, 12],
+    [18, 12],
+    [20, 12],
+    [2, 14],
+    [4, 14],
+    [6, 14],
+    [8, 14],
+    [10, 14],
+    [12, 14],
+    [14, 14],
+    [16, 14],
+    [18, 14],
+    [20, 14],
+    [22, 14],
+    [24, 14],
     // layer 1
-    [8,2],[10,2],[12,2],[14,2],[16,2],[18,2],
-    [8,4],[10,4],[12,4],[14,4],[16,4],[18,4],
-    [8,6],[10,6],[12,6],[14,6],[16,6],[18,6],
-    [8,8],[10,8],[12,8],[14,8],[16,8],[18,8],
-    [8,10],[10,10],[12,10],[14,10],[16,10],[18,10],
-    [8,12],[10,12],[12,12],[14,12],[16,12],[18,12],
+    [8, 2],
+    [10, 2],
+    [12, 2],
+    [14, 2],
+    [16, 2],
+    [18, 2],
+    [8, 4],
+    [10, 4],
+    [12, 4],
+    [14, 4],
+    [16, 4],
+    [18, 4],
+    [8, 6],
+    [10, 6],
+    [12, 6],
+    [14, 6],
+    [16, 6],
+    [18, 6],
+    [8, 8],
+    [10, 8],
+    [12, 8],
+    [14, 8],
+    [16, 8],
+    [18, 8],
+    [8, 10],
+    [10, 10],
+    [12, 10],
+    [14, 10],
+    [16, 10],
+    [18, 10],
+    [8, 12],
+    [10, 12],
+    [12, 12],
+    [14, 12],
+    [16, 12],
+    [18, 12],
     // layer 2
-    [10,4],[12,4],[14,4],[16,4],
-    [10,6],[12,6],[14,6],[16,6],
-    [10,8],[12,8],[14,8],[16,8],
-    [10,10],[12,10],[14,10],[16,10],
+    [10, 4],
+    [12, 4],
+    [14, 4],
+    [16, 4],
+    [10, 6],
+    [12, 6],
+    [14, 6],
+    [16, 6],
+    [10, 8],
+    [12, 8],
+    [14, 8],
+    [16, 8],
+    [10, 10],
+    [12, 10],
+    [14, 10],
+    [16, 10],
     // layer 3
-    [12,6],[14,6],
-    [12,8],[14,8],
+    [12, 6],
+    [14, 6],
+    [12, 8],
+    [14, 8],
     // layer 4
-    [13,7]
+    [13, 7],
   ];
 
-  ngOnInit():void {
+  ngOnInit(): void {
     this.retrieveDimensionsFromElement();
   }
 
@@ -169,8 +321,12 @@ export class MJTileFieldComponent implements OnDestroy {
     this.windowHeight = element.offsetHeight;
 
     // element size
-    this.elementPixelWidth = Math.floor(this.windowWidth / this.fieldDimensionX);
-    this.elementPixelHeight = Math.floor(this.windowHeight / this.fieldDimensionY);
+    this.elementPixelWidth = Math.floor(
+      this.windowWidth / this.fieldDimensionX
+    );
+    this.elementPixelHeight = Math.floor(
+      this.windowHeight / this.fieldDimensionY
+    );
     // console.log(this.elementPixelWidth);
     // console.log(this.elementPixelHeight);
 
@@ -179,21 +335,27 @@ export class MJTileFieldComponent implements OnDestroy {
     // console.log(currentProportion);
 
     // too much "Portrait"
-    if (currentProportion<this.elementProportionMin) {
-        this.elementPixelHeight = Math.floor(this.elementPixelWidth / this.elementProportionMin);
+    if (currentProportion < this.elementProportionMin) {
+      this.elementPixelHeight = Math.floor(
+        this.elementPixelWidth / this.elementProportionMin
+      );
     }
 
     // too much "Landscape"
-    if (currentProportion>this.elementProportionMax) {
-      this.elementPixelWidth = Math.floor(this.elementPixelHeight * this.elementProportionMax);
+    if (currentProportion > this.elementProportionMax) {
+      this.elementPixelWidth = Math.floor(
+        this.elementPixelHeight * this.elementProportionMax
+      );
     }
 
     // field padding, so tiles are centered inside the game field
-    let totalPaddingX = this.windowWidth - (this.elementPixelWidth * this.fieldDimensionX);
+    let totalPaddingX =
+      this.windowWidth - this.elementPixelWidth * this.fieldDimensionX;
     this.paddingLeft = Math.floor(totalPaddingX / 2) - 5;
     this.paddingRight = totalPaddingX - this.paddingLeft; // accounts for uneven total padding
     // Y - similar
-    let totalPaddingY = this.windowHeight - (this.elementPixelHeight * this.fieldDimensionY);
+    let totalPaddingY =
+      this.windowHeight - this.elementPixelHeight * this.fieldDimensionY;
     this.paddingTop = Math.floor(totalPaddingY / 2);
     this.paddingBottom = totalPaddingY - this.paddingTop;
 
@@ -209,19 +371,20 @@ export class MJTileFieldComponent implements OnDestroy {
     for (let coordinates of collection) {
       let newTile = new MjTile(coordinates[0], coordinates[1], this.tiles);
 
-      if (this.fieldDimensionX<newTile.x+1+newTile.tileSizeX) {
-        this.fieldDimensionX = newTile.x+1+newTile.tileSizeX;
+      if (this.fieldDimensionX < newTile.x + 1 + newTile.tileSizeX) {
+        this.fieldDimensionX = newTile.x + 1 + newTile.tileSizeX;
       }
-      if (this.fieldDimensionY<newTile.y+1+newTile.tileSizeY) {
-        this.fieldDimensionY = newTile.y+1+newTile.tileSizeY;
+      if (this.fieldDimensionY < newTile.y + 1 + newTile.tileSizeY) {
+        this.fieldDimensionY = newTile.y + 1 + newTile.tileSizeY;
       }
 
       this.tiles.push(newTile);
     }
 
     // sort tiles for correct display
-    this.tiles
-      .sort((tile1: MjTile, tile2:MjTile) => tile1.sortingOrder - tile2.sortingOrder)
+    this.tiles.sort(
+      (tile1: MjTile, tile2: MjTile) => tile1.sortingOrder - tile2.sortingOrder
+    );
 
     // set tile types
     this.setTileTypes();
@@ -230,9 +393,9 @@ export class MJTileFieldComponent implements OnDestroy {
     this.buildTileRelationsGraph();
   }
 
-  private buildTileRelationsGraph() : void {
-    for (let i=0; i<this.tiles.length-1; i++) {
-      for (let j=i+1; j<this.tiles.length; j++) {
+  private buildTileRelationsGraph(): void {
+    for (let i = 0; i < this.tiles.length - 1; i++) {
+      for (let j = i + 1; j < this.tiles.length; j++) {
         // check
         this.tiles[i].checkRelativePositions(this.tiles[j]);
         // and vice versa
@@ -242,8 +405,8 @@ export class MJTileFieldComponent implements OnDestroy {
   }
 
   public shuffleTypesFisherYates(): void {
-    for (let i=this.tiles.length-1;i>0;i--) {
-      let j = AppToolbox.random(i+1);
+    for (let i = this.tiles.length - 1; i > 0; i--) {
+      let j = AppToolbox.random(i + 1);
       //swap
       let tempType = this.tiles[i].type;
       this.tiles[i].type = this.tiles[j].type;
@@ -254,12 +417,8 @@ export class MJTileFieldComponent implements OnDestroy {
   public setTileTypes() {
     let tileIndex = 0;
     for (let type of this.tileSetDescriptor) {
-      for (let i=0;i<type[1];i++) {
-        let tileType: MjTileType = new MjTileType(
-          type[0],
-          i,
-          type[2]
-        )
+      for (let i = 0; i < type[1]; i++) {
+        let tileType: MjTileType = new MjTileType(type[0], i, type[2]);
         this.tiles[tileIndex++].setType(tileType);
       }
     }
@@ -281,7 +440,7 @@ export class MJTileFieldComponent implements OnDestroy {
 
   // This is a debug function used to clear first available free tile pair
   clearTilePair() {
-    if (this.freePairs.length>0) {
+    if (this.freePairs.length > 0) {
       let tile1: MjTile = this.freePairs[0][0];
       let tile2: MjTile = this.freePairs[0][1];
       this.selectTile(tile1);
@@ -289,11 +448,11 @@ export class MJTileFieldComponent implements OnDestroy {
     }
   }
 
-  onTileClick(tile: MjTile) : void {
+  onTileClick(tile: MjTile): void {
     this.selectTile(tile);
   }
 
-  selectTile(tile: MjTile) : void {
+  selectTile(tile: MjTile): void {
     // console.log("selectTile", tile, tile.type.toString());
     // checking .active because still can get clicks on the tile while "hiding" animation is playing
     if (tile.active) {
@@ -311,7 +470,7 @@ export class MJTileFieldComponent implements OnDestroy {
               this.undoQueue.push([tile, this.selectedTile]);
               tile.remove();
               this.selectedTile.remove();
-              this.visibleTileCount-=2;
+              this.visibleTileCount -= 2;
 
               this.selectedTile = null;
 
@@ -334,19 +493,22 @@ export class MJTileFieldComponent implements OnDestroy {
     }
   }
 
-  private _shakeField:boolean = false;
-  private shakeField():void {
+  private _shakeField: boolean = false;
+  private shakeField(): void {
     this._shakeField = true;
 
-    window.setTimeout((()=>{
-      this._shakeField = false;
-    }).bind(this), 50);
+    window.setTimeout(
+      (() => {
+        this._shakeField = false;
+      }).bind(this),
+      50
+    );
   }
 
   private returnTile(tile: MjTile) {
     if (!tile.active) {
       this.visibleTileCount++;
-    };
+    }
     tile.returnToField();
   }
 
@@ -365,10 +527,10 @@ export class MJTileFieldComponent implements OnDestroy {
       tile.hasFreePair = false;
     }
 
-    for (let i=0; i<this.tiles.length-1; i++) {
+    for (let i = 0; i < this.tiles.length - 1; i++) {
       let tile1 = this.tiles[i];
       if (tile1.active && tile1.isFree()) {
-        for (let j=i+1; j<this.tiles.length; j++) {
+        for (let j = i + 1; j < this.tiles.length; j++) {
           let tile2 = this.tiles[j];
           if (tile2.active && tile2.isFree() && tile1.matches(tile2)) {
             this.freePairs.push([tile1, tile2]);
@@ -379,7 +541,7 @@ export class MJTileFieldComponent implements OnDestroy {
       }
     }
 
-    if (this.tiles[this.tiles.length-1].active) {
+    if (this.tiles[this.tiles.length - 1].active) {
       this.visibleTileCount++;
     }
   }
@@ -389,18 +551,17 @@ export class MJTileFieldComponent implements OnDestroy {
     for (let tile of tiles) {
       tile.returnToField();
     }
-    this.visibleTileCount+=tiles.length;
-    return (this.undoQueue.getUndoStatus());
+    this.visibleTileCount += tiles.length;
+    return this.undoQueue.getUndoStatus();
   }
-
 
   public redo(): boolean {
     let tiles: MjTile[] = this.undoQueue.redo();
     for (let tile of tiles) {
       tile.remove();
     }
-    this.visibleTileCount-=tiles.length;
-    return (this.undoQueue.getRedoStatus());
+    this.visibleTileCount -= tiles.length;
+    return this.undoQueue.getRedoStatus();
   }
 
   // Handle click on to empty area
@@ -412,6 +573,6 @@ export class MJTileFieldComponent implements OnDestroy {
   }
 
   public hasFreePairs(): boolean {
-    return this.freePairs.length>0;
+    return this.freePairs.length > 0;
   }
 }

@@ -5,45 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/">
-
-    <!-- CSS Shake library -->
-    <link rel="stylesheet" type="text/css" href="node_modules/csshake/dist/csshake.min.css">
-
-    <!-- Font awesome -->
-    <link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-
-    <!-- Bootstrap -->
-    <!-- <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"> -->
-
-    <!-- Global app styles -->
-    <link rel="stylesheet" href="styles.css">
-
-    <!-- Polyfill(s) for older browsers -->
-    <script src="node_modules/core-js/client/shim.min.js"></script>
-
-    <script src="node_modules/zone.js/dist/zone.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-
-    <!-- CreateJS -->
-    <script src="node_modules/createjs-soundjs/lib/soundjs-0.6.2.min.js"></script>
-    <script src="node_modules/createjs-preloadjs/lib/preloadjs-0.6.2.min.js"></script>
-
-    <script src="systemjs.config.js"></script>
-    <script>
-      System.import('main.js').catch(function(err){ console.error(err); });
-    </script>
   </head>
 
   <body>
-    <!-- <div style="font-size: 40px"><div class="shake shake-constant">A</div><br/>
-    <div class="shake shake-hard shake-constant">A</div><br/>
-    <div class="shake shake-slow shake-constant">A</div><br/>
-    <div class="shake shake-little shake-constant">A</div><br/>
-    <div class="shake shake-horizontal shake-constant">A</div><br/>
-    <div class="shake shake-vertical shake-constant">A</div><br/>
-    <div class="shake shake-rotate shake-constant">A</div><br/>
-    <div class="shake shake-opacity shake-constant">A</div><br/>
-    <div class="shake shake-crazy shake-constant">A</div><br/></div> -->
     <mj-game>Loading game...</mj-game>
+    <script src="bundle.js"></script>
   </body>
 </html>

@@ -1,10 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MjTile, MjTileType } from './classes/mj.tile';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { MjTile, MjTileType } from "./classes/mj.tile";
 
 @Component({
-  selector: 'tile',
-  templateUrl: 'templates/mj.tile.component.html',
-  styleUrls: ['styles/mj.tile.component.css']
+  selector: "tile",
+  templateUrl: "templates/mj.tile.component.html",
+  styleUrls: ["styles/mj.tile.component.css"],
 })
 export class MjTileComponent {
   // constants
@@ -27,7 +27,6 @@ export class MjTileComponent {
   @Input()
   hasFreePair: boolean;
 
-
   public _elementPixelWidth: number;
   public shiftX: number;
   public _elementPixelHeight: number;
@@ -45,32 +44,33 @@ export class MjTileComponent {
 
     let adjustedElementSize = Math.min(
       this._elementPixelHeight,
-      this._elementPixelWidth*1.5 // this is approximate proportion of tile font height to font width
+      this._elementPixelWidth * 1.5 // this is approximate proportion of tile font height to font width
     );
 
-    this.fontSizePrimary =  Math.floor(adjustedElementSize*1.5);
+    this.fontSizePrimary = Math.floor(adjustedElementSize * 1.5);
     this.fontSizeSecondary = Math.floor(adjustedElementSize / 3);
     // console.log(adjustedElementSize);
 
     // Primary tile character horizontal centering
-    let primaryCharacterAreaWidth = (this._elementPixelWidth*2) - 10; // -2*margin of tile
-    this.primaryWrapperWidth = 4*this._elementPixelWidth;
-    this.primaryWrapperLeftShift = Math.floor((this.primaryWrapperWidth - primaryCharacterAreaWidth)/2);
+    let primaryCharacterAreaWidth = this._elementPixelWidth * 2 - 10; // -2*margin of tile
+    this.primaryWrapperWidth = 4 * this._elementPixelWidth;
+    this.primaryWrapperLeftShift = Math.floor(
+      (this.primaryWrapperWidth - primaryCharacterAreaWidth) / 2
+    );
   }
 
   @Input()
   set elementPixelWidth(elementPixelWidth: number) {
     this._elementPixelWidth = elementPixelWidth;
-    this.shiftX = Math.floor(elementPixelWidth*this.shiftProportion);
+    this.shiftX = Math.floor(elementPixelWidth * this.shiftProportion);
     // console.log(this.shiftX);
     this.recalculateFontSizes();
-
   }
 
   @Input()
   set elementPixelHeight(elementPixelHeight: number) {
     this._elementPixelHeight = elementPixelHeight;
-    this.shiftY = Math.floor(elementPixelHeight*this.shiftProportion);
+    this.shiftY = Math.floor(elementPixelHeight * this.shiftProportion);
     // console.log(this.shiftY);
     this.recalculateFontSizes();
   }
@@ -83,7 +83,7 @@ export class MjTileComponent {
   set selected(selected: boolean) {
     if (!this._selected && selected) {
       // play "select" animation
-    } else if (this._selected && !selected){
+    } else if (this._selected && !selected) {
       // play "unselect"
     }
     this._selected = selected;
@@ -111,4 +111,4 @@ export class MjTileComponent {
   }
 }
 
-  // 'background-image': 'url(/img/tiles/' + _type.group + _type.index + '.png)'
+// 'background-image': 'url(/img/tiles/' + _type.group + _type.index + '.png)'
