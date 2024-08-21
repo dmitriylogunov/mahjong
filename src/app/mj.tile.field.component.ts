@@ -17,8 +17,8 @@ import { MjTileCollection } from "./classes/mj.tile.collection";
 
 @Component({
   selector: "tile-field",
-  templateUrl: "templates/mj.tile.field.component.html",
-  styleUrls: ["styles/mj.tile.field.component.css"],
+  templateUrl: "./templates/mj.tile.field.component.html",
+  styleUrls: ["./styles/mj.tile.field.component.css"],
 })
 export class MJTileFieldComponent implements OnDestroy {
   private subscriptions: Subscription[] = [];

@@ -44,8 +44,12 @@ module.exports = {
         { from: 'src/favicon.ico', to: 'favicon.ico' },
         { from: 'src/templates', to: 'templates/[name][ext]' },
         { from: 'src/sounds', to: 'sounds/[name][ext]' },
-        { from: 'src/js', to: 'js/[name][ext]' } 
+        { from: 'src/js', to: 'js/[name][ext]' },
+        { from: 'src/img', to: 'img', globOptions: { dot: true, gitignore: true, ignore: [], } }
       ],
+      options: {
+        watch: true,
+      },
     }),
   ],
 };

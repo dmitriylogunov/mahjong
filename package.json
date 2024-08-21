@@ -23,7 +23,8 @@
     "styles": "stylus src/styles/* -o build/styles",
     "styles:watch": "stylus -w src/styles/* -o build/styles",
     "dev": "concurrently \"npm run build:watch\" \"npm run styles:watch\" \"npm run serve\"",
-    "prod": "npm run build && npm run styles"
+    "prod": "npm run build && npm run styles",
+    "clean": "rm -r ./build/*"
   },
   "keywords": [],
   "author": "",
