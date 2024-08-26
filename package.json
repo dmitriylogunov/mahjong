@@ -10,7 +10,7 @@
     "prod": "npm-run-all clean styles:prod build:prod",
     "build:prod": "webpack",
     "build:watch": "webpack --watch",
-    "clean": "rm -f src/*.svg src/*.woff? src/*.woff src/*.eot src/*.ttf",
+    "clean": "rm -f src/*.svg src/*.woff2 src/*.woff src/*.eot src/*.ttf",
     "styles:prod": "stylus src/styles/*",
     "styles:dev:watch": "stylus -w src/styles/*",
     "serve": "lite-server -c=bs-config.json",

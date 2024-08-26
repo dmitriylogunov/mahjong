@@ -13,8 +13,8 @@ jspm_packages
 *.log
 _test-output
 _temp
-/web-root/*
-!/web-root/**/
-/web-root/templates/*
-!/web-root/index
-!/web-root/*.ico
+src/*.svg
+src/*.woff2
+src/*.woff
+src/*.eot
+src/*.ttf
