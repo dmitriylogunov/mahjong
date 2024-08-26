@@ -6,7 +6,6 @@ import {
   EventEmitter,
   ElementRef,
 } from "@angular/core";
-import { MjTileComponent } from "./mj.tile.component";
 import { MjTile, MjTileType } from "./classes/mj.tile";
 import { AppToolbox } from "./classes/app.toolbox";
 import { MjGameControlService } from "./services/mj.game.control.service";
@@ -14,11 +13,13 @@ import { Subscription } from "rxjs/Subscription";
 import { MjAudioService } from "./services/mj.audio.service";
 import { MjUndoQueue } from "./classes/mj.undo.queue";
 import { MjTileCollection } from "./classes/mj.tile.collection";
+import { ViewEncapsulation } from "@angular/core";
 
 @Component({
   selector: "tile-field",
-  templateUrl: "./templates/mj.tile.field.component.html",
-  styleUrls: ["./styles/mj.tile.field.component.css"],
+  templateUrl: "templates/mj.tile.field.component.html",
+  styleUrls: ["styles/mj.tile.field.component.css"],
+  encapsulation: ViewEncapsulation.Emulated,
 })
 export class MJTileFieldComponent implements OnDestroy {
   private subscriptions: Subscription[] = [];

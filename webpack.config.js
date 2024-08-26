@@ -40,7 +40,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'src/templates', to: 'templates/[name][ext]' },
+        { from: 'src/app/templates', to: 'templates/[name][ext]' },
       ],
     }),
   ],
