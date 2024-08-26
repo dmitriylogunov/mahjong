@@ -20,12 +20,12 @@ var ModalComponent = /** @class */ (function () {
     ModalComponent.prototype.show = function () {
         var _this = this;
         this.visible = true;
-        setTimeout(function () { return _this.visibleAnimate = true; });
+        setTimeout(function () { return (_this.visibleAnimate = true); });
     };
     ModalComponent.prototype.hide = function () {
         var _this = this;
         this.visibleAnimate = false;
-        setTimeout(function () { return _this.visible = false; }, 300);
+        setTimeout(function () { return (_this.visible = false); }, 300);
     };
     __decorate([
         (0, core_1.Input)(),
@@ -33,9 +33,9 @@ var ModalComponent = /** @class */ (function () {
     ], ModalComponent.prototype, "actions", void 0);
     ModalComponent = __decorate([
         (0, core_1.Component)({
-            selector: 'modal',
-            template: "\n  <div (click)=\"hide()\" class=\"modal fade\" tabindex=\"-1\" [ngClass]=\"{'in': visibleAnimate}\"\n       [ngStyle]=\"{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <ng-content></ng-content>\n      </div>\n      <div class=\"clear\"></div>\n      <div class=\"modal-actions-wrapper\">\n        <div class=\"modal-actions\">\n          <span *ngFor=\"let action of actions\">\n            <button type=\"button\" class=\"btn\" (click)=action.callback()>{{action.name}}</button>\n          </span>\n        </div>\n      </div>\n      <div style=\"clear: both;\"></div>\n    </div>\n  </div>\n  ",
-            styleUrls: ['styles/app.modal.component.css'],
+            selector: "modal",
+            template: "\n    <div\n      (click)=\"hide()\"\n      class=\"modal fade\"\n      tabindex=\"-1\"\n      [ngClass]=\"{ in: visibleAnimate }\"\n      [ngStyle]=\"{\n        display: visible ? 'block' : 'none',\n        opacity: visibleAnimate ? 1 : 0\n      }\"\n    >\n      <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n          <ng-content></ng-content>\n        </div>\n        <div class=\"clear\"></div>\n        <div class=\"modal-actions-wrapper\">\n          <div class=\"modal-actions\">\n            <span *ngFor=\"let action of actions\">\n              <button type=\"button\" class=\"btn\" (click)=\"action.callback()\">\n                {{ action.name }}\n              </button>\n            </span>\n          </div>\n        </div>\n        <div style=\"clear: both;\"></div>\n      </div>\n    </div>\n  ",
+            styleUrls: ["styles/app.modal.component.css"],
         })
     ], ModalComponent);
     return ModalComponent;

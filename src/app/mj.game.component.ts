@@ -6,7 +6,7 @@ import {
   QueryList,
 } from "@angular/core";
 import { MjStatusComponent } from "./mj.status.component";
-import { MJTileFieldComponent } from "./mj.tile.field.component";
+import { MjTileFieldComponent } from "./mj.tile.field.component";
 import { MjGameControlService } from "./services/mj.game.control.service";
 import {
   MjAudioService,
@@ -89,8 +89,8 @@ export class MjGameComponent {
     }
   }
 
-  @ViewChild(MJTileFieldComponent)
-  private tileField: MJTileFieldComponent;
+  @ViewChild(MjTileFieldComponent)
+  private tileField: MjTileFieldComponent;
 
   @ViewChild(MjStatusComponent)
   private status: MjStatusComponent;

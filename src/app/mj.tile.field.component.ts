@@ -13,15 +13,13 @@ import { Subscription } from "rxjs/Subscription";
 import { MjAudioService } from "./services/mj.audio.service";
 import { MjUndoQueue } from "./classes/mj.undo.queue";
 import { MjTileCollection } from "./classes/mj.tile.collection";
-import { ViewEncapsulation } from "@angular/core";
 
 @Component({
   selector: "tile-field",
   templateUrl: "templates/mj.tile.field.component.html",
   styleUrls: ["styles/mj.tile.field.component.css"],
-  encapsulation: ViewEncapsulation.Emulated,
 })
-export class MJTileFieldComponent implements OnDestroy {
+export class MjTileFieldComponent implements OnDestroy {
   private subscriptions: Subscription[] = [];
   private undoQueue: MjUndoQueue;
   private collection: MjTileCollection;

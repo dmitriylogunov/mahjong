@@ -23,10 +23,15 @@ var AppModule = /** @class */ (function () {
         (0, core_1.NgModule)({
             imports: [platform_browser_1.BrowserModule],
             declarations: [
-                mj_game_component_1.MjGameComponent, mj_status_component_1.MjStatusComponent, mj_tile_field_component_1.MJTileFieldComponent, mj_tile_component_1.MjTileComponent, app_modal_component_1.ModalComponent,
-                int_as_time_pipe_1.IntAsTimePipe, intval_pipe_1.IntvalPipe
+                mj_game_component_1.MjGameComponent,
+                mj_status_component_1.MjStatusComponent,
+                mj_tile_field_component_1.MjTileFieldComponent,
+                mj_tile_component_1.MjTileComponent,
+                app_modal_component_1.ModalComponent,
+                int_as_time_pipe_1.IntAsTimePipe,
+                intval_pipe_1.IntvalPipe,
             ],
-            bootstrap: [mj_game_component_1.MjGameComponent]
+            bootstrap: [mj_game_component_1.MjGameComponent],
         })
     ], AppModule);
     return AppModule;

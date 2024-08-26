@@ -32,7 +32,7 @@ var MjTileComponent = /** @class */ (function () {
         this.fontSizeSecondary = Math.floor(adjustedElementSize / 3);
         // console.log(adjustedElementSize);
         // Primary tile character horizontal centering
-        var primaryCharacterAreaWidth = (this._elementPixelWidth * 2) - 10; // -2*margin of tile
+        var primaryCharacterAreaWidth = this._elementPixelWidth * 2 - 10; // -2*margin of tile
         this.primaryWrapperWidth = 4 * this._elementPixelWidth;
         this.primaryWrapperLeftShift = Math.floor((this.primaryWrapperWidth - primaryCharacterAreaWidth) / 2);
     };
@@ -134,9 +134,9 @@ var MjTileComponent = /** @class */ (function () {
     ], MjTileComponent.prototype, "tileClicked", void 0);
     MjTileComponent = __decorate([
         (0, core_1.Component)({
-            selector: 'tile',
-            templateUrl: 'templates/mj.tile.component.html',
-            styleUrls: ['styles/mj.tile.component.css']
+            selector: "tile",
+            templateUrl: "templates/mj.tile.component.html",
+            styleUrls: ["styles/mj.tile.component.css"],
         }),
         __metadata("design:paramtypes", [])
     ], MjTileComponent);

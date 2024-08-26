@@ -61,8 +61,7 @@ var MjStatusComponent = /** @class */ (function () {
             subscription.unsubscribe();
         }
     };
-    MjStatusComponent.prototype.ngOnInit = function () {
-    };
+    MjStatusComponent.prototype.ngOnInit = function () { };
     MjStatusComponent.prototype.show = function () {
         this.isVisible = true;
     };
@@ -160,11 +159,12 @@ var MjStatusComponent = /** @class */ (function () {
     ], MjStatusComponent.prototype, "restart", void 0);
     MjStatusComponent = __decorate([
         (0, core_1.Component)({
-            selector: 'status',
-            templateUrl: 'templates/mj.status.component.html',
-            styleUrls: ['styles/mj.status.component.css']
+            selector: "status",
+            templateUrl: "templates/mj.status.component.html",
+            styleUrls: ["styles/mj.status.component.css"],
         }),
-        __metadata("design:paramtypes", [mj_game_control_service_1.MjGameControlService, mj_audio_service_1.MjAudioService])
+        __metadata("design:paramtypes", [mj_game_control_service_1.MjGameControlService,
+            mj_audio_service_1.MjAudioService])
     ], MjStatusComponent);
     return MjStatusComponent;
 }());

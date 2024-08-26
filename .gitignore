@@ -1,6 +1,7 @@
 !.gitkeep
 *.js
 *.js.map
+bundle.js.*
 !src/systemjs.config.extras.js
 !src/systemjs.config.js
 !web-root/js/*.js

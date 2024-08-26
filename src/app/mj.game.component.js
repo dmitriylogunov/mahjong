@@ -25,34 +25,44 @@ var MjGameComponent = /** @class */ (function () {
         this.numberOfHints = 3;
         this.showDebugFields = true;
         this.soundConfiguration = {
-            "coin": ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
-            "blip": ["sounds/blip.wav"],
-            "undo": ["sounds/back.wav"],
-            "bonus": ["sounds/bonus.wav"],
-            "boom": ["sounds/boom.wav"],
-            "wrong": ["sounds/wrong.wav"],
-            "lose": ["sounds/lose.wav"],
-            "win": ["sounds/win.wav"],
-            "click": ["sounds/click1.wav"], //, "sounds/click2.wav"
-            "unclick": ["sounds/click-reverse.wav"],
-            "question": ["sounds/question.wav"]
+            coin: ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
+            blip: ["sounds/blip.wav"],
+            undo: ["sounds/back.wav"],
+            bonus: ["sounds/bonus.wav"],
+            boom: ["sounds/boom.wav"],
+            wrong: ["sounds/wrong.wav"],
+            lose: ["sounds/lose.wav"],
+            win: ["sounds/win.wav"],
+            click: ["sounds/click1.wav"], //, "sounds/click2.wav"
+            unclick: ["sounds/click-reverse.wav"],
+            question: ["sounds/question.wav"],
         };
         this.subscriptions = [];
         this.currentLayout = null;
         this.mainMenuModalActions = [
-            new app_modal_component_1.ModalAction("Start", (function () { _this.onStartGameClick(); }).bind(this))
+            new app_modal_component_1.ModalAction("Start", (function () {
+                _this.onStartGameClick();
+            }).bind(this)),
         ];
         this.restartGameModalActions = [
-            new app_modal_component_1.ModalAction("Yes", (function () { _this.onRestartYesClick(); }).bind(this))
+            new app_modal_component_1.ModalAction("Yes", (function () {
+                _this.onRestartYesClick();
+            }).bind(this)),
             // new ModalAction("No", (()=>{}))
         ];
         this.tieModalActions = [
             // new ModalAction("Continue", (()=>{})), // do nothing
-            new app_modal_component_1.ModalAction("Restart", (function () { _this.onTieRestartClick(); }).bind(this)),
-            new app_modal_component_1.ModalAction("New game", (function () { _this.onRestartYesClick(); }).bind(this))
+            new app_modal_component_1.ModalAction("Restart", (function () {
+                _this.onTieRestartClick();
+            }).bind(this)),
+            new app_modal_component_1.ModalAction("New game", (function () {
+                _this.onRestartYesClick();
+            }).bind(this)),
         ];
         this.winModalActions = [
-            new app_modal_component_1.ModalAction("Play Again", (function () { _this.onRestartYesClick(); }).bind(this))
+            new app_modal_component_1.ModalAction("Play Again", (function () {
+                _this.onRestartYesClick();
+            }).bind(this)),
         ];
         // Global game event subscriptions
         this.subscriptions.push(audioService.soundsReady$.subscribe(function (dummyVariable) {
@@ -134,7 +144,6 @@ var MjGameComponent = /** @class */ (function () {
         if (this.score > 0) {
             this.score -= 10;
         }
-        ;
     };
     MjGameComponent.prototype.onRedo = function () {
         var redoStatus = this.tileField.redo();
@@ -180,21 +189,20 @@ var MjGameComponent = /** @class */ (function () {
     MjGameComponent.prototype.playMusic = function () {
         // this.audioService.playFile("music/");
     };
-    MjGameComponent.prototype.stopMusic = function () {
-    };
+    MjGameComponent.prototype.stopMusic = function () { };
     MjGameComponent.prototype.onDebugCommand = function (command) {
-        if (command == 'step') {
+        if (command == "step") {
             this.tileField.clearTilePair();
         }
-        if (command == 'solve') {
+        if (command == "solve") {
             while (this.tileField.hasFreePairs()) {
                 this.tileField.clearTilePair();
             }
         }
     };
     __decorate([
-        (0, core_1.ViewChild)(mj_tile_field_component_1.MJTileFieldComponent),
-        __metadata("design:type", mj_tile_field_component_1.MJTileFieldComponent)
+        (0, core_1.ViewChild)(mj_tile_field_component_1.MjTileFieldComponent),
+        __metadata("design:type", mj_tile_field_component_1.MjTileFieldComponent)
     ], MjGameComponent.prototype, "tileField", void 0);
     __decorate([
         (0, core_1.ViewChild)(mj_status_component_1.MjStatusComponent),
@@ -206,12 +214,13 @@ var MjGameComponent = /** @class */ (function () {
     ], MjGameComponent.prototype, "modals", void 0);
     MjGameComponent = __decorate([
         (0, core_1.Component)({
-            selector: 'mj-game',
-            templateUrl: 'templates/mj.game.component.html',
-            styleUrls: ['styles/mj.game.component.css'],
-            providers: [mj_game_control_service_1.MjGameControlService, mj_audio_service_1.MjAudioService]
+            selector: "mj-game",
+            templateUrl: "templates/mj.game.component.html",
+            styleUrls: ["styles/mj.game.component.css"],
+            providers: [mj_game_control_service_1.MjGameControlService, mj_audio_service_1.MjAudioService],
         }),
-        __metadata("design:paramtypes", [mj_game_control_service_1.MjGameControlService, mj_audio_service_1.MjAudioService])
+        __metadata("design:paramtypes", [mj_game_control_service_1.MjGameControlService,
+            mj_audio_service_1.MjAudioService])
     ], MjGameComponent);
     return MjGameComponent;
 }());
