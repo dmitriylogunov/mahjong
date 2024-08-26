@@ -3,7 +3,7 @@
     "routes": [
       {
         "src": "/js/(.*)",
-        "dest": "/js/$1"
+        "dest": "/src/js/$1"
       },
       {
         "src": "/fonts/(.*)",
