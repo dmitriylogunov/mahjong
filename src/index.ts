@@ -9,4 +9,4 @@ import "createjs-soundjs/lib/soundjs-0.6.2.min.js";
 import "createjs-preloadjs/lib/preloadjs-0.6.2.min.js";
 
 // Import your main application file
-import "./main";
+import "./main.ts";
