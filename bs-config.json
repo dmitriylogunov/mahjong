@@ -1,5 +1,5 @@
 {
   "server": {
-    "baseDir": "build"
+    "baseDir": "web-root"
   }
 }
