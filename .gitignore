@@ -18,3 +18,4 @@ src/*.woff2
 src/*.woff
 src/*.eot
 src/*.ttf
+.vercel
