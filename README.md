@@ -4,6 +4,10 @@ In-browser Mahjong Solitaire game, built on Angular JS framework
 
 # Quickstart
 
+Play the game online at [https://mahjong.dmitriylogunov.info](https://mahjong.dmitriylogunov.info).
+
+To run locally, do:
+
 - `npm install`
 - `npm run dev`
 - Open [http://localhost:3000](http://localhost:3000)
