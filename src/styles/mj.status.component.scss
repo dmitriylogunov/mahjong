@@ -1,5 +1,5 @@
 /* small screen */
-@media only screen and (max-width : 1024px) {
+@media (max-width: 1024px) {
   .large-screen-only {
     display: none;
   }
@@ -11,7 +11,7 @@
 }
 
 /* large screen */
-@media only screen and (min-width : 1025px) {
+@media (min-width: 1025px) {
   .small-screen-only {
     display: none;
   }
