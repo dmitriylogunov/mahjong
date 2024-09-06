@@ -21,9 +21,9 @@
     min-height: 200px;
     color: $secondary-color;
     border-radius: $round-corner-radius;
-    border: 2px solid $tertiary-color;
+    border: 2px solid $border-color;
     text-align: center;
-    background: linear-gradient(135deg, #CD5C5C, #FFA07A); /* Softer gradient background */
+    background: linear-gradient(135deg, $backgraound-gradient-start, $backgraound-gradient-end); /* Softer gradient background */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow effect */
     overflow: hidden;
     display: flex; /* Use Flexbox */
@@ -53,14 +53,14 @@
           line-height: 28px;
           border-radius: 10px;
           cursor: pointer;
-          border: 2px solid $tertiary-color; /* Border color */
-          background-color: #76C76B; /* Background color */
+          border: 2px solid $border-color; /* Border color */
+          background-color: $tertiary-color; /* Background color */
           color: $primary-color; /* Text color */
           padding: 10px 20px;
           transition: background-color 0.3s, color 0.3s;
 
           &:hover {
-            background-color: #5A9A52; /* Slightly darker background on hover */
+            background-color: $tertiary-color-dark; /* Slightly darker background on hover */
           }
         }
       }

@@ -1,10 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  ViewChildren,
-  OnDestroy,
-  QueryList,
-} from "@angular/core";
+import { Component, ViewChild, ViewChildren, QueryList } from "@angular/core";
 import { MjStatusComponent } from "./mj.status.component";
 import { MjTileFieldComponent } from "./mj.tile.field.component";
 import { MjGameControlService } from "./services/mj.game.control.service";
@@ -14,7 +8,6 @@ import {
 } from "./services/mj.audio.service";
 import { ModalComponent, ModalAction } from "./app.modal.component";
 import { Subscription } from "rxjs/Subscription";
-import { TweenLite } from "gsap";
 
 @Component({
   selector: "mj-game",
@@ -24,8 +17,8 @@ import { TweenLite } from "gsap";
 })
 export class MjGameComponent {
   //config
-  public numberOfHints = 3;
-  public showDebugFields = true;
+  public numberOfHints = 1;
+  public showDebugFields: boolean;
 
   //
   private state: string;

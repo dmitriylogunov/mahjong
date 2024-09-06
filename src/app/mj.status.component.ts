@@ -23,8 +23,6 @@ export class MjStatusComponent implements OnDestroy {
   private timer: number;
 
   @Input()
-  private showDebugFields: boolean;
-
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -81,7 +79,7 @@ export class MjStatusComponent implements OnDestroy {
 
   ngOnInit(): void {}
 
-  private isVisible: boolean = false;
+  public isVisible: boolean = true;
   private paused: boolean;
   private undoStatus: boolean = false;
   private redoStatus: boolean = false;

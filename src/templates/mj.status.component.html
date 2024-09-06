@@ -1,5 +1,4 @@
 <div *ngIf="isVisible" class="status noselect">
-
   <!-- left side block -->
   <div class="left-block">
     <span class="hints large-screen-only">
@@ -28,8 +27,6 @@
       <i *ngIf="paused" class="fa fa-play-circle-o" aria-hidden="true"></i>
       <i *ngIf="!paused" class="fa fa-pause-circle-o" aria-hidden="true"></i>
     </span>
-
-    <span class="music highlight"><i class="fa fa-music" aria-hidden="true"></i></span>
 
     <span class="sound highlight" (click)=onSoundClick()>
       <i *ngIf="soundStatus" class="fa fa-volume-up" aria-hidden="true"></i>
