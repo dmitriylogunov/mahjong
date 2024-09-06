@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Mahjong solitaire",
   "scripts": {
-    "start": "npm run dev",
+    "prestart": "npm run dev",
     "dev": "concurrently \"npm run styles:dev:watch\" \"npm run build:dev:watch\" \"npm run serve\"",
     "serve": "lite-server -c=bs-config.json",
     "prod": "npm-run-all clean styles:prod build:prod",
@@ -16,7 +16,6 @@
     "tsc": "tsc -p src/",
     "tsc:watch": "tsc -p src/ -w",
     "tsc:e2e": "tsc -p e2e/",
-    "prestart": "npm run tsc",
     "pree2e": "npm run tsc:e2e",
     "e2e": "concurrently \"npm run serve:e2e\" \"npm run protractor\" --kill-others --success first",
     "preprotractor": "webdriver-manager update",
