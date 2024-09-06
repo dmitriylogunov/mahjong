@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Mahjong solitaire",
   "scripts": {
-    "prestart": "npm run dev",
+    "start": "npm run dev",
     "dev": "concurrently \"npm run styles:dev:watch\" \"npm run build:dev:watch\" \"npm run serve\"",
     "serve": "lite-server -c=bs-config.json",
     "prod": "npm-run-all clean styles:prod build:prod",
