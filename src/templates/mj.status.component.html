@@ -16,7 +16,7 @@
 
     <!-- middle block -->
     <div class="middle-block">
-      <span class="score">Score:&nbsp;{{((score>0)?score:0) | intval}}</span>
+      <span class="score highlight">Score:&nbsp;{{((score>0)?score:0) | intval}}</span>
 
       <!-- <span class="timer">
         <i class="fa fa-clock-o" aria-hidden="true"></i> <span class="highlight">{{timer | intAsTime}}</span>
@@ -25,17 +25,17 @@
 
     <!-- right side block -->
     <div class="right-block">
-      <span class="sound highlight" (click)=onSoundClick()>
+      <span class="sound" (click)=onSoundClick()>
         <i *ngIf="soundStatus" class="fa fa-volume-up" aria-hidden="true"></i>
         <i *ngIf="!soundStatus" class="fa fa-volume-off" aria-hidden="true"></i>
       </span>
 
-      <span class="restart highlight" (click)=restart.emit(null)><i class="fa fa-close" aria-hidden="true"></i></span>
-
-      <span class="pause highlight" (click)=onPauseClick()>
+      <span class="pause" (click)=onPauseClick()>
         <i *ngIf="paused" class="fa fa-play-circle-o" aria-hidden="true"></i>
         <i *ngIf="!paused" class="fa fa-pause-circle-o" aria-hidden="true"></i>
       </span>
+
+      <span class="restart" (click)=restart.emit(null)><i class="fa fa-close" aria-hidden="true"></i></span>
     </div>
   </div>
 
