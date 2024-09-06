@@ -2,7 +2,10 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './src/index.ts',
+  entry: {
+    app: './src/index.ts',
+  },
+  target: 'web',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'src'),
@@ -23,18 +26,11 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       }
-      // {
-      //   test: /\.(woff|woff2|eot|ttf|otf)$/,
-      //   use: [
-      //     {
-      //       loader: 'file-loader',
-      //       options: {
-      //         name: '[name].[ext]',
-      //         outputPath: ''
-      //       }
-      //     }
-      //   ]
-      // }
     ],
   },
+  watchOptions: {
+    aggregateTimeout: 1000, // Process all changes which happened in this time into one rebuild
+    // poll: true,
+    ignored: ['**/src/**/*.js', '**/node_modules'],
+  }
 };
