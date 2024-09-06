@@ -20,17 +20,19 @@
     align-items: center;
     padding: 0.25rem 0;
 
-    > * {
-      flex: 1;
+    >*:nth-child(1),
+    >*:nth-child(3) {
+      flex-grow: 3;
     }
 
-    > *:nth-child(2) {
+    >*:nth-child(2) {
+      flex-grow: 2;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    > *:last-child {
+    >*:last-child {
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -48,11 +50,12 @@
           color: gray;
         }
       }
+
+      &.hint.active {
+        color: orange;
+      }
     }
 
-    .hint.active {
-      color: orange;
-    }
   }
 
   .debug-block {
