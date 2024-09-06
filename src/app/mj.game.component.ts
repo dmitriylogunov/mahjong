@@ -64,15 +64,15 @@ export class MjGameComponent {
       })
     );
 
-    window.setInterval(
-      (() => {
-        if (!this.paused) {
-          this.timer += 1;
-          this.score -= 0.1;
-        }
-      }).bind(this),
-      1000
-    );
+    // window.setInterval(
+    //   (() => {
+    //     if (!this.paused) {
+    //       this.timer += 1;
+    //       this.score -= 0.1;
+    //     }
+    //   }).bind(this),
+    //   1000
+    // );
   }
 
   ngOnDestroy(): void {
