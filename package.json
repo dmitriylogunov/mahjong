@@ -6,7 +6,7 @@
     "start": "npm run dev",
     "dev": "concurrently \"npm run styles:dev:watch\" \"npm run build:dev:watch\" \"npm run serve\"",
     "serve": "lite-server -c=bs-config.json",
-    "prod": "npm-run-all clean styles:prod build:prod",
+    "prod": "npm-run-all clean tsc styles:prod build:prod",
     "build:prod": "webpack --mode production",
     "build:dev:watch": "webpack --watch",
     "clean": "rm -f src/*.svg src/*.woff2 src/*.woff src/*.eot src/*.ttf",
