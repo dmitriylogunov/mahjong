@@ -1,101 +1,110 @@
 .tile-outer {
   position: absolute;
   font-family: FreeSerifNF;
-}
 
-.tile-outer.free > .tile {
-  cursor: pointer;
-}
+  &.free {
+    .tile {
+      cursor: pointer;
 
- /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
-/*.tile-outer.free:hover, .tile-outer.selected {
+      &:hover {
+        background-color: lightgray;
+      }
 
-  transform: scale(1.1,1.1);
-  z-index: 500;
-  opacity: .99;
-}*/
+    }
+  }
 
-.tile-outer.free > .tile:hover {
-  background-color: lightgray;
-}
+  &.hidden {
+    display: none;
+  }
 
-.tile-shadow {
-  position: absolute;
-  border: 1px solid gray;
-  background-color: lightgray;
-  border-radius: 10%;
-}
+  .tile-shadow {
+    position: absolute;
+    border: 1px solid gray;
+    background-color: lightgray;
+    border-radius: 10%;
 
-.tile-shadow1 {
-  top: 0px;
-  left: 0px;
-}
+    &.tile-shadow1 {
+      top: 0px;
+      left: 0px;
+    }
 
-.tile-shadow2 {
-  opacity: .99;
-}
+    &.tile-shadow2 {
+      opacity: .99;
+      border-left: none;
+      border-bottom: none;
+    }
+  }
 
-.tile {
-  overflow: hidden;
-  transform-origin: 50% 50%;
-  border: 2px solid gray;
-  position: absolute;
-  border-radius: 10%;
-  cursor: default;
-}
+  .tile {
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    border: 2px solid gray;
+    position: absolute;
+    border-radius: 10%;
+    cursor: default;
+    // transform: skewY(-30deg) scaleY(0.5);
+    background-color: #FEF2C7;
+    /* Default background color */
 
-.tile-content {
-  margin: 5px;
-  padding: 0px;
-  text-align: left;
-}
+    &::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      /* Adjust thickness here */
+      background-color: #D9C89E;
+      /* Side color */
+      transform-origin: top left;
+      z-index: -1;
+    }
 
-.tile-content .primary-character-wrap {
-  /*width: 100%;*/
-  text-align: center;
-}
+    .tile-content {
+      margin: 5px;
+      padding: 0px;
+      text-align: left;
 
-.tile-content .primary-character {
-  margin-top: -1px;
-  margin-right: 0px;
-  margin-bottom: 0px;
-}
+      .primary-character-wrap {
+        text-align: center;
 
-.tile-content .clear {
-  clear: both;
-}
+        .primary-character {
+          margin-top: -1px;
+          margin-right: 0px;
+          margin-bottom: 0px;
+        }
 
-.tile-content .secondary-character {
-}
+      }
+    }
 
-.tile-outer.hidden {
-  display: none;
-}
+    &.layer0 {
+      background-color: #FEF2C7;
+    }
 
-.tile.layer0  {
-  background-color: #FEF2C7;
-}
+    &.layer1 {
+      background-color: #BEDDBF;
+    }
 
-.tile.layer1  {
-  background-color: #BEDDBF;
-}
+    &.layer2 {
+      background-color: #FFE1A2;
+    }
 
-.tile.layer2 {
-  background-color: #FFE1A2;
-}
+    &.layer3 {
+      background-color: #FEF2C7;
+    }
 
-.tile.layer3  {
-  background-color: #FEF2C7;
-}
+    &.layer4 {
+      background-color: #FEF2C7;
+    }
 
-.tile.layer4 {
-  background-color: #FEF2C7;
-}
+    &.layer5 {
+      background-color: #FEAA6E;
+    }
 
-.tile.layer5 {
-  background-color: #FEAA6E;
-}
+    &.selected {
+      background-color: #FEAA6E;
+    }
+  }
 
-.tile.selected {
-  background-color: #FEAA6E;
+
 }
