@@ -22,8 +22,7 @@ var MjGameComponent = /** @class */ (function () {
         this.gameControlService = gameControlService;
         this.audioService = audioService;
         //config
-        this.numberOfHints = 3;
-        this.showDebugFields = true;
+        this.numberOfHints = 1;
         this.soundConfiguration = {
             coin: ["sounds/coin1.wav", "sounds/coin2.wav", "sounds/coin3.wav"],
             blip: ["sounds/blip.wav"],

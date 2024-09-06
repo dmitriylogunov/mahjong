@@ -23,6 +23,7 @@ export class MjStatusComponent implements OnDestroy {
   private timer: number;
 
   @Input()
+  public showDebugFields: boolean;
   private subscriptions: Subscription[] = [];
 
   constructor(
