@@ -25,17 +25,17 @@
 
     <!-- right side block -->
     <div class="right-block">
-      <span class="sound" (click)=onSoundClick()>
+      <span class="sound highlight" (click)=onSoundClick()>
         <i *ngIf="soundStatus" class="fa fa-volume-up" aria-hidden="true"></i>
         <i *ngIf="!soundStatus" class="fa fa-volume-off" aria-hidden="true"></i>
       </span>
 
-      <span class="pause" (click)=onPauseClick()>
+      <span class="pause highlight" (click)=onPauseClick()>
         <i *ngIf="paused" class="fa fa-play-circle-o" aria-hidden="true"></i>
         <i *ngIf="!paused" class="fa fa-pause-circle-o" aria-hidden="true"></i>
       </span>
 
-      <span class="restart" (click)=restart.emit(null)><i class="fa fa-close" aria-hidden="true"></i></span>
+      <span class="restart highlight" (click)=restart.emit(null)><i class="fa fa-close" aria-hidden="true"></i></span>
     </div>
   </div>
 
