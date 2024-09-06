@@ -9,7 +9,7 @@ import { Component, Input } from "@angular/core";
       tabindex="-1"
       [ngClass]="{ in: visibleAnimate }"
       [ngStyle]="{
-        display: visible ? 'block' : 'none',
+        display: visible ? 'flex' : 'none',
         opacity: visibleAnimate ? 1 : 0
       }"
     >
@@ -17,7 +17,6 @@ import { Component, Input } from "@angular/core";
         <div class="modal-content">
           <ng-content></ng-content>
         </div>
-        <div class="clear"></div>
         <div class="modal-actions-wrapper">
           <div class="modal-actions">
             <span *ngFor="let action of actions">
@@ -27,7 +26,6 @@ import { Component, Input } from "@angular/core";
             </span>
           </div>
         </div>
-        <div style="clear: both;"></div>
       </div>
     </div>
   `,
@@ -38,7 +36,7 @@ export class ModalComponent {
   public actions: ModalAction[];
 
   public visible = false;
-  private visibleAnimate = false;
+  public visibleAnimate = false;
 
   public show(): void {
     this.visible = true;
