@@ -10,6 +10,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-top: env(safe-area-inset-top);
 
   .status-bar {
     display: flex;
@@ -59,6 +60,7 @@
 
   .debug-block {
     position: absolute;
+    top: calc(4rem + env(safe-area-inset-top)); // Adjust position to account for the toolbar height
     top: 4rem;
     left: 1rem;
     width: 100px;
