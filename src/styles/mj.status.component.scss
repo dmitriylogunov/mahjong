@@ -6,7 +6,6 @@
   font-family: museo-slab, Georgia, "Times New Roman", Times, serif;
   width: 100%;
   height: 100%;
-  font-size: clamp(.5rem, 2.5vh, 2rem);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -18,6 +17,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    font-size: clamp(0.25rem, 4vh, 2rem);
 
     >*:nth-child(1),
     >*:nth-child(3) {
