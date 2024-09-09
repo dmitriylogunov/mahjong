@@ -23,7 +23,7 @@
     border-radius: $round-corner-radius;
     border: 2px solid $border-color;
     text-align: center;
-    background: linear-gradient(135deg, $backgraound-gradient-start, $backgraound-gradient-end); /* Softer gradient background */
+    background: linear-gradient(135deg, $background-gradient-start, $background-gradient-end); /* Softer gradient background */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow effect */
     overflow: hidden;
     display: flex; /* Use Flexbox */

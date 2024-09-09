@@ -2,7 +2,6 @@
 
 .status {
   color: $tertiary-color;
-  background: linear-gradient(135deg, $backgraound-gradient-start, $backgraound-gradient-end);
   font-family: museo-slab, Georgia, "Times New Roman", Times, serif;
   width: 100%;
   height: 100%;
@@ -10,7 +9,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: env(safe-area-inset-top);
 
   .status-bar {
     display: flex;
@@ -60,7 +58,7 @@
 
   .debug-block {
     position: absolute;
-    top: calc(4rem + env(safe-area-inset-top)); // Adjust position to account for the toolbar height
+    top: calc(4rem + env(safe-area-inset-top));
     top: 4rem;
     left: 1rem;
     width: 100px;

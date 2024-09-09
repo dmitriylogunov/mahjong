@@ -1,3 +1,5 @@
+@import "variables";
+
 .game-component {
   display: flex;
   flex-direction: column;
@@ -6,9 +8,11 @@
 
   .statusfield {
     flex: 0 0 4rem;
-    height: 4rem;
+    height: calc(4rem + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
     width: 100%;
-    background-color: #5C5749;
+    background: linear-gradient(135deg, $background-gradient-start, $background-gradient-end);
+    color: $tertiary-color;
   }
 
   .gamefield {
