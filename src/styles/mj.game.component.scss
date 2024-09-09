@@ -7,7 +7,7 @@
   width: 100vw;
 
   .statusfield {
-    flex: 0 0 4rem;
+    flex: 0 0 calc(4rem + env(safe-area-inset-top));
     height: calc(4rem + env(safe-area-inset-top));
     padding-top: env(safe-area-inset-top);
     width: 100%;

@@ -58,7 +58,6 @@
 
   .debug-block {
     position: absolute;
-    top: calc(4rem + env(safe-area-inset-top));
     top: 4rem;
     left: 1rem;
     width: 100px;
