@@ -1,6 +1,6 @@
 <!-- main menu -->
 <modal [actions]=mainMenuModalActions>
-  <h1 class="gametitle">Mahjong<br/>Solitaire</h1>
+  <h1 class="title">Mahjong<br/>Solitaire</h1>
 </modal>
 
 <!-- restart dialog -->
@@ -24,24 +24,22 @@
   <p>Your score is {{score}}.</p>
 </modal>
 
-<div class="statusfield"><status
-  (undo)=onUndo()
-  (redo)=onRedo()
-  (restart)=onRestartRequest()
-  [hintsCount]=numberOfHints
-  [score]=score
-  [timer]=timer
-  [showDebugFields]=false
-></status></div>
+<div class="game-component">
+  <div class="statusfield"><status
+    (undo)=onUndo()
+    (redo)=onRedo()
+    (restart)=onRestartRequest()
+    [hintsCount]=numberOfHints
+    [score]=score
+    [timer]=timer
+    [showDebugFields]=false
+  ></status></div>
 
-<div class="gamefield noselect"><tile-field
+  <div class="gamefield noselect"><tile-field
   [layout]=currentLayout
   (ready)=onTileCollectionReady()
   (tileCleared)=onTileCleared()
   (click)=onClick()
   [paused]=paused
   ></tile-field></div>
-
-  <div *ngIf="state=='intro'" class="intro">
-    Logo here
-  </div>
+</div>

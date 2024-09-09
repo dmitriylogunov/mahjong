@@ -1,25 +1,23 @@
-.statusfield
-{
-  position: relative;
+.game-component {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   width: 100vw;
-  height: 5vh;
-  background-color:#5C5749;
-}
-.gamefield {
-  position: relative;
-  width: 100vw;
-  height: 95vh;
-  background-size: cover;
-  background-image: url('/img/backgrounds/oriental-1.jpg')
-}
-.intro {
-  width: 100vw;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background:rgba(0,0,0,0.8);
-  display: none;
+
+  .statusfield {
+    flex: 0 0 5%;
+    height: 5vh;
+    width: 100%;
+    background-color: #5C5749;
+  }
+
+  .gamefield {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    background-size: cover;
+    background-image: url('/img/backgrounds/oriental-1.jpg')
+  }
 }
 
 h1 {
@@ -27,8 +25,5 @@ h1 {
   text-align: center;
   text-transform: uppercase;
   font-size: clamp(1.5rem, 5vw, 3rem);
-
-  &.gametitle {
-    font-family: "Palatino", "Garamond", "Courier new";
-  }
+  font-family: "Palatino", "Garamond", "Courier new";
 }
