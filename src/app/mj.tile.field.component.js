@@ -232,6 +232,10 @@ var MjTileFieldComponent = /** @class */ (function () {
         window.addEventListener("resize", (function () {
             _this.retrieveDimensionsFromElement();
         }).bind(this));
+        // listen for orientation changes
+        window.addEventListener("orientationchange", (function () {
+            _this.retrieveDimensionsFromElement();
+        }).bind(this));
         // listen to hint requests and show them
         this.subscriptions.push(gameControlService.hintRequestUpdated$.subscribe(function (status) {
             _this.showHints = status;
@@ -278,14 +282,14 @@ var MjTileFieldComponent = /** @class */ (function () {
     };
     // recalculate field and tile dimensions
     MjTileFieldComponent.prototype.retrieveDimensionsFromElement = function () {
-        var element = this._elRef.nativeElement.parentElement;
+        // let element: any = this._elRef.nativeElement.parentElement;
         // console.log("retrieveDimensionsFromElement");
         // console.log(element);
         // console.log(element.offsetWidth);
         // console.log(element.offsetHeight);
         // Game field
-        this.windowWidth = element.offsetWidth;
-        this.windowHeight = element.offsetHeight;
+        this.windowWidth = window.innerWidth;
+        this.windowHeight = window.innerHeight * 0.96; // account for the 4% of the top status bar
         // element size
         this.elementPixelWidth = Math.floor(this.windowWidth / this.fieldDimensionX);
         this.elementPixelHeight = Math.floor(this.windowHeight / this.fieldDimensionY);
@@ -310,8 +314,10 @@ var MjTileFieldComponent = /** @class */ (function () {
         var totalPaddingY = this.windowHeight - this.elementPixelHeight * this.fieldDimensionY;
         this.paddingTop = Math.floor(totalPaddingY / 2);
         this.paddingBottom = totalPaddingY - this.paddingTop;
-        // console.log(this.elementPixelWidth);
-        // console.log(this.elementPixelHeight);
+        // console.log("elementPixelWidth", this.elementPixelWidth);
+        // console.log("elementPixelHeight", this.elementPixelHeight);
+        // console.log("paddingTop", this.paddingTop); // Debug output for paddingTop
+        // console.log("paddingBottom", this.paddingBottom); // Debug output for paddingBottom
     };
     // arrange tiles into given layout and detect which tile blocks which
     // this function has to be only called once per layout change, and not called on subsequent game restarts

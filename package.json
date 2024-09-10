@@ -4,11 +4,16 @@
   "description": "Mahjong solitaire",
   "scripts": {
     "start": "npm run dev",
-    "dev": "concurrently \"npm run styles:dev:watch\" \"npm run build:dev:watch\" \"npm run serve\"",
-    "serve": "lite-server -c=bs-config.json",
     "prod": "npm-run-all clean tsc styles:prod build:prod",
-    "build:prod": "webpack --mode production",
-    "build:dev:watch": "webpack --watch",
+    "dev": "concurrently \"npm run styles:dev:watch\" \"npm run build:prod\" \"npm run serve\"",
+    "serve": "lite-server -c=bs-config.json",
+
+    "build:prod": "npm-run-all tsc webpack:prod",
+    "build:dev:watch": "concurrently \"tsc:watch\" \"webpack:dev:watch\"",
+
+    "webpack:prod": "webpack --mode production",
+    "webpack:dev:watch": "webpack --watch",
+
     "clean": "rm -f src/*.svg src/*.woff2 src/*.woff src/*.eot src/*.ttf",
     "styles:prod": "sass --no-source-map src/styles:src/styles",
     "styles:dev:watch": "sass --watch src/styles:src/styles",

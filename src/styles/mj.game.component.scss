@@ -1,14 +1,20 @@
 @import "variables";
 
 .game-component {
+  height: 100%;
+  width: 100%;
+
+  // height: 100vh;
+  // height: 100dvh;
+  // width: 100vw;
+  // width: 100dvw;
+
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100vw;
 
   .statusfield {
-    flex: 0 0 calc(4rem + env(safe-area-inset-top));
-    height: calc(4rem + env(safe-area-inset-top));
+    flex: 0 0 calc(3rem + env(safe-area-inset-top));
+    height: calc(3rem + env(safe-area-inset-top));
     padding-top: env(safe-area-inset-top);
     width: 100%;
     background: linear-gradient(135deg, $background-gradient-start, $background-gradient-end);

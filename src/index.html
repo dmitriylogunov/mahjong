@@ -4,7 +4,7 @@
 <head>
   <title>Mahjong solitaire</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <base href="/">
 
   <!-- Favicon -->
@@ -15,21 +15,20 @@
 
   <style>
   body, html {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    width: 100dvw;
   }
   
-  .mj-game {
+  .mj-game, .loading-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
   }
-  
+
   .initial-loading {
     font-size: 2em;
     color: black;
@@ -70,7 +69,7 @@
 
 <body>
   <mj-game>
-    <div class="initial-loading">Loading game&nbsp;<span class="dot">•</span><span class="dot">•</span><span class="dot">•</span></div>
+    <div class="loading-container"><div class="initial-loading">Loading game&nbsp;<span class="dot">•</span><span class="dot">•</span><span class="dot">•</span></div></div>
   </mj-game>
   <script src="js/createjs.min.js"></script>
   <script src="bundle.js"></script>
