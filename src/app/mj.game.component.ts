@@ -108,7 +108,19 @@ export class MjGameComponent {
 
   public mainMenuModalActions: ModalAction[] = [
     new ModalAction(
-      "Start",
+      "Begin Journey",
+      (() => {
+        this.onStartGameClick();
+      }).bind(this)
+    ),
+    new ModalAction(
+      "Replay Layout",
+      (() => {
+        this.onStartGameClick();
+      }).bind(this)
+    ),
+    new ModalAction(
+      "New Challenge",
       (() => {
         this.onStartGameClick();
       }).bind(this)
