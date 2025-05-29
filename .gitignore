@@ -1,21 +1,41 @@
-!.gitkeep
-*.js
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Angular backup
+src-angular
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Vercel
+.vercel
+
+# Old Angular build artifacts
 *.js.map
 bundle.js.*
-!src/systemjs.config.extras.js
-!src/systemjs.config.js
-!src/js/*.js
-*.css
-*.css.map
-.idea
-node_modules
-jspm_packages
-*.log
 _test-output
 _temp
-src/*.svg
-src/*.woff2
-src/*.woff
-src/*.eot
-src/*.ttf
-.vercel

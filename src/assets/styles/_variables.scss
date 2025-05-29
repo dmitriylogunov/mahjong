@@ -1,0 +1,29 @@
+// Colors
+$primary-color: #4CAF50;
+$secondary-color: #FFC107;
+$danger-color: #F44336;
+$background-color: #2a2a2a;
+$surface-color: #3a3a3a;
+$text-color: #ffffff;
+$text-secondary: #b0b0b0;
+
+// Tile dimensions
+$tile-width: 40px;
+$tile-height: 50px;
+$tile-depth: 5px;
+
+// Z-index layers
+$z-tile-base: 100;
+$z-tile-selected: 200;
+$z-status-bar: 300;
+$z-modal: 1000;
+
+// Animation speeds
+$animation-fast: 0.2s;
+$animation-normal: 0.3s;
+$animation-slow: 0.5s;
+
+// Breakpoints
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1280px;

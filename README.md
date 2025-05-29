@@ -1,106 +1,162 @@
-# Overview
+# Mahjong Solitaire
 
-In-browser Mahjong Solitaire game, built on Angular JS framework
+A modern, responsive Mahjong Solitaire game built with Vue 3, TypeScript, and Vite.
 
-# Quickstart
+![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?style=flat-square&logo=vue.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-007ACC?style=flat-square&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?style=flat-square&logo=vite)
 
-Play the game online at [https://mahjong.dmitriylogunov.info](https://mahjong.dmitriylogunov.info).
+## 🎮 Play Online
 
-To run locally, do:
+Play the game online at [https://mahjong.dmitriylogunov.info](https://mahjong.dmitriylogunov.info)
 
-- `npm install`
-- `npm run dev`
-- Open [http://localhost:3000](http://localhost:3000)
-- `Ctrl-C` to stop
+## ✨ Features
 
-## Prerequisites
+- 🎯 Classic Mahjong Solitaire gameplay
+- 🎨 Beautiful tile designs with traditional Mahjong characters
+- 💾 Game state persistence using IndexedDB
+- ↩️ Undo/Redo functionality
+- 💡 Hint system to help find matching pairs
+- 🔊 Sound effects and audio feedback
+- 📱 Fully responsive design
+- ⚡ Lightning-fast performance with Vite
+- 🎯 TypeScript for type safety
 
-Node.js and npm are essential to Angular development.
+## 🚀 Quick Start
 
-<a href="https://docs.npmjs.com/getting-started/installing-node" target="_blank" title="Installing Node.js and updating npm">
-Get it now</a> if it's not already installed on your machine.
+### Prerequisites
 
-**Verify that you are running at least node `v4.x.x` and npm `3.x.x`**
-by running `node -v` and `npm -v` in a terminal/console window.
-Older versions produce errors.
+- Node.js 18+ and npm 9+
+- Modern web browser with ES6+ support
 
-We recommend [nvm](https://github.com/creationix/nvm) for managing multiple versions of node and npm.
+### Installation
 
-> Doesn't work in _Bash for Windows_ which does not support servers as of January, 2017.
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/mahjong.git
+cd mahjong
 
-The `npm run dev` command first compiles the application,
-then simultaneously re-compiles and runs the `lite-server`.
-Both the compiler and the server watch for file changes.
+# Install dependencies
+npm install
 
-Game will be running after npm start.
+# Start development server
+npm run dev
+```
 
-Shut it down manually with `Ctrl-C`.
+Open [http://localhost:3000](http://localhost:3000) to play the game locally.
 
-### npm scripts
+## 📦 Available Scripts
 
-We've captured many of the most useful commands in npm scripts defined in the `package.json`:
+```bash
+# Development server with hot reload
+npm run dev
 
-- `npm run dev` - runs the compiler and a server at the same time, both in "watch mode".
-- `npm run tsc` - runs the TypeScript compiler once.
-- `npm run tsc:w` - runs the TypeScript compiler in watch mode; the process keeps running, awaiting changes to TypeScript files and re-compiling when it sees them.
-- `npm run serve` - runs the [lite-server](https://www.npmjs.com/package/lite-server), a light-weight, static file server, written and maintained by
-  [John Papa](https://github.com/johnpapa) and
-  [Christopher Martin](https://github.com/cgmartin)
-  with excellent support for Angular apps that use routing.
+# Type checking
+npm run type-check
 
-Here are the test related scripts:
+# Build for production
+npm run build
 
-- `npm test` - compiles, runs and watches the karma unit tests
-- `npm run e2e` - compiles and run protractor e2e tests, written in Typescript (\*e2e-spec.ts)
+# Preview production build
+npm run preview
 
-## Testing
+# Lint and fix files
+npm run lint
+```
 
-The QuickStart documentation doesn't discuss testing.
-This repo adds both karma/jasmine unit test and protractor end-to-end testing support.
+## 🏗️ Tech Stack
 
-These tools are configured for specific conventions described below.
+- **Framework**: Vue 3 with Composition API
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **State Management**: Pinia
+- **Styling**: SCSS with CSS Modules
+- **Icons**: Font Awesome 4.7
+- **Storage**: IndexedDB for game persistence
 
-_It is unwise and rarely possible to run the application, the unit tests, and the e2e tests at the same time.
-We recommend that you shut down one before starting another._
+## 🎯 Game Rules
 
-### Unit Tests
+1. **Objective**: Remove all tiles from the board by matching pairs
+2. **Matching**: Click two identical tiles to remove them
+3. **Free Tiles**: Only tiles that are "free" can be selected:
+   - Not covered by another tile
+   - Have at least one side (left or right) free
+4. **Special Tiles**: 
+   - Seasons (Spring, Summer, Autumn, Winter) match each other
+   - Flowers (Plum, Orchid, Bamboo, Chrysanthemum) match each other
 
-TypeScript unit-tests are usually in the `src/app` folder. Their filenames must end in `.spec.ts`.
+## 🛠️ Architecture
 
-Look for the example `src/app/app.component.spec.ts`.
-Add more `.spec.ts` files as you wish; we configured karma to find them.
+The project follows a modern Vue 3 architecture:
 
-Run it with `npm test`
+```
+src/
+├── components/       # Vue components
+│   ├── GameView.vue # Main game container
+│   ├── TileField.vue # Game board
+│   ├── TileComponent.vue # Individual tile
+│   ├── StatusBar.vue # Game controls
+│   └── AppModal.vue # Reusable modal
+├── stores/          # Pinia stores
+│   └── game.store.ts # Game state management
+├── services/        # Business logic
+│   ├── storage.service.ts # IndexedDB wrapper
+│   ├── cache.service.ts # In-memory caching
+│   ├── preferences.service.ts # User preferences
+│   └── audio.service.ts # Sound effects
+├── models/          # Data models
+│   └── tile.model.ts # Tile classes
+├── types/           # TypeScript types
+└── data/            # Game layouts
+```
 
-That command first compiles the application, then simultaneously re-compiles and runs the karma test-runner.
-Both the compiler and the karma watch for (different) file changes.
+## 🚀 Deployment
 
-Shut it down manually with `Ctrl-C`.
+The project is configured for easy deployment to Vercel:
 
-Test-runner output appears in the terminal window.
-We can update our app and our tests in real-time, keeping a weather eye on the console for broken tests.
-Karma is occasionally confused and it is often necessary to shut down its browser or even shut the command down (`Ctrl-C`) and
-restart it. No worries; it's pretty quick.
+```bash
+# Build for production
+npm run build
 
-### End-to-end (E2E) Tests
+# Deploy to Vercel
+vercel
+```
 
-E2E tests are in the `e2e` directory, side by side with the `src` folder.
-Their filenames must end in `.e2e-spec.ts`.
+The `vercel.json` configuration is already included for optimal settings.
 
-Look for the example `e2e/app.e2e-spec.ts`.
-Add more `.e2e-spec.js` files as you wish (although one usually suffices for small projects);
-we configured Protractor to find them.
+## 🎨 Customization
 
-Thereafter, run them with `npm run e2e`.
+### Adding New Layouts
 
-That command first compiles, then simultaneously starts the `lite-server` at `localhost:8080`
-and launches Protractor.
+Add new tile layouts in `src/data/layouts.ts`:
 
-The pass/fail test results appear at the bottom of the terminal window.
-A custom reporter (see `protractor.config.js`) generates a `./_test-output/protractor-results.txt` file
-which is easier to read; this file is excluded from source control.
+```typescript
+export const myLayout: number[][] = [
+  [x, y], // Tile positions
+  // ...
+];
+```
 
-Shut it down manually with `Ctrl-C`.
+### Themes
 
-[travis-badge]: https://travis-ci.org/angular/quickstart.svg?branch=master
-[travis-badge-url]: https://travis-ci.org/angular/quickstart
+Modify theme colors in `src/assets/styles/_variables.scss`:
+
+```scss
+$primary-color: #4CAF50;
+$secondary-color: #FFC107;
+// ...
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 🙏 Acknowledgments
+
+- Traditional Mahjong tile designs
+- Vue.js team for the amazing framework
+- Vite team for the blazing fast build tool

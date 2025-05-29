@@ -1,4 +1,10 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { AppModule } from './app/app.module';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import './assets/styles/main.scss';
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+const app = createApp(App);
+const pinia = createPinia();
+
+app.use(pinia);
+app.mount('#app');
