@@ -102,11 +102,23 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout);
+  }
 });
 
 // Watch for layout changes
 watch(() => props.layout, () => {
   initializeGame();
+});
+
+// Recalculate dimensions when game is unpaused
+watch(() => props.paused, (isPaused) => {
+  if (!isPaused) {
+    requestAnimationFrame(() => {
+      retrieveDimensionsFromElement();
+    });
+  }
 });
 
 function initializeGame() {
@@ -115,8 +127,8 @@ function initializeGame() {
   shuffleTypesFisherYates();
   updateFreePairs();
   
-  // Calculate dimensions
-  setTimeout(() => {
+  // Calculate dimensions after DOM is ready
+  requestAnimationFrame(() => {
     retrieveDimensionsFromElement();
     tilesReady.value = true;
     
@@ -124,7 +136,7 @@ function initializeGame() {
     gameStore.initializeGame(props.layout, [...tiles.value]);
     
     emit('ready');
-  }, 100);
+  });
 }
 
 function initTiles() {
@@ -247,27 +259,53 @@ function retrieveDimensionsFromElement() {
   if (!container) return;
   
   const rect = container.getBoundingClientRect();
-  const availableWidth = rect.width - 40; // Account for padding
-  const availableHeight = rect.height - 40;
+  const availableWidth = rect.width;
+  const availableHeight = rect.height;
+  
+  // Base tile dimensions (these are HALF the actual tile display size)
+  const baseTileWidth = 20;
+  const baseTileHeight = 25;
+  
+  // Calculate the space needed for the full field
+  // fieldWidth/Height are in grid units, each unit is half a tile
+  // Add one full tile size for the actual tile dimensions
+  const baseFieldPixelWidth = (fieldWidth.value * baseTileWidth) + (baseTileWidth * 2);
+  const baseFieldPixelHeight = (fieldHeight.value * baseTileHeight) + (baseTileHeight * 2);
+  
+  // Add padding and account for 3D offset (z-layers)
+  const padding = 40;
+  const maxZLayers = 5;
+  const zOffset = maxZLayers * 5; // 5px per layer for 3D effect
+  const targetWidth = availableWidth - (padding * 2) - zOffset;
+  const targetHeight = availableHeight - (padding * 2) - zOffset;
   
   // Calculate scale to fit field in available space
-  const scaleX = availableWidth / (fieldWidth.value * 20);
-  const scaleY = availableHeight / (fieldHeight.value * 25);
-  const scale = Math.min(scaleX, scaleY, 1.5);
+  const scaleX = targetWidth / baseFieldPixelWidth;
+  const scaleY = targetHeight / baseFieldPixelHeight;
+  const scale = Math.min(scaleX, scaleY, 1.5); // Cap at 1.5x
   
-  elementPixelWidth.value = Math.floor(40 * scale);
-  elementPixelHeight.value = Math.floor(50 * scale);
+  // Apply scale to tile dimensions
+  elementPixelWidth.value = Math.floor(baseTileWidth * scale);
+  elementPixelHeight.value = Math.floor(baseTileHeight * scale);
   
-  windowWidth.value = fieldWidth.value * elementPixelWidth.value / 2;
-  windowHeight.value = fieldHeight.value * elementPixelHeight.value / 2;
+  // Calculate actual field dimensions
+  windowWidth.value = (fieldWidth.value * elementPixelWidth.value) + (elementPixelWidth.value * 2);
+  windowHeight.value = (fieldHeight.value * elementPixelHeight.value) + (elementPixelHeight.value * 2);
   
   // Center the field
-  paddingLeft.value = Math.max(0, (availableWidth - windowWidth.value) / 2);
-  paddingTop.value = Math.max(0, (availableHeight - windowHeight.value) / 2);
+  paddingLeft.value = Math.floor((availableWidth - windowWidth.value) / 2);
+  paddingTop.value = Math.floor((availableHeight - windowHeight.value) / 2);
 }
 
+let resizeTimeout: number | null = null;
+
 function handleResize() {
-  retrieveDimensionsFromElement();
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout);
+  }
+  resizeTimeout = window.setTimeout(() => {
+    retrieveDimensionsFromElement();
+  }, 100);
 }
 
 // Subscribe to hint requests
@@ -282,8 +320,12 @@ watch(() => gameStore.showHint, (value) => {
 .tile-field-outer {
   width: 100%;
   height: 100%;
+  min-height: 400px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .paused {
