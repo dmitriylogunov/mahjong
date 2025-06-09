@@ -21,6 +21,22 @@
       }"
       @click="onFieldClick"
     >
+      <!-- Debug square showing field boundary -->
+      <div
+        class="debug-field-boundary"
+        :style="{
+          position: 'absolute',
+          left: '0px',
+          top: '0px',
+          width: `${fieldWidth * elementPixelWidth}px`,
+          height: `${fieldHeight * elementPixelHeight}px`,
+          border: '2px solid red',
+          backgroundColor: 'rgba(255, 0, 0, 0.1)',
+          pointerEvents: 'none',
+          zIndex: 1
+        }"
+      ></div>
+      
       <TileComponent
         v-for="(tile, index) in tiles"
         :key="`tile-${index}`"
