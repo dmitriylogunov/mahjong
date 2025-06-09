@@ -46,7 +46,7 @@ import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import { MjTile, MjTileType } from '@/models/tile.model';
 import TileComponent from './TileComponent.vue';
-import { turtleLayout } from '@/data/layouts';
+import { turtleLayout, type TilePosition } from '@/data/layouts';
 import { audioService } from '@/services/audio.service';
 
 const props = defineProps<{
@@ -146,8 +146,8 @@ function initTiles() {
   const layoutData = getLayoutData(props.layout);
   
   // Create tiles from layout
-  for (const [x, y] of layoutData) {
-    const tile = new MjTile(x, y, newTiles);
+  for (const position of layoutData) {
+    const tile = new MjTile(position.x, position.y, newTiles);
     newTiles.push(tile);
   }
   
@@ -167,9 +167,9 @@ function initTiles() {
   tiles.value = newTiles;
 }
 
-function getLayoutData(_layoutName: string): number[][] {
+function getLayoutData(_layoutName: string): TilePosition[] {
   // For now, only turtle layout is supported
-  return turtleLayout;
+  return turtleLayout.positions;
 }
 
 function buildTileRelationsGraph() {
