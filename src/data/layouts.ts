@@ -1,5 +1,5 @@
-// Dragon layout - classic Mahjong solitaire layout
-export const dragonLayout: number[][] = [
+// Turtle layout - classic Mahjong solitaire layout
+export const turtleLayout: number[][] = [
   // Layer 0 - Base layer
   [2,0], [4,0], [6,0], [8,0], [10,0], [12,0], [14,0], [16,0], [18,0], [20,0], [22,0], [24,0],
   [0,2], [2,2], [4,2], [6,2], [8,2], [10,2], [12,2], [14,2], [16,2], [18,2], [20,2], [22,2], [24,2], [26,2],
@@ -36,7 +36,7 @@ export const dragonLayout: number[][] = [
 
 // Future layouts can be added here
 export const layouts = {
-  dragon: dragonLayout,
+  turtle: turtleLayout,
   // turtle: turtleLayout,
   // fortress: fortressLayout,
   // etc.

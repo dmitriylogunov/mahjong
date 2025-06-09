@@ -46,7 +46,7 @@ import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import { MjTile, MjTileType } from '@/models/tile.model';
 import TileComponent from './TileComponent.vue';
-import { dragonLayout } from '@/data/layouts';
+import { turtleLayout } from '@/data/layouts';
 import { audioService } from '@/services/audio.service';
 
 const props = defineProps<{
@@ -168,8 +168,8 @@ function initTiles() {
 }
 
 function getLayoutData(_layoutName: string): number[][] {
-  // For now, only dragon layout is supported
-  return dragonLayout;
+  // For now, only turtle layout is supported
+  return turtleLayout;
 }
 
 function buildTileRelationsGraph() {
