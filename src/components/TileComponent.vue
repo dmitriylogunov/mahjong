@@ -14,16 +14,16 @@
       height: `${elementPixelHeight * 2}px`
     }"
   >
-    <!-- Shadows for 3D effect -->
+    <!-- Thickness layers for 3D effect -->
     <div 
-      class="tile-shadow tile-shadow1"
+      class="tile-thickness tile-thickness1"
       :style="{
-        width: `${elementPixelWidth * 2 - 2}px`,
-        height: `${elementPixelHeight * 2 - 2}px`
+        width: `${elementPixelWidth * 2}px`,
+        height: `${elementPixelHeight * 2}px`
       }"
     >&nbsp;</div>
     <div 
-      class="tile-shadow tile-shadow2"
+      class="tile-thickness tile-thickness2"
       :style="{
         top: `${-shiftX}px`,
         left: `${shiftY}px`,
@@ -48,10 +48,10 @@
       :style="{
         top: `${-shiftX * 2}px`,
         left: `${shiftY * 2}px`,
-        width: `${elementPixelWidth * 2 - 4}px`,
-        height: `${elementPixelHeight * 2 - 4}px`,
+        width: `${elementPixelWidth * 2}px`,
+        height: `${elementPixelHeight * 2}px`,
         color: selected ? '#5C5749' : type.getColor(),
-        textShadow: `0 0 ${elementPixelWidth * 2}px ${type.getColor()}`
+        textShadow: 'none'
       }"
       @click="onClick"
     >
@@ -154,7 +154,7 @@ function onClick(event: MouseEvent) {
     
     .tile {
       background: #FFD700 !important;
-      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
     }
   }
   
@@ -163,19 +163,23 @@ function onClick(event: MouseEvent) {
   }
 }
 
-.tile-shadow {
+.tile-thickness {
   position: absolute;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: #7B6955;
+  border: 1px solid #6B5945;
+  border-radius: 4px;
 }
 
-.tile-shadow1 {
-  top: 2px;
-  left: -2px;
+.tile-thickness1 {
+  top: 1px;
+  left: -1px;
+  background: linear-gradient(135deg, #9B8375 0%, #7B6355 100%);
 }
 
-.tile-shadow2 {
+.tile-thickness2 {
   z-index: 2;
+  background: linear-gradient(135deg, #9B8375 0%, #7B6355 100%);
+  border: none;
 }
 
 .tile {
