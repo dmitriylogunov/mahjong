@@ -115,6 +115,17 @@ export const useGameStore = defineStore('game', () => {
     }
   }
   
+  function setSelectedTile(tile: MjTile | null) {
+    selectedTile.value = tile;
+  }
+  
+  function clearSelection() {
+    if (selectedTile.value) {
+      selectedTile.value.unselect();
+      selectedTile.value = null;
+    }
+  }
+  
   function removeTiles(tile1Param: any, tile2Param: any) {
     const tile1 = tile1Param as MjTile;
     const tile2 = tile2Param as MjTile;
@@ -317,6 +328,8 @@ export const useGameStore = defineStore('game', () => {
     // Actions
     initializeGame,
     selectTile,
+    setSelectedTile,
+    clearSelection,
     undo,
     redo,
     requestHint,

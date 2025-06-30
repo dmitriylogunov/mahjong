@@ -38,6 +38,9 @@
         :is-free="tile.isFree()"
         :show-hints="showHints"
         :has-free-pair="tile.hasFreePair"
+        :is-floating="!!floatingTile && floatingTile.x === tile.x && floatingTile.y === tile.y && floatingTile.z === tile.z"
+        :mouse-x="mouseX"
+        :mouse-y="mouseY"
         @tile-clicked="onTileClick(tile)"
       />
     </div>
@@ -71,6 +74,11 @@ const tilesReady = ref(false);
 const isVisible = ref(true);
 const shakeField = ref(false);
 const showHints = ref(false);
+
+// Mouse tracking for floating tile
+const mouseX = ref(0);
+const mouseY = ref(0);
+const floatingTile = ref<MjTile | null>(null);
 
 // Field dimensions
 const elementPixelWidth = ref(40);
@@ -121,6 +129,9 @@ const tileSetDescriptor: [string, number, boolean][] = [
 // Initialize component
 onMounted(() => {
   window.addEventListener('resize', handleResize);
+  window.addEventListener('mousemove', handleMouseMove);
+  window.addEventListener('mousedown', handleMouseDown);
+  window.addEventListener('keydown', handleKeyDown);
   initializeGame();
   
   // Ensure dimensions are calculated after mount
@@ -131,6 +142,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
+  window.removeEventListener('mousemove', handleMouseMove);
+  window.removeEventListener('mousedown', handleMouseDown);
+  window.removeEventListener('keydown', handleKeyDown);
   if (resizeTimeout) {
     clearTimeout(resizeTimeout);
   }
@@ -278,17 +292,39 @@ function onTileClick(tile: MjTile) {
     return;
   }
   
-  gameStore.selectTile(tile);
-  
-  // Check if we need to update free pairs after a match
-  const activeTiles = tiles.value.filter((t: MjTile) => t.active);
-  if (activeTiles.length !== tiles.value.length) {
-    updateFreePairs();
-    emit('tileCleared');
+  // If we have a floating tile, check if it matches the clicked tile
+  if (floatingTile.value) {
+    if (floatingTile.value.matches(tile)) {
+      // Match found - remove both tiles
+      gameStore.selectTile(tile);
+      floatingTile.value = null;
+      
+      // Check if we need to update free pairs after a match
+      const activeTiles = tiles.value.filter((t: MjTile) => t.active);
+      if (activeTiles.length !== tiles.value.length) {
+        updateFreePairs();
+        emit('tileCleared');
+      }
+    } else {
+      // No match - return floating tile and select new one
+      returnFloatingTile();
+      tile.selected = true;
+      floatingTile.value = tile;
+      gameStore.setSelectedTile(tile);
+    }
+  } else {
+    // No floating tile - make this tile float
+    tile.selected = true;
+    floatingTile.value = tile;
+    gameStore.setSelectedTile(tile);
   }
 }
 
 function onFieldClick() {
+  // Return floating tile if clicking on the field
+  if (floatingTile.value) {
+    returnFloatingTile();
+  }
   emit('click');
 }
 
@@ -363,6 +399,33 @@ function handleResize() {
   resizeTimeout = window.setTimeout(() => {
     retrieveDimensionsFromElement();
   }, 100);
+}
+
+function handleMouseMove(event: MouseEvent) {
+  mouseX.value = event.clientX;
+  mouseY.value = event.clientY;
+}
+
+function handleMouseDown(event: MouseEvent) {
+  // Return floating tile if clicking outside with anything but left button
+  if (floatingTile.value && event.button !== 0) {
+    returnFloatingTile();
+  }
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+  // Return floating tile on ESC key
+  if (floatingTile.value && event.key === 'Escape') {
+    returnFloatingTile();
+  }
+}
+
+function returnFloatingTile() {
+  if (floatingTile.value) {
+    floatingTile.value.selected = false;
+    floatingTile.value = null;
+    gameStore.clearSelection();
+  }
 }
 
 // Subscribe to hint requests

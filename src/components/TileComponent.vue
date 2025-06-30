@@ -2,17 +2,17 @@
   <div 
     class="tile-outer"
     :class="{
-      hidden: !active && !selected,
+      hidden: !active && !selected && !isFloating,
       free: isFree && !selected,
       selected: selected,
+      floating: isFloating,
       'shake shake-rotate shake-constant shake-slow shake-little': hasFreePair && showHints
     }"
     :style="{
-      left: `${x * elementPixelWidth + z * shiftX + chaosOffsetX}px`,
-      top: `${y * elementPixelHeight - z * shiftY + chaosOffsetY}px`,
+      ...tilePosition,
       width: `${elementPixelWidth * 2}px`,
       height: `${elementPixelHeight * 2}px`,
-      transform: `rotate(${chaosRotation}deg)`
+      transform: isFloating ? 'rotate(0deg) scale(1.1)' : `rotate(${chaosRotation}deg)`
     }"
   >
     <!-- Bottom layer for 3D effect -->
@@ -114,6 +114,9 @@ const props = defineProps<{
   isFree: boolean;
   showHints: boolean;
   hasFreePair: boolean;
+  isFloating: boolean;
+  mouseX: number;
+  mouseY: number;
 }>();
 
 const emit = defineEmits<{
@@ -155,6 +158,27 @@ const primaryWrapperLeftShift = computed(() => {
   return Math.floor((primaryWrapperWidth.value - primaryCharacterAreaWidth) / 2);
 });
 
+// Floating tile position
+const tilePosition = computed(() => {
+  if (props.isFloating) {
+    // Position tile at cursor, centered
+    return {
+      left: `${props.mouseX - props.elementPixelWidth}px`,
+      top: `${props.mouseY - props.elementPixelHeight}px`,
+      position: 'fixed' as const,
+      zIndex: 1000
+    };
+  } else {
+    // Normal position
+    return {
+      left: `${props.x * props.elementPixelWidth + props.z * shiftX.value + props.chaosOffsetX}px`,
+      top: `${props.y * props.elementPixelHeight - props.z * shiftY.value + props.chaosOffsetY}px`,
+      position: 'absolute' as const,
+      zIndex: 'auto'
+    };
+  }
+});
+
 function onClick(event: MouseEvent) {
   event.stopPropagation();
   emit('tileClicked');
@@ -167,6 +191,7 @@ function onClick(event: MouseEvent) {
   font-family: FreeSerifNF;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
   transform-origin: center center;
+  transition: left 0.1s ease-out, top 0.1s ease-out, transform 0.2s ease-out;
 
   &.free {
     cursor: pointer;
@@ -208,6 +233,19 @@ function onClick(event: MouseEvent) {
 
   &.hidden {
     display: none;
+  }
+
+  &.floating {
+    cursor: grabbing;
+    pointer-events: none;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+    
+    .tile {
+      box-shadow: 
+        0 12px 24px rgba(0, 0, 0, 0.3),
+        0 6px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
   }
 
   .tile {
