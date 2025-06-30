@@ -51,7 +51,8 @@
         width: `${elementPixelWidth * 2 - 4}px`,
         height: `${elementPixelHeight * 2 - 4}px`,
         color: selected ? '#5C5749' : type.getColor(),
-        textShadow: `0 0 ${Math.floor(elementPixelWidth * 0.8)}px ${type.getColor()}`
+        textShadow: `0 0 ${Math.floor(elementPixelWidth * 0.8)}px ${type.getColor()}`,
+        '--depth-size': `${depthSize}px`
       }"
       @click="onClick"
     >
@@ -118,10 +119,14 @@ const emit = defineEmits<{
 
 // Constants - matching original implementation
 const shiftProportion = 0.14; // Original value from pre-Vue code
+const depthProportion = 0.15; // Proportion of tile size for depth effect
 
 // Computed properties
 const shiftX = computed(() => Math.floor(props.elementPixelWidth * shiftProportion));
 const shiftY = computed(() => Math.floor(props.elementPixelHeight * shiftProportion));
+
+// Depth dimensions for 3D effect - proportional to tile size
+const depthSize = computed(() => Math.max(8, Math.floor(Math.min(props.elementPixelWidth, props.elementPixelHeight) * depthProportion)));
 
 // Font size calculations matching original
 const fontSizePrimary = computed(() => {
@@ -229,7 +234,7 @@ function onClick(event: MouseEvent) {
       top: 100%;
       left: 0;
       width: calc(100% - 4px);
-      height: 12px;
+      height: var(--depth-size);
       background: linear-gradient(to bottom, #D9C89E 0%, #C5B58C 50%, #B5A57C 100%);
       transform-origin: top left;
       transform: skewX(-45deg);
@@ -243,7 +248,7 @@ function onClick(event: MouseEvent) {
       position: absolute;
       top: 4px;
       right: 100%;
-      width: 12px;
+      width: var(--depth-size);
       height: calc(100% - 4px);
       background: linear-gradient(to left, #E5D4A8 0%, #D9C89E 50%, #C5B58C 100%);
       transform-origin: top right;
