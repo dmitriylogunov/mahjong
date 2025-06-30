@@ -15,7 +15,7 @@ export class MjTileType {
     "season": [["&#x1F026", "spring", "green"], ["&#x1F027", "summer", "darkyellow"], ["&#x1F028", "autumn", "orange"], ["&#x1F029", "winter", "blue"]],
     "wind": [["&#x1F000", "east", "black"], ["&#x1F001", "south", "black"], ["&#x1F002", "west", "black"], ["&#x1F003", "north", "black"]],
     "flower": [["&#x1F022", "plum", "pink"], ["&#x1F023", "orchid", "green"], ["&#x1F024", "bamboo", "green"], ["&#x1F025", "mum", "red"]],
-    "dragon": [["&#x1F004", "dragon", "red"], ["&#x1F005", "dragon", "green"], ["&#x1F006", "dragon", "blue"]]
+    "dragon": [["&#x1F004", "dragon", "red"], ["&#x1F005", "dragon", "green"], ["龙", "dragon", "#4169E1"]]
   }
 
   constructor (group: string, index: number, matchAny: boolean) {

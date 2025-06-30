@@ -70,14 +70,21 @@
           class="primary-character-wrap"
           :style="{
             width: `${primaryWrapperWidth}px`,
-            marginLeft: `${-primaryWrapperLeftShift}px`
+            marginLeft: `${-primaryWrapperLeftShift}px`,
+            ...(type.group === 'dragon' && type.getPrimaryCharacter() === '龙' ? {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: `${fontSizePrimary}px`,
+              paddingRight: `${fontSizePrimary * 0.075}px`
+            } : {})
           }"
         >
           <span 
             class="primary-character"
             :style="{
-              fontSize: `${fontSizePrimary}px`,
-              lineHeight: `${fontSizePrimary}px`
+              fontSize: `${type.group === 'dragon' && type.getPrimaryCharacter() === '龙' ? fontSizePrimary / 2 : fontSizePrimary}px`,
+              lineHeight: `${type.group === 'dragon' && type.getPrimaryCharacter() === '龙' ? fontSizePrimary / 2 : fontSizePrimary}px`
             }"
             v-html="type.getPrimaryCharacter()"
           ></span>
