@@ -156,7 +156,6 @@ function replayGame() {
 
 function onTileCollectionReady() {
   // Game is ready to play
-  audioService.play('start');
 }
 
 function onTileCleared() {
