@@ -51,7 +51,7 @@
         width: `${elementPixelWidth * 2 - 4}px`,
         height: `${elementPixelHeight * 2 - 4}px`,
         color: selected ? '#5C5749' : type.getColor(),
-        textShadow: `0 0 ${elementPixelWidth * 2}px ${type.getColor()}`
+        textShadow: `0 0 ${Math.floor(elementPixelWidth * 0.8)}px ${type.getColor()}`
       }"
       @click="onClick"
     >
@@ -150,13 +150,28 @@ function onClick(event: MouseEvent) {
 .tile-outer {
   position: absolute;
   font-family: FreeSerifNF;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 
   &.free {
     .tile {
       cursor: pointer;
+      transition: all 0.15s ease-out;
 
       &:hover {
-        background-color: lightgray;
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+        box-shadow: 
+          0 8px 16px rgba(0, 0, 0, 0.2),
+          0 4px 8px rgba(0, 0, 0, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        
+        &::before {
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        &::after {
+          box-shadow: 1px 0 3px rgba(0, 0, 0, 0.2);
+        }
       }
     }
   }
@@ -167,50 +182,91 @@ function onClick(event: MouseEvent) {
 
   .tile-shadow {
     position: absolute;
-    border: 1px solid gray;
-    background-color: lightgray;
+    background: linear-gradient(135deg, #a8a8a8 0%, #888888 100%);
     border-radius: 10%;
+    opacity: 0.6;
+    filter: blur(1px);
 
     &.tile-shadow1 {
       top: 0px;
       left: 0px;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 100%);
+      filter: blur(2px);
     }
 
     &.tile-shadow2 {
-      opacity: .99;
-      border-left: none;
-      border-bottom: none;
+      opacity: 0.4;
+      background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 100%);
+      filter: blur(1.5px);
     }
   }
 
   .tile {
-    overflow: hidden;
+    overflow: visible;
     transform-origin: 50% 50%;
-    border: 2px solid gray;
+    border: 1px solid rgba(80, 80, 80, 0.6);
     position: absolute;
     border-radius: 10%;
     cursor: default;
-    background-color: #FEF2C7;
-    /* Default background color */
+    background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.15),
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.15s ease-out;
 
     &::before {
       content: '';
       position: absolute;
       top: 100%;
       left: 0;
-      width: 100%;
-      height: 10px;
-      /* Adjust thickness here */
-      background-color: #D9C89E;
-      /* Side color */
+      width: calc(100% - 4px);
+      height: 12px;
+      background: linear-gradient(to bottom, #D9C89E 0%, #C5B58C 50%, #B5A57C 100%);
       transform-origin: top left;
+      transform: skewX(-45deg);
       z-index: -1;
+      border-radius: 0 0 10% 10%;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 100%;
+      width: 12px;
+      height: calc(100% - 4px);
+      background: linear-gradient(to left, #E5D4A8 0%, #D9C89E 50%, #C5B58C 100%);
+      transform-origin: top right;
+      transform: skewY(-45deg);
+      z-index: -1;
+      border-radius: 10% 0 0 10%;
+      box-shadow: -1px 0 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .tile-inner-highlight {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      bottom: 50%;
+      background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.15) 30%,
+        rgba(255, 255, 255, 0.05) 60%,
+        transparent 100%);
+      border-radius: 8% 8% 40% 40%;
+      pointer-events: none;
     }
 
     .tile-content {
       margin: 5px;
       padding: 0px;
       text-align: left;
+      position: relative;
+      z-index: 1;
 
       .primary-character-wrap {
         text-align: center;
@@ -219,36 +275,48 @@ function onClick(event: MouseEvent) {
           margin-top: -1px;
           margin-right: 0px;
           margin-bottom: 0px;
+          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
         }
+      }
+
+      .secondary-character {
+        filter: drop-shadow(0.5px 0.5px 0.5px rgba(0, 0, 0, 0.15));
       }
     }
 
     &.layer0 {
-      background-color: #FEF2C7;
+      background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
     }
 
     &.layer1 {
-      background-color: #BEDDBF;
+      background: linear-gradient(145deg, #D5EED6 0%, #BEDDBF 40%, #A5CCA6 100%);
     }
 
     &.layer2 {
-      background-color: #FFE1A2;
+      background: linear-gradient(145deg, #FFF0C4 0%, #FFE1A2 40%, #F5D08A 100%);
     }
 
     &.layer3 {
-      background-color: #FEF2C7;
+      background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
     }
 
     &.layer4 {
-      background-color: #FEF2C7;
+      background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
     }
 
     &.layer5 {
-      background-color: #FEAA6E;
+      background: linear-gradient(145deg, #FFB885 0%, #FEAA6E 40%, #F59956 100%);
     }
 
     &.selected {
-      background-color: #FEAA6E;
+      background: linear-gradient(145deg, #FFB885 0%, #FEAA6E 40%, #F59956 100%);
+      box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.2),
+        0 3px 6px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        0 0 20px rgba(254, 170, 110, 0.4);
+      border-color: rgba(180, 100, 40, 0.6);
     }
   }
 }
