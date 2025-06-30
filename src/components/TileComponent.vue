@@ -71,13 +71,7 @@
         <div 
           class="primary-character-wrap"
           :style="{
-            width: `${primaryWrapperWidth}px`,
-            marginLeft: `${-primaryWrapperLeftShift}px`,
             ...(type.group === 'dragon' && type.getPrimaryCharacter() === '龙' ? {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: `${fontSizePrimary}px`,
               paddingRight: `${fontSizePrimary * 0.075}px`
             } : {})
           }"
@@ -152,12 +146,6 @@ const fontSizeSecondary = computed(() => {
   return Math.floor(adjustedElementSize / 3);
 });
 
-// Primary character horizontal centering - matching original
-const primaryWrapperWidth = computed(() => props.elementPixelWidth * 4);
-const primaryWrapperLeftShift = computed(() => {
-  const primaryCharacterAreaWidth = props.elementPixelWidth * 2 - 10; // -2*margin of tile
-  return Math.floor((primaryWrapperWidth.value - primaryCharacterAreaWidth) / 2);
-});
 
 // Floating tile position
 const tilePosition = computed(() => {
@@ -393,23 +381,27 @@ function onClick(event: MouseEvent) {
     .tile-content {
       margin: 5px;
       padding: 0px;
-      text-align: left;
       position: relative;
       z-index: 1;
-
-      .primary-character-wrap {
-        text-align: center;
-
-        .primary-character {
-          margin-top: -1px;
-          margin-right: 0px;
-          margin-bottom: 0px;
-          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
-        }
-      }
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 10px);
 
       .secondary-character {
         filter: drop-shadow(0.5px 0.5px 0.5px rgba(0, 0, 0, 0.15));
+        text-align: left;
+      }
+
+      .primary-character-wrap {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        .primary-character {
+          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+        }
       }
     }
 
