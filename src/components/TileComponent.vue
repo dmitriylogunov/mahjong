@@ -173,12 +173,22 @@ function onClick(event: MouseEvent) {
           inset 0 1px 0 rgba(255, 255, 255, 0.4);
         
         &::before {
+          background: linear-gradient(to bottom, 
+            #E5D4A8 0%, 
+            #D9C89E 30%, 
+            #C5B58C 60%, 
+            #B5A57C 100%);
           box-shadow: 
             0 2px 4px rgba(0, 0, 0, 0.3),
             inset 0 -1px 2px rgba(0, 0, 0, 0.15);
         }
 
         &::after {
+          background: linear-gradient(to right, 
+            #B5A57C 0%, 
+            #C5B58C 40%, 
+            #D9C89E 70%, 
+            #E5D4A8 100%);
           box-shadow: 
             -1px 0 4px rgba(0, 0, 0, 0.3),
             inset 2px 0 2px rgba(0, 0, 0, 0.15);
@@ -191,7 +201,8 @@ function onClick(event: MouseEvent) {
     }
 
     &:hover .tile-bottom {
-      transform: translateY(2px);
+      transform: translateY(-2px);
+      background: linear-gradient(145deg, #C5B58C 0%, #B5A57C 40%, #A59572 100%);
       box-shadow: 
         inset 0 -3px 5px rgba(0, 0, 0, 0.35),
         inset 0 1px 3px rgba(0, 0, 0, 0.25),
