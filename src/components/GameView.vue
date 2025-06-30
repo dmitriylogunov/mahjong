@@ -283,6 +283,7 @@ onUnmounted(() => {
   width: 100%;
   padding: 20px 0;
   text-align: center;
+  overflow: hidden;
   
   .title {
     font-size: clamp(2rem, 7vw, 4rem);
@@ -313,6 +314,7 @@ onUnmounted(() => {
       text-shadow: none;
       opacity: 0.3;
       transform: translate(2px, 2px);
+      overflow: hidden;
     }
   }
   

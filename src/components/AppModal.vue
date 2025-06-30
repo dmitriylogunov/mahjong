@@ -111,7 +111,7 @@ const visibleActions = computed(() => {
 
 .modal-content {
   padding: 0;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
   z-index: 1;
   display: flex;
