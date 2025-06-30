@@ -1,0 +1,125 @@
+@import "variables";
+
+.game-component {
+  height: 100%;
+  width: 100%;
+
+  // height: 100vh;
+  // height: 100dvh;
+  // width: 100vw;
+  // width: 100dvw;
+
+  display: flex;
+  flex-direction: column;
+
+  .statusfield {
+    flex: 0 0 calc(3rem + env(safe-area-inset-top));
+    height: calc(3rem + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    width: 100%;
+    background: linear-gradient(135deg, $background-gradient-start, $background-gradient-end);
+    color: $tertiary-color;
+  }
+
+  .gamefield {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    background-size: cover;
+    background-image: url('/img/backgrounds/oriental-1.jpg')
+  }
+}
+
+h1 {
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  font-family: "Palatino", "Garamond", "Courier new";
+  
+  &.title {
+    font-size: clamp(2rem, 7vw, 4rem);
+    background: linear-gradient(135deg, $border-color, #FFE55A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(255, 215, 0, 0.3);
+    letter-spacing: 3px;
+    margin: 20px 0;
+    line-height: 1.2;
+    position: relative;
+    
+    &::before {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: none;
+      -webkit-text-fill-color: #8B4513;
+      text-shadow: none;
+      opacity: 0.3;
+      transform: translate(2px, 2px);
+    }
+  }
+}
+
+.main-menu-content {
+  width: 100%;
+  padding: 20px 0;
+  
+  .subtitle {
+    font-family: "Palatino", "Garamond", serif;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: #FFE5B4;
+    text-align: center;
+    margin: 10px 0 30px 0;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-style: italic;
+  }
+  
+  .decorative-border {
+    width: 80%;
+    height: 3px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, 
+      transparent, 
+      $border-color 20%, 
+      $border-color 80%, 
+      transparent
+    );
+    position: relative;
+    
+    &::before,
+    &::after {
+      content: '◆';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $border-color;
+      font-size: 16px;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+    
+    &::before {
+      left: 15%;
+    }
+    
+    &::after {
+      right: 15%;
+    }
+    
+    &.top {
+      margin-bottom: 20px;
+    }
+    
+    &.bottom {
+      margin-top: 20px;
+    }
+  }
+}

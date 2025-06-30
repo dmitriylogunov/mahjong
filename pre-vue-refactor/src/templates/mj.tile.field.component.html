@@ -1,0 +1,37 @@
+<div class="tile-field-outer"
+[ngStyle]="{
+'padding-left.px': paddingLeft,
+'padding-right.px': paddingRight,
+'padding-top.px': paddingTop,
+'padding-bottom.px': paddingBottom
+}"
+>
+  <div class="paused" *ngIf="paused">
+      Game paused !!
+  </div>
+  <div class="tile-field"
+    *ngIf="tilesReady && !paused && isVisible"
+    (click)="onFieldClick()"
+    [ngStyle]="{
+        'width.px': windowWidth,
+        'height.px': windowHeight
+      }"
+   [ngClass]="{'shake shake-horizontal shake-little shake-constant': _shakeField}"
+  >
+
+    <tile *ngFor="let tile of tiles"
+      (tileClicked)="onTileClick(tile)"
+      [x]=tile.x
+      [y]=tile.y
+      [z]=tile.z
+      [elementPixelWidth] = elementPixelWidth
+      [elementPixelHeight] = elementPixelHeight
+      [active]=tile.active
+      [selected]=tile.selected
+      [type]=tile.type
+      [isFree]=tile.isFree()
+      [showHints]=showHints
+      [hasFreePair]=tile.hasFreePair
+    ></tile>
+  </div>
+</div>

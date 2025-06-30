@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Mahjong solitaire</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <base href="/">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- Global app styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+  body, html {
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    width: 100dvw;
+  }
+  
+  .mj-game, .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .initial-loading {
+    font-size: 2em;
+    color: black;
+    text-shadow: 1px 1px 2px black;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dot {
+    animation: dot-blink 1.5s infinite;
+    font-size: 0.5em;
+    margin-left: 5px;
+    margin-top: 1.4rem;
+  }
+  
+  .dot:nth-child(1) {
+    animation-delay: 0s;
+  }
+  
+  .dot:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+  
+  .dot:nth-child(3) {
+    animation-delay: 1s;
+  }
+  
+  @keyframes dot-blink {
+    0%, 20%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+  }
+  </style>
+</head>
+
+<body>
+  <mj-game>
+    <div class="loading-container"><div class="initial-loading">Loading game&nbsp;<span class="dot">•</span><span class="dot">•</span><span class="dot">•</span></div></div>
+  </mj-game>
+  <script src="js/createjs.min.js"></script>
+  <script src="bundle.js"></script>
+</body>
+
+</html>

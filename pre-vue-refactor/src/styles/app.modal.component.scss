@@ -1,0 +1,116 @@
+@import 'variables';
+
+.modal {
+  display: none; /* Hidden by default */
+  position: absolute; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: rgba(0,0,0,0.8);
+  display: flex; /* Use Flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+
+  .modal-dialog {
+    padding: 30px;
+    width: 60%;
+    max-width: 550px;
+    min-height: 200px;
+    color: $secondary-color;
+    border-radius: $round-corner-radius;
+    border: 3px solid $border-color;
+    text-align: center;
+    background: 
+      linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(160, 82, 45, 0.95)),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 215, 0, 0.03) 10px,
+        rgba(255, 215, 0, 0.03) 20px
+      );
+    box-shadow: 
+      0 8px 16px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 215, 0, 0.3),
+      inset 0 -1px 0 rgba(139, 69, 19, 0.5);
+    overflow: hidden;
+    display: flex; /* Use Flexbox */
+    flex-direction: column; /* Arrange children in a column */
+    justify-content: space-between; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+
+    .modal-content {
+      border-bottom: none;
+      display: flex; /* Use Flexbox */
+      flex-direction: column; /* Arrange children in a column */
+      justify-content: center; /* Center content vertically */
+      align-items: center; /* Center content horizontally */
+    }
+
+    .modal-actions-wrapper {
+      width: 100%;
+
+      .modal-actions {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+
+        .btn {
+          font-size: 20px;
+          line-height: 28px;
+          border-radius: 10px;
+          cursor: pointer;
+          border: 2px solid $border-color; /* Border color */
+          background: 
+            linear-gradient(135deg, #8FBC8F, #98D98E),
+            $tertiary-color;
+          color: #2F4F2F;
+          padding: 12px 24px;
+          margin: 8px;
+          transition: all 0.3s ease;
+          box-shadow: 
+            0 3px 6px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+
+          &:hover {
+            background: 
+              linear-gradient(135deg, #7FA87F, #88C888),
+              $tertiary-color-dark;
+            transform: translateY(-2px);
+            box-shadow: 
+              0 5px 10px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+          }
+          
+          &:active {
+            transform: translateY(0);
+            box-shadow: 
+              0 2px 4px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+          }
+        }
+      }
+    }
+  }
+}
