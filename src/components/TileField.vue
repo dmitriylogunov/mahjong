@@ -99,15 +99,31 @@ const paddingBottom = ref(0);
 const fieldWidth = ref(0);
 const fieldHeight = ref(0);
 
-// Tile type descriptor
-const tileSetDescriptor = [
-  { group: "ball", index: [0,1,2,3,4,5,6,7,8], count: 4, matchAny: false },
-  { group: "bam", index: [0,1,2,3,4,5,6,7,8], count: 4, matchAny: false },
-  { group: "num", index: [0,1,2,3,4,5,6,7,8], count: 4, matchAny: false },
-  { group: "season", index: [0,1,2,3], count: 1, matchAny: true },
-  { group: "wind", index: [0,1,2,3], count: 4, matchAny: false },
-  { group: "flower", index: [0,1,2,3], count: 1, matchAny: true },
-  { group: "dragon", index: [0,1,2], count: 4, matchAny: false }
+// Tile type descriptor - matching original pre-Vue implementation
+// Total: 144 tiles (36 ball + 36 bam + 36 num + 4 season + 16 wind + 4 flower + 12 dragon)
+const tileSetDescriptor: [string, number, boolean][] = [
+  ["ball", 9, false],
+  ["ball", 9, false],
+  ["ball", 9, false],
+  ["ball", 9, false],
+  ["bam", 9, false],
+  ["bam", 9, false],
+  ["bam", 9, false],
+  ["bam", 9, false],
+  ["num", 9, false],
+  ["num", 9, false],
+  ["num", 9, false],
+  ["num", 9, false],
+  ["season", 4, true],
+  ["wind", 4, false],
+  ["wind", 4, false],
+  ["wind", 4, false],
+  ["wind", 4, false],
+  ["flower", 4, true],
+  ["dragon", 3, false],
+  ["dragon", 3, false],
+  ["dragon", 3, false],
+  ["dragon", 3, false],
 ];
 
 // Initialize component
@@ -200,13 +216,11 @@ function buildTileRelationsGraph() {
 function setTileTypes() {
   let counter = 0;
   
-  for (const descriptor of tileSetDescriptor) {
-    for (const index of descriptor.index) {
-      for (let c = 0; c < descriptor.count; c++) {
-        const type = new MjTileType(descriptor.group, index, descriptor.matchAny);
-        tiles.value[counter].setType(type);
-        counter++;
-      }
+  for (const [group, count, matchAny] of tileSetDescriptor) {
+    for (let index = 0; index < count; index++) {
+      const type = new MjTileType(group, index, matchAny);
+      tiles.value[counter].setType(type);
+      counter++;
     }
   }
 }
