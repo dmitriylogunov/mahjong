@@ -14,16 +14,16 @@
       height: `${elementPixelHeight * 2}px`
     }"
   >
-    <!-- Thickness layers for 3D effect -->
+    <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
     <div 
-      class="tile-thickness tile-thickness1"
+      class="tile-shadow tile-shadow1"
       :style="{
-        width: `${elementPixelWidth * 2}px`,
-        height: `${elementPixelHeight * 2}px`
+        width: `${elementPixelWidth * 2 - 2}px`,
+        height: `${elementPixelHeight * 2 - 2}px`
       }"
     >&nbsp;</div>
     <div 
-      class="tile-thickness tile-thickness2"
+      class="tile-shadow tile-shadow2"
       :style="{
         top: `${-shiftX}px`,
         left: `${shiftY}px`,
@@ -48,10 +48,10 @@
       :style="{
         top: `${-shiftX * 2}px`,
         left: `${shiftY * 2}px`,
-        width: `${elementPixelWidth * 2}px`,
-        height: `${elementPixelHeight * 2}px`,
+        width: `${elementPixelWidth * 2 - 4}px`,
+        height: `${elementPixelHeight * 2 - 4}px`,
         color: selected ? '#5C5749' : type.getColor(),
-        textShadow: 'none'
+        textShadow: `0 0 ${elementPixelWidth * 2}px ${type.getColor()}`
       }"
       @click="onClick"
     >
@@ -109,15 +109,36 @@ const emit = defineEmits<{
   tileClicked: [];
 }>();
 
+// Constants - matching original implementation
+const shiftProportion = 0.14; // Original value from pre-Vue code
+
 // Computed properties
-const shiftX = computed(() => Math.floor(props.elementPixelWidth * 0.1));
-const shiftY = computed(() => Math.floor(props.elementPixelHeight * 0.1));
+const shiftX = computed(() => Math.floor(props.elementPixelWidth * shiftProportion));
+const shiftY = computed(() => Math.floor(props.elementPixelHeight * shiftProportion));
 
-const fontSizePrimary = computed(() => Math.floor(props.elementPixelHeight * 1.3));
-const fontSizeSecondary = computed(() => Math.floor(props.elementPixelHeight * 0.4));
+// Font size calculations matching original
+const fontSizePrimary = computed(() => {
+  const adjustedElementSize = Math.min(
+    props.elementPixelHeight,
+    props.elementPixelWidth * 1.5 // original proportion of tile font height to font width
+  );
+  return Math.floor(adjustedElementSize * 1.5);
+});
 
-const primaryWrapperWidth = computed(() => Math.floor(props.elementPixelWidth * 1.6));
-const primaryWrapperLeftShift = computed(() => Math.floor((primaryWrapperWidth.value - props.elementPixelWidth * 2) / 2));
+const fontSizeSecondary = computed(() => {
+  const adjustedElementSize = Math.min(
+    props.elementPixelHeight,
+    props.elementPixelWidth * 1.5
+  );
+  return Math.floor(adjustedElementSize / 3);
+});
+
+// Primary character horizontal centering - matching original
+const primaryWrapperWidth = computed(() => props.elementPixelWidth * 4);
+const primaryWrapperLeftShift = computed(() => {
+  const primaryCharacterAreaWidth = props.elementPixelWidth * 2 - 10; // -2*margin of tile
+  return Math.floor((primaryWrapperWidth.value - primaryCharacterAreaWidth) / 2);
+});
 
 function onClick(event: MouseEvent) {
   event.stopPropagation();
@@ -126,119 +147,109 @@ function onClick(event: MouseEvent) {
 </script>
 
 <style lang="scss" scoped>
-@use 'sass:color';
-@use '@/assets/styles/variables' as *;
-
 .tile-outer {
   position: absolute;
-  cursor: pointer;
-  transition: all $animation-normal ease;
-  
+  font-family: FreeSerifNF;
+
+  &.free {
+    .tile {
+      cursor: pointer;
+
+      &:hover {
+        background-color: lightgray;
+      }
+    }
+  }
+
   &.hidden {
-    opacity: 0;
-    transform: scale(0.8);
-    pointer-events: none;
+    display: none;
   }
-  
-  &.free:hover {
-    transform: translateY(-2px);
-    
-    .tile {
-      background: color.adjust(#F5F5DC, $lightness: 5%);
+
+  .tile-shadow {
+    position: absolute;
+    border: 1px solid gray;
+    background-color: lightgray;
+    border-radius: 10%;
+
+    &.tile-shadow1 {
+      top: 0px;
+      left: 0px;
+    }
+
+    &.tile-shadow2 {
+      opacity: .99;
+      border-left: none;
+      border-bottom: none;
     }
   }
-  
-  &.selected {
-    z-index: $z-tile-selected !important;
-    transform: translateY(-4px);
-    
-    .tile {
-      background: #FFD700 !important;
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+
+  .tile {
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    border: 2px solid gray;
+    position: absolute;
+    border-radius: 10%;
+    cursor: default;
+    background-color: #FEF2C7;
+    /* Default background color */
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      /* Adjust thickness here */
+      background-color: #D9C89E;
+      /* Side color */
+      transform-origin: top left;
+      z-index: -1;
+    }
+
+    .tile-content {
+      margin: 5px;
+      padding: 0px;
+      text-align: left;
+
+      .primary-character-wrap {
+        text-align: center;
+
+        .primary-character {
+          margin-top: -1px;
+          margin-right: 0px;
+          margin-bottom: 0px;
+        }
+      }
+    }
+
+    &.layer0 {
+      background-color: #FEF2C7;
+    }
+
+    &.layer1 {
+      background-color: #BEDDBF;
+    }
+
+    &.layer2 {
+      background-color: #FFE1A2;
+    }
+
+    &.layer3 {
+      background-color: #FEF2C7;
+    }
+
+    &.layer4 {
+      background-color: #FEF2C7;
+    }
+
+    &.layer5 {
+      background-color: #FEAA6E;
+    }
+
+    &.selected {
+      background-color: #FEAA6E;
     }
   }
-  
-  &.shake {
-    animation: shake-rotate 0.5s infinite;
-  }
-}
-
-.tile-thickness {
-  position: absolute;
-  background: #7B6955;
-  border: 1px solid #6B5945;
-  border-radius: 4px;
-}
-
-.tile-thickness1 {
-  top: 1px;
-  left: -1px;
-  background: linear-gradient(135deg, #9B8375 0%, #7B6355 100%);
-}
-
-.tile-thickness2 {
-  z-index: 2;
-  background: linear-gradient(135deg, #9B8375 0%, #7B6355 100%);
-  border: none;
-}
-
-.tile {
-  position: absolute;
-  background: #F5F5DC;
-  border: 2px solid #8B7355;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'FreeSerifNF', serif;
-  overflow: hidden;
-  z-index: 3;
-  
-  &.layer0 { z-index: 100; }
-  &.layer1 { z-index: 110; }
-  &.layer2 { z-index: 120; }
-  &.layer3 { z-index: 130; }
-  &.layer4 { z-index: 140; }
-  &.layer5 { z-index: 150; }
-  
-  &.selected {
-    border-color: #FFD700;
-  }
-}
-
-.tile-content {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.secondary-character {
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  font-weight: bold;
-  opacity: 0.8;
-}
-
-.primary-character-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.primary-character {
-  display: block;
-  text-align: center;
-}
-
-@keyframes shake-rotate {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-5deg); }
-  75% { transform: rotate(5deg); }
 }
 </style>
