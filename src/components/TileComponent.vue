@@ -51,6 +51,10 @@
       }"
       @click="onClick"
     >
+      <!-- Edge gradient overlays -->
+      <div class="tile-edge-gradient-h"></div>
+      <div class="tile-edge-gradient-v"></div>
+      
       <div class="tile-content">
         <div 
           class="secondary-character"
@@ -160,12 +164,18 @@ function onClick(event: MouseEvent) {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 
   &.free {
+    cursor: pointer;
+    transition: transform 0.15s ease-out;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+
     .tile {
       cursor: pointer;
       transition: all 0.15s ease-out;
 
       &:hover {
-        transform: translateY(-2px);
         filter: brightness(1.08);
         box-shadow: 
           0 8px 16px rgba(0, 0, 0, 0.2),
@@ -173,22 +183,12 @@ function onClick(event: MouseEvent) {
           inset 0 1px 0 rgba(255, 255, 255, 0.4);
         
         &::before {
-          background: linear-gradient(to bottom, 
-            #E5D4A8 0%, 
-            #D9C89E 30%, 
-            #C5B58C 60%, 
-            #B5A57C 100%);
           box-shadow: 
             0 2px 4px rgba(0, 0, 0, 0.3),
             inset 0 -1px 2px rgba(0, 0, 0, 0.15);
         }
 
         &::after {
-          background: linear-gradient(to right, 
-            #B5A57C 0%, 
-            #C5B58C 40%, 
-            #D9C89E 70%, 
-            #E5D4A8 100%);
           box-shadow: 
             -1px 0 4px rgba(0, 0, 0, 0.3),
             inset 2px 0 2px rgba(0, 0, 0, 0.15);
@@ -199,15 +199,6 @@ function onClick(event: MouseEvent) {
     .tile-bottom {
       transition: all 0.15s ease-out;
     }
-
-    &:hover .tile-bottom {
-      transform: translateY(-2px);
-      background: linear-gradient(145deg, #C5B58C 0%, #B5A57C 40%, #A59572 100%);
-      box-shadow: 
-        inset 0 -3px 5px rgba(0, 0, 0, 0.35),
-        inset 0 1px 3px rgba(0, 0, 0, 0.25),
-        0 3px 6px rgba(0, 0, 0, 0.25);
-    }
   }
 
   &.hidden {
@@ -217,7 +208,6 @@ function onClick(event: MouseEvent) {
   .tile {
     overflow: visible;
     transform-origin: 50% 50%;
-    border: 1px solid rgba(80, 80, 80, 0.6);
     position: absolute;
     border-radius: 10%;
     cursor: default;
@@ -286,6 +276,43 @@ function onClick(event: MouseEvent) {
       pointer-events: none;
     }
 
+    .tile-edge-gradient-h {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 10%;
+      background: linear-gradient(to right,
+        rgba(181, 165, 124, 0.25) 0%,
+        rgba(181, 165, 124, 0.12) 2%,
+        transparent 8%,
+        transparent 92%,
+        rgba(181, 165, 124, 0.12) 98%,
+        rgba(181, 165, 124, 0.25) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tile-edge-gradient-v {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 10%;
+      background: linear-gradient(to bottom,
+        rgba(181, 165, 124, 0.25) 0%,
+        rgba(181, 165, 124, 0.12) 2%,
+        transparent 8%,
+        transparent 92%,
+        rgba(181, 165, 124, 0.12) 98%,
+        rgba(181, 165, 124, 0.25) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+
     .tile-content {
       margin: 5px;
       padding: 0px;
@@ -341,7 +368,6 @@ function onClick(event: MouseEvent) {
         inset 0 1px 0 rgba(255, 255, 255, 0.6),
         inset 0 -1px 0 rgba(0, 0, 0, 0.15),
         0 0 20px rgba(254, 170, 110, 0.4);
-      border-color: rgba(180, 100, 40, 0.6);
     }
   }
 
@@ -349,7 +375,6 @@ function onClick(event: MouseEvent) {
     position: absolute;
     border-radius: 10%;
     background: linear-gradient(145deg, #B5A57C 0%, #A59572 40%, #958568 100%);
-    border: 1px solid rgba(60, 60, 60, 0.7);
     box-shadow: 
       inset 0 -2px 4px rgba(0, 0, 0, 0.3),
       inset 0 1px 2px rgba(0, 0, 0, 0.2),
