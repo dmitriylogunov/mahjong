@@ -284,11 +284,28 @@ function retrieveDimensionsFromElement() {
   // Constants for tile proportions - matching original implementation
   const elementProportionMin = 0.7;
   const elementProportionMax = 0.8;
+  const shiftProportion = 0.14; // Same as in TileComponent
   
-  // Calculate element size to fit the available space
-  // Each tile takes 2x2 grid units, so divide field dimensions by 2 for display
-  elementPixelWidth.value = Math.floor(availableWidth / fieldWidth.value);
-  elementPixelHeight.value = Math.floor(availableHeight / fieldHeight.value);
+  // Fixed gap on all sides
+  const fixedGap = 15;
+  
+  // Calculate initial element size to determine 3D offset needs
+  const roughElementWidth = Math.floor((availableWidth - fixedGap * 2) / fieldWidth.value);
+  const roughElementHeight = Math.floor((availableHeight - fixedGap * 2) / fieldHeight.value);
+  const roughElementSize = Math.min(roughElementWidth, roughElementHeight);
+  
+  // Calculate maximum 3D offset for the highest layer
+  const maxZLayers = 4; // Highest z-index in the layout
+  const shiftY = Math.floor(roughElementSize * shiftProportion);
+  const maxTopOffset = maxZLayers * shiftY;
+  
+  // Adjust available space: fixed gaps plus extra top space for 3D offset
+  const adjustedWidth = availableWidth - (fixedGap * 2);
+  const adjustedHeight = availableHeight - (fixedGap * 2) - maxTopOffset;
+  
+  // Calculate element size to fit the adjusted space
+  elementPixelWidth.value = Math.floor(adjustedWidth / fieldWidth.value);
+  elementPixelHeight.value = Math.floor(adjustedHeight / fieldHeight.value);
   
   // Check element proportion and adjust if needed to avoid distortion
   const currentProportion = elementPixelWidth.value / elementPixelHeight.value;
@@ -307,13 +324,14 @@ function retrieveDimensionsFromElement() {
   windowWidth.value = elementPixelWidth.value * fieldWidth.value;
   windowHeight.value = elementPixelHeight.value * fieldHeight.value;
   
-  // Calculate padding to center the field
+  // Calculate padding to center the field with fixed gaps
   const totalPaddingX = availableWidth - windowWidth.value;
   paddingLeft.value = Math.floor(totalPaddingX / 2);
-  paddingRight.value = totalPaddingX - paddingLeft.value; // accounts for uneven total padding
+  paddingRight.value = totalPaddingX - paddingLeft.value;
   
+  // For vertical padding, add extra space at top for 3D offset
   const totalPaddingY = availableHeight - windowHeight.value;
-  paddingTop.value = Math.floor(totalPaddingY / 2);
+  paddingTop.value = Math.floor((totalPaddingY + maxTopOffset) / 2);
   paddingBottom.value = totalPaddingY - paddingTop.value;
 }
 
