@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
+import { ref, shallowRef, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import { MjTile, MjTileType } from '@/models/tile.model';
 import TileComponent from './TileComponent.vue';
@@ -114,6 +114,11 @@ const tileSetDescriptor: [string, number, boolean][] = [
 onMounted(() => {
   window.addEventListener('resize', handleResize);
   initializeGame();
+  
+  // Ensure dimensions are calculated after mount
+  nextTick(() => {
+    retrieveDimensionsFromElement();
+  });
 });
 
 onUnmounted(() => {
@@ -276,39 +281,40 @@ function retrieveDimensionsFromElement() {
   const availableWidth = rect.width;
   const availableHeight = rect.height;
   
-  // Base tile dimensions (these are HALF the actual tile display size)
-  const baseTileWidth = 20;
-  const baseTileHeight = 25;
+  // Constants for tile proportions - matching original implementation
+  const elementProportionMin = 0.7;
+  const elementProportionMax = 0.8;
   
-  // Calculate the space needed for the full field
-  // fieldWidth/Height are in grid units, each unit is half a tile
-  // Add one full tile size for the actual tile dimensions
-  const baseFieldPixelWidth = (fieldWidth.value * baseTileWidth) + (baseTileWidth * 2);
-  const baseFieldPixelHeight = (fieldHeight.value * baseTileHeight) + (baseTileHeight * 2);
+  // Calculate element size to fit the available space
+  // Each tile takes 2x2 grid units, so divide field dimensions by 2 for display
+  elementPixelWidth.value = Math.floor(availableWidth / fieldWidth.value);
+  elementPixelHeight.value = Math.floor(availableHeight / fieldHeight.value);
   
-  // Add padding and account for 3D offset (z-layers)
-  const padding = 40;
-  const maxZLayers = 5;
-  const zOffset = maxZLayers * 5; // 5px per layer for 3D effect
-  const targetWidth = availableWidth - (padding * 2) - zOffset;
-  const targetHeight = availableHeight - (padding * 2) - zOffset;
+  // Check element proportion and adjust if needed to avoid distortion
+  const currentProportion = elementPixelWidth.value / elementPixelHeight.value;
   
-  // Calculate scale to fit field in available space
-  const scaleX = targetWidth / baseFieldPixelWidth;
-  const scaleY = targetHeight / baseFieldPixelHeight;
-  const scale = Math.min(scaleX, scaleY, 1.5); // Cap at 1.5x
+  // Too much "Portrait" - tiles too narrow
+  if (currentProportion < elementProportionMin) {
+    elementPixelHeight.value = Math.floor(elementPixelWidth.value / elementProportionMin);
+  }
   
-  // Apply scale to tile dimensions
-  elementPixelWidth.value = Math.floor(baseTileWidth * scale);
-  elementPixelHeight.value = Math.floor(baseTileHeight * scale);
+  // Too much "Landscape" - tiles too wide
+  if (currentProportion > elementProportionMax) {
+    elementPixelWidth.value = Math.floor(elementPixelHeight.value * elementProportionMax);
+  }
   
-  // Calculate actual field dimensions
-  windowWidth.value = (fieldWidth.value * elementPixelWidth.value) + (elementPixelWidth.value * 2);
-  windowHeight.value = (fieldHeight.value * elementPixelHeight.value) + (elementPixelHeight.value * 2);
+  // Calculate actual field dimensions in pixels
+  windowWidth.value = elementPixelWidth.value * fieldWidth.value;
+  windowHeight.value = elementPixelHeight.value * fieldHeight.value;
   
-  // Center the field
-  paddingLeft.value = Math.floor((availableWidth - windowWidth.value) / 2);
-  paddingTop.value = Math.floor((availableHeight - windowHeight.value) / 2);
+  // Calculate padding to center the field
+  const totalPaddingX = availableWidth - windowWidth.value;
+  paddingLeft.value = Math.floor(totalPaddingX / 2);
+  paddingRight.value = totalPaddingX - paddingLeft.value; // accounts for uneven total padding
+  
+  const totalPaddingY = availableHeight - windowHeight.value;
+  paddingTop.value = Math.floor(totalPaddingY / 2);
+  paddingBottom.value = totalPaddingY - paddingTop.value;
 }
 
 let resizeTimeout: number | null = null;
