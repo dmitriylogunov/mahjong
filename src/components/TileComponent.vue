@@ -32,6 +32,19 @@
       }"
     >&nbsp;</div>
 
+    <!-- Bottom layer for 3D effect -->
+    <div 
+      v-if="type"
+      class="tile-bottom"
+      :style="{
+        top: `${-shiftX * 2 + depthSize}px`,
+        left: `${shiftY * 2 - depthSize}px`,
+        width: `${elementPixelWidth * 2 - 4}px`,
+        height: `${elementPixelHeight * 2 - 4}px`,
+        '--depth-size': `${depthSize}px`
+      }"
+    ></div>
+
     <!-- Main tile -->
     <div 
       v-if="type"
@@ -178,13 +191,29 @@ function onClick(event: MouseEvent) {
           inset 0 1px 0 rgba(255, 255, 255, 0.4);
         
         &::before {
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          box-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            inset 0 -1px 2px rgba(0, 0, 0, 0.15);
         }
 
         &::after {
-          box-shadow: 1px 0 3px rgba(0, 0, 0, 0.2);
+          box-shadow: 
+            -1px 0 4px rgba(0, 0, 0, 0.3),
+            inset 2px 0 2px rgba(0, 0, 0, 0.15);
         }
       }
+    }
+
+    .tile-bottom {
+      transition: all 0.15s ease-out;
+    }
+
+    &:hover .tile-bottom {
+      transform: translateY(2px);
+      box-shadow: 
+        inset 0 -3px 5px rgba(0, 0, 0, 0.35),
+        inset 0 1px 3px rgba(0, 0, 0, 0.25),
+        0 3px 6px rgba(0, 0, 0, 0.25);
     }
   }
 
@@ -232,30 +261,42 @@ function onClick(event: MouseEvent) {
       content: '';
       position: absolute;
       top: 100%;
-      left: 0;
-      width: calc(100% - 4px);
+      left: 11%;
+      width: 89%;
       height: var(--depth-size);
-      background: linear-gradient(to bottom, #D9C89E 0%, #C5B58C 50%, #B5A57C 100%);
+      background: linear-gradient(to bottom, 
+        #D9C89E 0%, 
+        #C5B58C 30%, 
+        #B5A57C 60%, 
+        #A59572 100%);
       transform-origin: top left;
-      transform: skewX(-45deg);
+      transform: skewX(-45deg) translateX(calc(var(--depth-size) * -0.3));
       z-index: -1;
-      border-radius: 0 0 10% 10%;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      border-radius: 0 2px 2px 2px;
+      box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.1);
     }
 
     &::after {
       content: '';
       position: absolute;
-      top: 4px;
+      top: 11%;
       right: 100%;
       width: var(--depth-size);
-      height: calc(100% - 4px);
-      background: linear-gradient(to left, #E5D4A8 0%, #D9C89E 50%, #C5B58C 100%);
+      height: 89%;
+      background: linear-gradient(to right, 
+        #A59572 0%, 
+        #B5A57C 40%, 
+        #C5B58C 70%, 
+        #D9C89E 100%);
       transform-origin: top right;
-      transform: skewY(-45deg);
+      transform: skewY(-45deg) translateY(calc(var(--depth-size) * -0.95));
       z-index: -1;
-      border-radius: 10% 0 0 10%;
-      box-shadow: -1px 0 2px rgba(0, 0, 0, 0.2);
+      border-radius: 2px 0 0 2px;
+      box-shadow: 
+        -1px 0 3px rgba(0, 0, 0, 0.3),
+        inset 2px 0 2px rgba(0, 0, 0, 0.1);
     }
 
     .tile-inner-highlight {
@@ -329,6 +370,48 @@ function onClick(event: MouseEvent) {
         inset 0 -1px 0 rgba(0, 0, 0, 0.15),
         0 0 20px rgba(254, 170, 110, 0.4);
       border-color: rgba(180, 100, 40, 0.6);
+    }
+  }
+
+  .tile-bottom {
+    position: absolute;
+    border-radius: 10%;
+    background: linear-gradient(145deg, #B5A57C 0%, #A59572 40%, #958568 100%);
+    border: 1px solid rgba(60, 60, 60, 0.7);
+    box-shadow: 
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+      inset 0 1px 2px rgba(0, 0, 0, 0.2),
+      0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: -2;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 10%;
+      background: linear-gradient(135deg, 
+        transparent 0%, 
+        transparent 40%, 
+        rgba(0, 0, 0, 0.1) 50%, 
+        rgba(0, 0, 0, 0.2) 100%);
+      pointer-events: none;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 40%;
+      height: 40%;
+      background: radial-gradient(ellipse at bottom right, 
+        rgba(0, 0, 0, 0.2) 0%, 
+        transparent 70%);
+      border-radius: 10%;
+      pointer-events: none;
     }
   }
 }
