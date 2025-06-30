@@ -27,6 +27,9 @@
         :x="tile.x"
         :y="tile.y"
         :z="tile.z"
+        :chaos-offset-x="tile.chaosOffsetX"
+        :chaos-offset-y="tile.chaosOffsetY"
+        :chaos-rotation="tile.chaosRotation"
         :element-pixel-width="elementPixelWidth"
         :element-pixel-height="elementPixelHeight"
         :active="tile.active"
@@ -82,6 +85,11 @@ const paddingBottom = ref(0);
 // Field size in tiles
 const fieldWidth = ref(0);
 const fieldHeight = ref(0);
+
+// Chaos level constants - controls how much randomness in tile placement
+const CHAOS_LEVEL = 0.3; // 0 = perfect placement, 1 = maximum chaos
+const MAX_POSITION_OFFSET = 4; // Maximum pixels of position offset
+const MAX_ROTATION = 2; // Maximum degrees of rotation
 
 // Tile type descriptor - matching original pre-Vue implementation
 // Total: 144 tiles (36 ball + 36 bam + 36 num + 4 season + 16 wind + 4 flower + 12 dragon)
@@ -169,6 +177,17 @@ function initTiles() {
   // Create tiles from layout
   for (const position of layoutData) {
     const tile = new MjTile(position.x, position.y, newTiles);
+    
+    // Add chaos to tile placement
+    if (CHAOS_LEVEL > 0) {
+      // Random position offsets
+      tile.chaosOffsetX = (Math.random() - 0.5) * 2 * MAX_POSITION_OFFSET * CHAOS_LEVEL;
+      tile.chaosOffsetY = (Math.random() - 0.5) * 2 * MAX_POSITION_OFFSET * CHAOS_LEVEL;
+      
+      // Random rotation
+      tile.chaosRotation = (Math.random() - 0.5) * 2 * MAX_ROTATION * CHAOS_LEVEL;
+    }
+    
     newTiles.push(tile);
   }
   

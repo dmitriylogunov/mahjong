@@ -8,10 +8,11 @@
       'shake shake-rotate shake-constant shake-slow shake-little': hasFreePair && showHints
     }"
     :style="{
-      left: `${x * elementPixelWidth + z * shiftX}px`,
-      top: `${y * elementPixelHeight - z * shiftY}px`,
+      left: `${x * elementPixelWidth + z * shiftX + chaosOffsetX}px`,
+      top: `${y * elementPixelHeight - z * shiftY + chaosOffsetY}px`,
       width: `${elementPixelWidth * 2}px`,
-      height: `${elementPixelHeight * 2}px`
+      height: `${elementPixelHeight * 2}px`,
+      transform: `rotate(${chaosRotation}deg)`
     }"
   >
     <!-- Bottom layer for 3D effect -->
@@ -102,6 +103,9 @@ const props = defineProps<{
   x: number;
   y: number;
   z: number;
+  chaosOffsetX: number;
+  chaosOffsetY: number;
+  chaosRotation: number;
   elementPixelWidth: number;
   elementPixelHeight: number;
   active: boolean;
@@ -162,6 +166,7 @@ function onClick(event: MouseEvent) {
   position: absolute;
   font-family: FreeSerifNF;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  transform-origin: center center;
 
   &.free {
     cursor: pointer;

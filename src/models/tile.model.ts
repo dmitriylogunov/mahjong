@@ -66,6 +66,9 @@ export class MjTile {
   public blockedBy: MjTile[] = [];
   public adjacentL: MjTile[] = [];
   public adjacentR: MjTile[] = [];
+  public chaosOffsetX: number = 0;
+  public chaosOffsetY: number = 0;
+  public chaosRotation: number = 0;
 
   constructor(x: number, y: number, collection: MjTile[]) {
     this.x = x;
