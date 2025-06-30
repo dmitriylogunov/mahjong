@@ -14,7 +14,6 @@
     <div 
       v-if="tilesReady && !paused && isVisible"
       class="tile-field"
-      :class="{ 'shake shake-horizontal shake-little shake-constant': shakeField }"
       :style="{
         width: `${windowWidth}px`,
         height: `${windowHeight}px`
@@ -72,7 +71,6 @@ const gameStore = useGameStore();
 const tiles = shallowRef<MjTile[]>([]);
 const tilesReady = ref(false);
 const isVisible = ref(true);
-const shakeField = ref(false);
 const showHints = ref(false);
 
 // Mouse tracking for floating tile
@@ -131,6 +129,7 @@ onMounted(() => {
   window.addEventListener('resize', handleResize);
   window.addEventListener('mousemove', handleMouseMove);
   window.addEventListener('mousedown', handleMouseDown);
+  window.addEventListener('contextmenu', handleContextMenu, true); // Use capture phase
   window.addEventListener('keydown', handleKeyDown);
   initializeGame();
   
@@ -144,6 +143,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
   window.removeEventListener('mousemove', handleMouseMove);
   window.removeEventListener('mousedown', handleMouseDown);
+  window.removeEventListener('contextmenu', handleContextMenu, true); // Match capture phase
   window.removeEventListener('keydown', handleKeyDown);
   if (resizeTimeout) {
     clearTimeout(resizeTimeout);
@@ -285,10 +285,10 @@ function updateFreePairs() {
 function onTileClick(tile: MjTile) {
   if (!tile.isFree() || props.paused) {
     audioService.play('wrong');
-    shakeField.value = true;
-    setTimeout(() => {
-      shakeField.value = false;
-    }, 500);
+    // Return floating tile if clicking on a locked tile
+    if (floatingTile.value) {
+      returnFloatingTile();
+    }
     return;
   }
   
@@ -409,7 +409,19 @@ function handleMouseMove(event: MouseEvent) {
 function handleMouseDown(event: MouseEvent) {
   // Return floating tile if clicking outside with anything but left button
   if (floatingTile.value && event.button !== 0) {
+    event.preventDefault();
     returnFloatingTile();
+  }
+}
+
+function handleContextMenu(event: MouseEvent) {
+  // Prevent context menu when a tile is floating
+  if (floatingTile.value) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    returnFloatingTile();
+    return false;
   }
 }
 
@@ -465,15 +477,5 @@ watch(() => gameStore.showHint, (value) => {
 .tile-field {
   position: relative;
   margin: 0 auto;
-  
-  &.shake {
-    animation: shake 0.5s;
-  }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 </style>

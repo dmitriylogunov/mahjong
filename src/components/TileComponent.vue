@@ -4,6 +4,7 @@
     :class="{
       hidden: !active && !selected && !isFloating,
       free: isFree && !selected,
+      locked: !isFree && active,
       selected: selected,
       floating: isFloating,
       'shake shake-rotate shake-constant shake-slow shake-little': hasFreePair && showHints
@@ -248,6 +249,37 @@ function onClick(event: MouseEvent) {
     }
   }
 
+  &.locked {
+    cursor: not-allowed;
+    
+    * {
+      cursor: not-allowed !important;
+    }
+    
+    .tile {
+      cursor: not-allowed;
+      opacity: 0.95;
+      
+      &:hover {
+        filter: brightness(0.95);
+      }
+      
+      &::before,
+      &::after {
+        cursor: not-allowed;
+      }
+    }
+    
+    .tile-bottom {
+      cursor: not-allowed;
+      
+      &::before,
+      &::after {
+        cursor: not-allowed;
+      }
+    }
+  }
+
   .tile {
     overflow: visible;
     transform-origin: 50% 50%;
@@ -335,6 +367,7 @@ function onClick(event: MouseEvent) {
         rgba(181, 165, 124, 0.25) 100%);
       pointer-events: none;
       z-index: 1;
+      cursor: inherit;
     }
 
     .tile-edge-gradient-v {
@@ -353,6 +386,7 @@ function onClick(event: MouseEvent) {
         rgba(181, 165, 124, 0.25) 100%);
       pointer-events: none;
       z-index: 1;
+      cursor: inherit;
     }
 
 
