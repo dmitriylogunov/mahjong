@@ -128,8 +128,6 @@ const tileSetDescriptor: [string, number, boolean][] = [
 onMounted(() => {
   window.addEventListener('resize', handleResize);
   window.addEventListener('mousemove', handleMouseMove);
-  window.addEventListener('mousedown', handleMouseDown);
-  window.addEventListener('contextmenu', handleContextMenu, true); // Use capture phase
   window.addEventListener('keydown', handleKeyDown);
   initializeGame();
   
@@ -142,8 +140,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
   window.removeEventListener('mousemove', handleMouseMove);
-  window.removeEventListener('mousedown', handleMouseDown);
-  window.removeEventListener('contextmenu', handleContextMenu, true); // Match capture phase
   window.removeEventListener('keydown', handleKeyDown);
   if (resizeTimeout) {
     clearTimeout(resizeTimeout);
@@ -404,25 +400,6 @@ function handleResize() {
 function handleMouseMove(event: MouseEvent) {
   mouseX.value = event.clientX;
   mouseY.value = event.clientY;
-}
-
-function handleMouseDown(event: MouseEvent) {
-  // Return floating tile if clicking outside with anything but left button
-  if (floatingTile.value && event.button !== 0) {
-    event.preventDefault();
-    returnFloatingTile();
-  }
-}
-
-function handleContextMenu(event: MouseEvent) {
-  // Prevent context menu when a tile is floating
-  if (floatingTile.value) {
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    returnFloatingTile();
-    return false;
-  }
 }
 
 function handleKeyDown(event: KeyboardEvent) {
