@@ -14,24 +14,6 @@
       height: `${elementPixelHeight * 2}px`
     }"
   >
-    <!-- Width and height adjusted to account for borders, i.e. border width * 2 subtracted -->
-    <div 
-      class="tile-shadow tile-shadow1"
-      :style="{
-        width: `${elementPixelWidth * 2 - 2}px`,
-        height: `${elementPixelHeight * 2 - 2}px`
-      }"
-    >&nbsp;</div>
-    <div 
-      class="tile-shadow tile-shadow2"
-      :style="{
-        top: `${-shiftX}px`,
-        left: `${shiftY}px`,
-        width: `${elementPixelWidth * 2 - 2}px`,
-        height: `${elementPixelHeight * 2 - 2}px`
-      }"
-    >&nbsp;</div>
-
     <!-- Bottom layer for 3D effect -->
     <div 
       v-if="type"
@@ -219,27 +201,6 @@ function onClick(event: MouseEvent) {
 
   &.hidden {
     display: none;
-  }
-
-  .tile-shadow {
-    position: absolute;
-    background: linear-gradient(135deg, #a8a8a8 0%, #888888 100%);
-    border-radius: 10%;
-    opacity: 0.6;
-    filter: blur(1px);
-
-    &.tile-shadow1 {
-      top: 0px;
-      left: 0px;
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 100%);
-      filter: blur(2px);
-    }
-
-    &.tile-shadow2 {
-      opacity: 0.4;
-      background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 100%);
-      filter: blur(1.5px);
-    }
   }
 
   .tile {
