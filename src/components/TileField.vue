@@ -454,5 +454,7 @@ watch(() => gameStore.showHint, (value) => {
 .tile-field {
   position: relative;
   margin: 0 auto;
+  transform-style: preserve-3d;
+  transform: perspective(1200px) rotateX(7deg) rotateY(1deg);
 }
 </style>

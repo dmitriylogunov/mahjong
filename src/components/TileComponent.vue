@@ -150,10 +150,10 @@ const fontSizeSecondary = computed(() => {
 // Floating tile position
 const tilePosition = computed(() => {
   if (props.isFloating) {
-    // Position tile at cursor, centered
+    // Position tile at top-right of cursor
     return {
-      left: `${props.mouseX - props.elementPixelWidth}px`,
-      top: `${props.mouseY - props.elementPixelHeight}px`,
+      left: `${props.mouseX + 10}px`, // 10px offset to the right
+      top: `${props.mouseY - props.elementPixelHeight * 2 - 10}px`, // Above cursor
       position: 'fixed' as const,
       zIndex: 1000
     };
@@ -180,7 +180,7 @@ function onClick(event: MouseEvent) {
   font-family: FreeSerifNF;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
   transform-origin: center center;
-  transition: left 0.1s ease-out, top 0.1s ease-out, transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
 
   &.free {
     cursor: pointer;
@@ -228,6 +228,7 @@ function onClick(event: MouseEvent) {
     cursor: grabbing;
     pointer-events: none;
     filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+    transition: none !important;
     
     .tile {
       box-shadow: 
