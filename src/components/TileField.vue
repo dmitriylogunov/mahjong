@@ -455,6 +455,6 @@ watch(() => gameStore.showHint, (value) => {
   position: relative;
   margin: 0 auto;
   transform-style: preserve-3d;
-  transform: perspective(1200px) rotateX(7deg) rotateY(1deg);
+  transform: perspective(1200px) rotateX(3deg);
 }
 </style>
