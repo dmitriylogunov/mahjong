@@ -13,7 +13,8 @@
       ...tilePosition,
       width: `${elementPixelWidth * 2}px`,
       height: `${elementPixelHeight * 2}px`,
-      transform: isFloating ? 'rotate(0deg) scale(1.1)' : `rotate(${chaosRotation}deg)`
+      transform: isFloating ? 'rotate(0deg) scale(1.1)' : `rotate(${chaosRotation}deg)`,
+      zIndex: tileZIndex
     }"
   >
     <!-- Bottom layer for 3D effect -->
@@ -154,18 +155,28 @@ const tilePosition = computed(() => {
     return {
       left: `${props.mouseX + 10}px`, // 10px offset to the right
       top: `${props.mouseY - props.elementPixelHeight * 2 - 10}px`, // Above cursor
-      position: 'fixed' as const,
-      zIndex: 1000
+      position: 'fixed' as const
     };
   } else {
     // Normal position
     return {
       left: `${props.x * props.elementPixelWidth + props.z * shiftX.value + props.chaosOffsetX}px`,
       top: `${props.y * props.elementPixelHeight - props.z * shiftY.value + props.chaosOffsetY}px`,
-      position: 'absolute' as const,
-      zIndex: 'auto'
+      position: 'absolute' as const
     };
   }
+});
+
+// Z-index based on layer - higher layers have higher z-index
+const tileZIndex = computed(() => {
+  if (props.isFloating) {
+    return 1000; // Floating tiles always on top
+  }
+  // Base z-index calculation: layer * 100 + y * 10 + x
+  // This ensures proper stacking where higher layers are always above lower ones
+  // Within same layer, tiles further down (higher y) are above
+  // Within same layer and row, tiles further right (higher x) are above
+  return props.z * 1000 + props.y * 10 + props.x;
 });
 
 function onClick(event: MouseEvent) {
@@ -355,7 +366,7 @@ function onClick(event: MouseEvent) {
         rgba(181, 165, 124, 0.12) 98%,
         rgba(181, 165, 124, 0.25) 100%);
       pointer-events: none;
-      z-index: 1;
+      /* z-index inherited from parent */
       cursor: inherit;
     }
 
@@ -374,7 +385,7 @@ function onClick(event: MouseEvent) {
         rgba(181, 165, 124, 0.12) 98%,
         rgba(181, 165, 124, 0.25) 100%);
       pointer-events: none;
-      z-index: 1;
+      /* z-index inherited from parent */
       cursor: inherit;
     }
 
@@ -383,7 +394,7 @@ function onClick(event: MouseEvent) {
       margin: 5px;
       padding: 0px;
       position: relative;
-      z-index: 1;
+      /* z-index inherited from parent */
       display: flex;
       flex-direction: column;
       height: calc(100% - 10px);
@@ -449,7 +460,7 @@ function onClick(event: MouseEvent) {
       inset 0 -2px 4px rgba(0, 0, 0, 0.3),
       inset 0 1px 2px rgba(0, 0, 0, 0.2),
       0 2px 4px rgba(0, 0, 0, 0.2);
-    z-index: -2;
+    /* z-index: -2; */ /* Let it stack naturally within parent */
 
     &::before {
       content: '';
