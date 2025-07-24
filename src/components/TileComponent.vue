@@ -14,7 +14,7 @@
       width: `${elementPixelWidth * 2}px`,
       height: `${elementPixelHeight * 2}px`,
       transform: isFloating ? 'rotate(0deg) scale(1.1)' : `rotate(${chaosRotation}deg)`,
-      zIndex: tileZIndex
+      zIndex: baseZIndex
     }"
   >
     <!-- Bottom layer for 3D effect -->
@@ -26,7 +26,8 @@
         left: `${shiftY * 2 - depthSize}px`,
         width: `${elementPixelWidth * 2 - 4}px`,
         height: `${elementPixelHeight * 2 - 4}px`,
-        '--depth-size': `${depthSize}px`
+        '--depth-size': `${depthSize}px`,
+        zIndex: 0
       }"
     ></div>
 
@@ -50,7 +51,8 @@
         height: `${elementPixelHeight * 2 - 4}px`,
         color: selected ? '#5C5749' : type.getColor(),
         textShadow: `0 0 ${Math.floor(elementPixelWidth * 0.8)}px ${type.getColor()}`,
-        '--depth-size': `${depthSize}px`
+        '--depth-size': `${depthSize}px`,
+        zIndex: 3
       }"
       @click="onClick"
     >
@@ -167,15 +169,14 @@ const tilePosition = computed(() => {
   }
 });
 
-// Z-index based on layer - higher layers have higher z-index
-const tileZIndex = computed(() => {
+// Base z-index for the tile container
+const baseZIndex = computed(() => {
   if (props.isFloating) {
-    return 1000; // Floating tiles always on top
+    return 10000; // Floating tiles always on top
   }
-  // Base z-index calculation: layer * 100 + y * 10 + x
-  // This ensures proper stacking where higher layers are always above lower ones
-  // Within same layer, tiles further down (higher y) are above
-  // Within same layer and row, tiles further right (higher x) are above
+  // Base z-index calculation using layer, y, and x
+  // Each layer gets 1000 z-index units of space
+  // Within a layer, y position adds 10 units, x adds 1
   return props.z * 1000 + props.y * 10 + props.x;
 });
 
@@ -308,7 +309,7 @@ function onClick(event: MouseEvent) {
         #A59572 100%);
       transform-origin: top left;
       transform: skewX(-45deg) translateX(calc(var(--depth-size) * -0.3));
-      z-index: -1;
+      z-index: 1;
       border-radius: 0 2px 2px 2px;
       box-shadow: 
         0 1px 3px rgba(0, 0, 0, 0.3),
@@ -319,7 +320,7 @@ function onClick(event: MouseEvent) {
       content: '';
       position: absolute;
       top: 11%;
-      right: 100%;
+      left: 100%;
       width: var(--depth-size);
       height: 89%;
       background: linear-gradient(to right, 
@@ -327,9 +328,9 @@ function onClick(event: MouseEvent) {
         #B5A57C 40%, 
         #C5B58C 70%, 
         #D9C89E 100%);
-      transform-origin: top right;
-      transform: skewY(-45deg) translateY(calc(var(--depth-size) * -0.95));
-      z-index: -1;
+      transform-origin: top left;
+      transform: skewY(45deg);
+      z-index: 2;
       border-radius: 2px 0 0 2px;
       box-shadow: 
         -1px 0 3px rgba(0, 0, 0, 0.3),
@@ -460,7 +461,6 @@ function onClick(event: MouseEvent) {
       inset 0 -2px 4px rgba(0, 0, 0, 0.3),
       inset 0 1px 2px rgba(0, 0, 0, 0.2),
       0 2px 4px rgba(0, 0, 0, 0.2);
-    /* z-index: -2; */ /* Let it stack naturally within parent */
 
     &::before {
       content: '';

@@ -20,37 +20,86 @@
       }"
       @click="onFieldClick"
     >
-      <TileComponent
-        v-for="(tile, index) in tiles"
-        :key="`tile-${index}`"
-        :x="tile.x"
-        :y="tile.y"
-        :z="tile.z"
-        :chaos-offset-x="tile.chaosOffsetX"
-        :chaos-offset-y="tile.chaosOffsetY"
-        :chaos-rotation="tile.chaosRotation"
-        :element-pixel-width="elementPixelWidth"
-        :element-pixel-height="elementPixelHeight"
-        :active="tile.active"
-        :selected="tile.selected"
-        :type="tile.type"
-        :is-free="tile.isFree()"
-        :show-hints="showHints"
-        :has-free-pair="tile.hasFreePair"
-        :is-floating="!!floatingTile && floatingTile.x === tile.x && floatingTile.y === tile.y && floatingTile.z === tile.z"
-        :mouse-x="mouseX"
-        :mouse-y="mouseY"
-        @tile-clicked="onTileClick(tile)"
-      />
+      <!-- Render all tile parts as siblings for proper z-index layering -->
+      <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
+        <!-- Tile bottom -->
+        <div
+          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          class="tile-bottom"
+          :style="getTileBottomStyle(tile)"
+        ></div>
+      </template>
+      
+      <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
+        <!-- Tile bottom side -->
+        <div
+          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          class="tile-side-bottom"
+          :style="getTileSideBottomStyle(tile)"
+        ></div>
+      </template>
+      
+      <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
+        <!-- Tile left side -->
+        <div
+          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          class="tile-side-left"
+          :style="getTileSideLeftStyle(tile)"
+        ></div>
+      </template>
+      
+      <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
+        <!-- Tile face -->
+        <div
+          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          class="tile"
+          :class="getTileClasses(tile)"
+          :style="getTileStyle(tile)"
+          @click="onTileClick(tile)"
+        >
+          <!-- Edge gradient overlays -->
+          <div class="tile-edge-gradient-h"></div>
+          <div class="tile-edge-gradient-v"></div>
+          
+          <div class="tile-content">
+            <div 
+              class="secondary-character"
+              :style="{
+                fontSize: `${fontSizeSecondary}px`,
+                lineHeight: `${fontSizeSecondary - 5}px`
+              }"
+            >
+              {{ tile.type.getSecondaryCharacter() }}
+            </div>
+
+            <div 
+              class="primary-character-wrap"
+              :style="{
+                ...(tile.type.group === 'dragon' && tile.type.getPrimaryCharacter() === '龙' ? {
+                  paddingRight: `${fontSizePrimary * 0.075}px`
+                } : {})
+              }"
+            >
+              <span 
+                class="primary-character"
+                :style="{
+                  fontSize: `${tile.type.group === 'dragon' && tile.type.getPrimaryCharacter() === '龙' ? fontSizePrimary / 2 : fontSizePrimary}px`,
+                  lineHeight: `${tile.type.group === 'dragon' && tile.type.getPrimaryCharacter() === '龙' ? fontSizePrimary / 2 : fontSizePrimary}px`
+                }"
+                v-html="tile.type.getPrimaryCharacter()"
+              ></span>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, onMounted, onUnmounted, watch, nextTick } from 'vue';
+import { ref, shallowRef, onMounted, onUnmounted, watch, nextTick, computed } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import { MjTile, MjTileType } from '@/models/tile.model';
-import TileComponent from './TileComponent.vue';
 import { turtleLayout, type TilePosition } from '@/data/layouts';
 import { audioService } from '@/services/audio.service';
 
@@ -96,6 +145,35 @@ const fieldHeight = ref(0);
 const CHAOS_LEVEL = 0.3; // 0 = perfect placement, 1 = maximum chaos
 const MAX_POSITION_OFFSET = 4; // Maximum pixels of position offset
 const MAX_ROTATION = 2; // Maximum degrees of rotation
+
+// Constants for tile proportions
+const shiftProportion = 0.14;
+const depthProportion = 0.15;
+
+// Computed values for tile dimensions
+const shiftX = computed(() => Math.floor(elementPixelWidth.value * shiftProportion));
+const shiftY = computed(() => Math.floor(elementPixelHeight.value * shiftProportion));
+const depthSize = computed(() => Math.max(8, Math.floor(Math.min(elementPixelWidth.value, elementPixelHeight.value) * depthProportion)));
+
+// Font size calculations
+const fontSizePrimary = computed(() => {
+  const adjustedElementSize = Math.min(
+    elementPixelHeight.value,
+    elementPixelWidth.value * 1.5
+  );
+  return Math.floor(adjustedElementSize * 1.5);
+});
+
+const fontSizeSecondary = computed(() => {
+  const adjustedElementSize = Math.min(
+    elementPixelHeight.value,
+    elementPixelWidth.value * 1.5
+  );
+  return Math.floor(adjustedElementSize / 3);
+});
+
+// Sorted tiles for rendering order
+const sortedTiles = computed(() => [...tiles.value].sort((a, b) => a.sortingOrder - b.sortingOrder));
 
 // Tile type descriptor - matching original pre-Vue implementation
 // Total: 144 tiles (36 ball + 36 bam + 36 num + 4 season + 16 wind + 4 flower + 12 dragon)
@@ -421,6 +499,120 @@ function returnFloatingTile() {
 watch(() => gameStore.showHint, (value) => {
   showHints.value = value;
 });
+
+// Helper functions for tile rendering
+function isFloatingTile(tile: MjTile): boolean {
+  return !!floatingTile.value && floatingTile.value.x === tile.x && floatingTile.value.y === tile.y && floatingTile.value.z === tile.z;
+}
+
+function getTilePosition(tile: MjTile) {
+  if (isFloatingTile(tile)) {
+    return {
+      left: `${mouseX.value + 10}px`,
+      top: `${mouseY.value - elementPixelHeight.value * 2 - 10}px`,
+      position: 'fixed' as const
+    };
+  } else {
+    return {
+      left: `${tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX}px`,
+      top: `${tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY}px`,
+      position: 'absolute' as const
+    };
+  }
+}
+
+function getTileBottomStyle(tile: MjTile) {
+  const pos = getTilePosition(tile);
+  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
+  
+  return {
+    ...pos,
+    top: `${baseTop - shiftX.value * 2 + depthSize.value}px`,
+    left: `${baseLeft + shiftY.value * 2 - depthSize.value}px`,
+    width: `${elementPixelWidth.value * 2 - 4}px`,
+    height: `${elementPixelHeight.value * 2 - 4}px`,
+    zIndex: tile.z * 1000 + 0,
+    transform: isFloatingTile(tile) ? 'rotate(0deg) scale(1.1)' : `rotate(${tile.chaosRotation}deg)`,
+    '--depth-size': `${depthSize.value}px`
+  };
+}
+
+function getTileSideBottomStyle(tile: MjTile) {
+  const pos = getTilePosition(tile);
+  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
+  
+  return {
+    position: pos.position,
+    top: `${baseTop - shiftX.value * 2 + elementPixelHeight.value * 2 - 4}px`,
+    left: `${baseLeft + shiftY.value * 2 + depthSize.value * 0.7}px`,
+    width: `${elementPixelWidth.value * 2 - 4 - depthSize.value * 0.7}px`,
+    height: `${depthSize.value}px`,
+    zIndex: tile.z * 1000 + 1,
+    transform: `skewX(-45deg) translateX(${-depthSize.value * 0.3}px) ${isFloatingTile(tile) ? 'scale(1.1)' : ''}`,
+    transformOrigin: 'top left',
+    '--depth-size': `${depthSize.value}px`
+  };
+}
+
+function getTileSideLeftStyle(tile: MjTile) {
+  const pos = getTilePosition(tile);
+  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
+  
+  const tileTop = baseTop - shiftX.value * 2;
+  const tileLeft = baseLeft + shiftY.value * 2;
+  const tileWidth = elementPixelWidth.value * 2 - 4;
+  const tileHeight = elementPixelHeight.value * 2 - 4;
+  
+  return {
+    position: pos.position,
+    top: `${tileTop + tileHeight * 0.11 + 1}px`,
+    left: `${tileLeft - depthSize.value}px`,
+    width: `${depthSize.value}px`,
+    height: `${tileHeight * 0.89}px`,
+    zIndex: tile.z * 1000 + 2,
+    transform: `skewY(-45deg) ${isFloatingTile(tile) ? 'scale(1.1)' : ''}`,
+    transformOrigin: 'top left',
+    '--depth-size': `${depthSize.value}px`
+  };
+}
+
+function getTileStyle(tile: MjTile) {
+  const pos = getTilePosition(tile);
+  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
+  
+  return {
+    position: pos.position,
+    top: `${baseTop - shiftX.value * 2}px`,
+    left: `${baseLeft + shiftY.value * 2}px`,
+    width: `${elementPixelWidth.value * 2 - 4}px`,
+    height: `${elementPixelHeight.value * 2 - 4}px`,
+    color: tile.selected ? '#5C5749' : tile.type?.getColor(),
+    textShadow: `0 0 ${Math.floor(elementPixelWidth.value * 0.8)}px ${tile.type?.getColor()}`,
+    zIndex: tile.z * 1000 + 3,
+    transform: isFloatingTile(tile) ? 'rotate(0deg) scale(1.1)' : `rotate(${tile.chaosRotation}deg)`,
+    '--depth-size': `${depthSize.value}px`
+  };
+}
+
+function getTileClasses(tile: MjTile) {
+  return {
+    selected: tile.selected,
+    layer0: tile.z === 0,
+    layer1: tile.z === 1,
+    layer2: tile.z === 2,
+    layer3: tile.z === 3,
+    layer4: tile.z === 4,
+    layer5: tile.z >= 5,
+    free: tile.isFree() && !tile.selected,
+    locked: !tile.isFree() && tile.active,
+    floating: isFloatingTile(tile),
+    'shake shake-rotate shake-constant shake-slow shake-little': tile.hasFreePair && showHints.value
+  };
+}
 </script>
 
 <style lang="scss" scoped>
@@ -456,5 +648,225 @@ watch(() => gameStore.showHint, (value) => {
   margin: 0 auto;
   transform-style: preserve-3d;
   transform: perspective(1200px) rotateX(3deg);
+}
+
+// Tile styles moved from TileComponent
+.tile-bottom {
+  position: absolute;
+  border-radius: 10%;
+  background: linear-gradient(145deg, #B5A57C 0%, #A59572 40%, #958568 100%);
+  box-shadow: 
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+  transform-origin: center center;
+  transition: transform 0.2s ease-out;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10%;
+    background: linear-gradient(135deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 0, 0, 0.1) 50%, 
+      rgba(0, 0, 0, 0.2) 100%);
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 40%;
+    height: 40%;
+    background: radial-gradient(ellipse at bottom right, 
+      rgba(0, 0, 0, 0.2) 0%, 
+      transparent 70%);
+    border-radius: 10%;
+    pointer-events: none;
+  }
+}
+
+.tile-side-bottom {
+  position: absolute;
+  background: linear-gradient(to bottom, 
+    #D9C89E 0%, 
+    #C5B58C 30%, 
+    #B5A57C 60%, 
+    #A59572 100%);
+  /* transform applied inline */
+  border-radius: 0 2px 2px 2px;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease-out;
+}
+
+.tile-side-left {
+  position: absolute;
+  background: linear-gradient(to right, 
+    #A59572 0%, 
+    #B5A57C 40%, 
+    #C5B58C 70%, 
+    #D9C89E 100%);
+  /* transform applied inline */
+  border-radius: 2px 0 0 2px;
+  box-shadow: 
+    -1px 0 3px rgba(0, 0, 0, 0.3),
+    inset 2px 0 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease-out;
+}
+
+.tile {
+  font-family: FreeSerifNF;
+  overflow: visible;
+  transform-origin: 50% 50%;
+  position: absolute;
+  border-radius: 10%;
+  cursor: default;
+  background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease-out;
+
+  &.free {
+    cursor: pointer;
+    transition: transform 0.15s ease-out;
+
+    &:hover {
+      filter: brightness(1.08);
+      box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.2),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  &.floating {
+    cursor: grabbing;
+    pointer-events: none;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+    transition: none !important;
+    
+    box-shadow: 
+      0 12px 24px rgba(0, 0, 0, 0.3),
+      0 6px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  &.locked {
+    cursor: not-allowed;
+    opacity: 0.95;
+    
+    &:hover {
+      filter: brightness(0.95);
+    }
+  }
+
+  &.layer0 {
+    background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
+  }
+
+  &.layer1 {
+    background: linear-gradient(145deg, #D5EED6 0%, #BEDDBF 40%, #A5CCA6 100%);
+  }
+
+  &.layer2 {
+    background: linear-gradient(145deg, #FFF0C4 0%, #FFE1A2 40%, #F5D08A 100%);
+  }
+
+  &.layer3 {
+    background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
+  }
+
+  &.layer4 {
+    background: linear-gradient(145deg, #FFF5D4 0%, #FEF2C7 40%, #F5E6B8 100%);
+  }
+
+  &.layer5 {
+    background: linear-gradient(145deg, #FFB885 0%, #FEAA6E 40%, #F59956 100%);
+  }
+
+  &.selected {
+    background: linear-gradient(145deg, #FFB885 0%, #FEAA6E 40%, #F59956 100%);
+    box-shadow: 
+      0 6px 12px rgba(0, 0, 0, 0.2),
+      0 3px 6px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+      0 0 20px rgba(254, 170, 110, 0.4);
+  }
+
+  .tile-edge-gradient-h {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10%;
+    background: linear-gradient(to right,
+      rgba(181, 165, 124, 0.25) 0%,
+      rgba(181, 165, 124, 0.12) 2%,
+      transparent 8%,
+      transparent 92%,
+      rgba(181, 165, 124, 0.12) 98%,
+      rgba(181, 165, 124, 0.25) 100%);
+    pointer-events: none;
+    cursor: inherit;
+  }
+
+  .tile-edge-gradient-v {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10%;
+    background: linear-gradient(to bottom,
+      rgba(181, 165, 124, 0.25) 0%,
+      rgba(181, 165, 124, 0.12) 2%,
+      transparent 8%,
+      transparent 92%,
+      rgba(181, 165, 124, 0.12) 98%,
+      rgba(181, 165, 124, 0.25) 100%);
+    pointer-events: none;
+    cursor: inherit;
+  }
+
+  .tile-content {
+    margin: 5px;
+    padding: 0px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 10px);
+
+    .secondary-character {
+      filter: drop-shadow(0.5px 0.5px 0.5px rgba(0, 0, 0, 0.15));
+      text-align: left;
+    }
+
+    .primary-character-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+
+      .primary-character {
+        filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+      }
+    }
+  }
 }
 </style>
