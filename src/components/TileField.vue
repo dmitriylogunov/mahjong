@@ -371,17 +371,21 @@ function onTileClick(tile: MjTile) {
     }
     
     if (selectedTile.value.matches(tile)) {
-      // Match found - remove both tiles
+      // Match found - remove both tiles simultaneously
       console.log(`Tile matched and removed: ${selectedTile.value.type?.group} ${selectedTile.value.type?.value} with ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
-      gameStore.selectTile(tile);
+      
+      // Deactivate both tiles at the same time
+      selectedTile.value.active = false;
+      tile.active = false;
+      
+      // Clear selection
+      selectedTile.value.selected = false;
       selectedTile.value = null;
+      gameStore.clearSelection();
       
       // Check if we need to update free pairs after a match
-      const activeTiles = tiles.value.filter((t: MjTile) => t.active);
-      if (activeTiles.length !== tiles.value.length) {
-        updateFreePairs();
-        emit('tileCleared');
-      }
+      updateFreePairs();
+      emit('tileCleared');
     } else {
       // No match - return selected tile and select new one
       returnSelectedTile();
