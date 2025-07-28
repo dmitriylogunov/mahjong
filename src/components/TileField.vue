@@ -13,6 +13,7 @@
       sub-text="Game Paused"
       button-text="Continue"
       @action="continueGame"
+      @close="continueGame"
     />
     <div 
       v-if="tilesReady && !paused && isVisible"

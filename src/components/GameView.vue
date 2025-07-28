@@ -1,7 +1,7 @@
 <template>
   <div class="game-view">
     <!-- Main Menu Modal -->
-    <AppModal v-if="showMainMenu" :actions="mainMenuModalActions">
+    <AppModal v-if="showMainMenu" :actions="mainMenuModalActions" @close="startNewGame">
       <div class="main-menu-content">
         <div class="decorative-border top"></div>
         <h1 class="title" data-text="Mahjong Solitaire">Mahjong<br/>Solitaire</h1>
@@ -11,7 +11,7 @@
     </AppModal>
 
     <!-- Restart Dialog -->
-    <AppModal v-if="showRestartDialog" :actions="restartGameModalActions">
+    <AppModal v-if="showRestartDialog" :actions="restartGameModalActions" @close="showRestartDialog = false">
       <h1>Choose restart option:</h1>
       <p>Restart Current - Play the same layout again</p>
       <p>Reshuffle - Generate a new random layout</p>

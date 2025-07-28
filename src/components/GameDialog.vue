@@ -1,5 +1,5 @@
 <template>
-  <div class="dialog-backdrop">
+  <div class="dialog-backdrop" @click.self="$emit('close')">
     <div class="dialog">
       <div class="dialog-content" :class="{ 'sub-text-only': !mainText && subText }">
         <div class="decorative-border top"></div>
@@ -25,6 +25,7 @@ defineProps<Props>();
 
 defineEmits<{
   action: [];
+  close: [];
 }>();
 </script>
 
