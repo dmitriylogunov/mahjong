@@ -8,7 +8,7 @@
           class="hint" 
           :class="{ active: hintCurrentlyShowing }"
         >
-          <i class="fa fa-diamond" aria-hidden="true"></i>&nbsp;Hint
+          <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;Hint
         </span>
 
         <span 
