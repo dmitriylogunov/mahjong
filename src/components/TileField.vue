@@ -916,10 +916,12 @@ function getTileClasses(tile: MjTile) {
   position: absolute;
   width: 20px;
   height: 20px;
-  top: -30px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  animation: dragon-orbit 3s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+  transform: translate(-50%, -50%);
+  animation: 
+    dragon-wobble 4s ease-in-out infinite,
+    dragon-float 2.5s ease-in-out infinite alternate;
 }
 
 .orb-core {
@@ -998,12 +1000,42 @@ function getTileClasses(tile: MjTile) {
 }
 
 // Animations
-@keyframes dragon-orbit {
+@keyframes dragon-wobble {
   0% {
-    transform: translateX(-50%) rotate(0deg) translateX(60px) rotate(0deg);
+    transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+  }
+  15% {
+    transform: translate(-50%, -50%) translateX(12px) translateY(-8px);
+  }
+  30% {
+    transform: translate(-50%, -50%) translateX(8px) translateY(10px);
+  }
+  45% {
+    transform: translate(-50%, -50%) translateX(-15px) translateY(5px);
+  }
+  60% {
+    transform: translate(-50%, -50%) translateX(-10px) translateY(-12px);
+  }
+  75% {
+    transform: translate(-50%, -50%) translateX(6px) translateY(-6px);
+  }
+  90% {
+    transform: translate(-50%, -50%) translateX(-5px) translateY(8px);
   }
   100% {
-    transform: translateX(-50%) rotate(360deg) translateX(60px) rotate(-360deg);
+    transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+  }
+}
+
+@keyframes dragon-float {
+  0% {
+    filter: brightness(1) hue-rotate(0deg);
+  }
+  50% {
+    filter: brightness(1.3) hue-rotate(20deg);
+  }
+  100% {
+    filter: brightness(0.9) hue-rotate(-20deg);
   }
 }
 
