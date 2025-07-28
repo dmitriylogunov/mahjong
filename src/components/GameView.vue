@@ -268,7 +268,7 @@ onUnmounted(() => {
 .statusfield {
   flex: 0 0 auto;
   background: rgba(0, 0, 0, 0.7);
-  padding: 10px;
+  padding: 5px;
 }
 
 .gamefield {

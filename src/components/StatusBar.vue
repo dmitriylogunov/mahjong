@@ -149,7 +149,7 @@ function onSolveClick() {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 4px 20px;
     
     @media (max-width: $breakpoint-mobile) {
       flex-wrap: wrap;
