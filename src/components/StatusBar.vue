@@ -6,7 +6,7 @@
         <span 
           @click="onHintClick" 
           class="hint" 
-          :class="{ active: hintCurrentlyShowing, available: hintsRemaining > 0 }"
+          :class="{ active: hintCurrentlyShowing }"
         >
           <i class="fa fa-diamond" aria-hidden="true"></i>&nbsp;Hint
         </span>
@@ -89,7 +89,6 @@ const emit = defineEmits<{
 const gameStore = useGameStore();
 
 const isVisible = ref(true);
-const hintsRemaining = ref(props.hintsCount);
 const hintCurrentlyShowing = computed(() => gameStore.showHint);
 
 const formattedTime = computed(() => {
@@ -99,10 +98,7 @@ const formattedTime = computed(() => {
 });
 
 function onHintClick() {
-  if (hintsRemaining.value > 0) {
-    hintsRemaining.value--;
-    gameStore.requestHint();
-  }
+  gameStore.requestHint();
 }
 
 function onUndoClick() {
@@ -197,23 +193,24 @@ function onSolveClick() {
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px;
     
-    &.available {
+    &.active {
       border-color: $secondary-color;
       color: $secondary-color;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      background: rgba(255, 215, 0, 0.1);
       
-      &:hover {
-        background: rgba(255, 193, 7, 0.1);
+      i {
+        animation: pulse 1s ease-in-out infinite;
       }
     }
-    
-    &.active {
-      background: $secondary-color;
-      color: $background-color;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
     }
-    
-    &:not(.available) {
-      opacity: 0.5;
-      cursor: not-allowed;
+    50% {
+      transform: scale(1.2);
     }
   }
   

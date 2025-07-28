@@ -28,6 +28,7 @@ export const useGameStore = defineStore('game', () => {
   
   // UI states
   const showHint = ref(false);
+  let hintTimeout: ReturnType<typeof setTimeout> | null = null;
   const canUndo = computed(() => undoStack.value.length > 0);
   const canRedo = computed(() => redoStack.value.length > 0);
   
@@ -208,7 +209,14 @@ export const useGameStore = defineStore('game', () => {
   }
   
   function requestHint() {
-    if (!hintsEnabled.value || isPaused.value || isGameComplete.value) return;
+    // DEBUG: Hints always enabled
+    if (isPaused.value || isGameComplete.value) return;
+    
+    // Clear any existing hint timeout
+    if (hintTimeout) {
+      clearTimeout(hintTimeout);
+      stopHint();
+    }
     
     showHint.value = true;
     
@@ -222,12 +230,10 @@ export const useGameStore = defineStore('game', () => {
           freeTiles[i].startHint();
           freeTiles[j].startHint();
           
-          // Remove hint after 3 seconds
-          setTimeout(() => {
-            freeTiles[i].stopHint();
-            freeTiles[j].stopHint();
-            showHint.value = false;
-          }, 3000);
+          // Remove hint after 5 seconds
+          hintTimeout = setTimeout(() => {
+            stopHint();
+          }, 5000);
           
           return;
         }
@@ -235,6 +241,22 @@ export const useGameStore = defineStore('game', () => {
     }
     
     // No matches found
+    showHint.value = false;
+  }
+  
+  function stopHint() {
+    if (hintTimeout) {
+      clearTimeout(hintTimeout);
+      hintTimeout = null;
+    }
+    
+    // Stop all tile hints
+    tiles.value.forEach(tile => {
+      if (tile.showHint) {
+        tile.stopHint();
+      }
+    });
+    
     showHint.value = false;
   }
   
@@ -333,6 +355,7 @@ export const useGameStore = defineStore('game', () => {
     undo,
     redo,
     requestHint,
+    stopHint,
     pauseGame,
     resumeGame,
     toggleSound,

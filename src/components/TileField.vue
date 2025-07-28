@@ -60,6 +60,22 @@
           :style="getTileStyle(tile as MjTile)"
           @click.stop="onTileClick(tile as MjTile)"
         >
+          <!-- Hint arrow -->
+          <div 
+            v-if="tile.showHint && showHints"
+            class="hint-arrow"
+          >
+            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <path 
+                d="M20 35 L35 10 L25 10 L25 5 L15 5 L15 10 L5 10 Z" 
+                fill="#FF9999" 
+                stroke="#FFD700" 
+                stroke-width="3"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          
           <!-- Edge gradient overlays -->
           <div class="tile-edge-gradient-h"></div>
           <div class="tile-edge-gradient-v"></div>
@@ -361,6 +377,11 @@ function updateFreePairs() {
 }
 
 function onTileClick(tile: MjTile) {
+  // Dismiss hint if active
+  if (gameStore.showHint) {
+    gameStore.stopHint();
+  }
+  
   if (!tile.isFree() || props.paused) {
     audioService.play('wrong');
     // Return selected tile if clicking on a locked tile
@@ -412,6 +433,12 @@ function onTileClick(tile: MjTile) {
 }
 
 function onFieldClick() {
+  // Dismiss hint if active
+  if (gameStore.showHint) {
+    gameStore.stopHint();
+    return;
+  }
+  
   // Return selected tile if clicking on the field
   if (selectedTile.value) {
     returnSelectedTile();
@@ -613,7 +640,7 @@ function getTileClasses(tile: MjTile) {
     layer5: tile.z >= 5,
     free: tile.isFree() && !tile.selected,
     locked: !tile.isFree() && tile.active,
-    'shake shake-rotate shake-constant shake-slow shake-little': tile.hasFreePair && showHints.value
+    'hint-active': tile.showHint && showHints.value
   };
 }
 </script>
@@ -802,6 +829,7 @@ function getTileClasses(tile: MjTile) {
     filter: brightness(1.08);
     cursor: pointer;
   }
+  
 
   .tile-edge-gradient-h {
     position: absolute;
@@ -863,6 +891,27 @@ function getTileClasses(tile: MjTile) {
         filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
       }
     }
+  }
+}
+
+// Hint arrow styles
+.hint-arrow {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  animation: bounce 1s ease-in-out infinite;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px);
   }
 }
 </style>
