@@ -26,7 +26,7 @@
         <div
           v-if="tile.type && (tile.active || tile.selected)"
           class="tile-bottom"
-          :style="getTileBottomStyle(tile)"
+          :style="getTileBottomStyle(tile as MjTile)"
         ></div>
       </template>
       
@@ -35,7 +35,7 @@
         <div
           v-if="tile.type && (tile.active || tile.selected)"
           class="tile-side-bottom"
-          :style="getTileSideBottomStyle(tile)"
+          :style="getTileSideBottomStyle(tile as MjTile)"
         ></div>
       </template>
       
@@ -44,7 +44,7 @@
         <div
           v-if="tile.type && (tile.active || tile.selected)"
           class="tile-side-left"
-          :style="getTileSideLeftStyle(tile)"
+          :style="getTileSideLeftStyle(tile as MjTile)"
         ></div>
       </template>
       
@@ -53,9 +53,9 @@
         <div
           v-if="tile.type && (tile.active || tile.selected)"
           class="tile"
-          :class="getTileClasses(tile)"
-          :style="getTileStyle(tile)"
-          @click.stop="onTileClick(tile)"
+          :class="getTileClasses(tile as MjTile)"
+          :style="getTileStyle(tile as MjTile)"
+          @click.stop="onTileClick(tile as MjTile)"
         >
           <!-- Edge gradient overlays -->
           <div class="tile-edge-gradient-h"></div>
@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, onMounted, onUnmounted, watch, nextTick, computed } from 'vue';
+import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import { MjTile, MjTileType } from '@/models/tile.model';
 import { turtleLayout, type TilePosition } from '@/data/layouts';
@@ -171,7 +171,7 @@ const fontSizeSecondary = computed(() => {
 });
 
 // Sorted tiles for rendering order
-const sortedTiles = computed(() => [...tiles.value].sort((a, b) => a.sortingOrder - b.sortingOrder));
+const sortedTiles = computed(() => ([...tiles.value] as MjTile[]).sort((a: MjTile, b: MjTile) => a.sortingOrder - b.sortingOrder));
 
 // Tile type descriptor - matching original pre-Vue implementation
 // Total: 144 tiles (36 ball + 36 bam + 36 num + 4 season + 16 wind + 4 flower + 12 dragon)
@@ -246,7 +246,7 @@ function initializeGame() {
     tilesReady.value = true;
     
     // Initialize game store with shallow copy
-    gameStore.initializeGame(props.layout, [...tiles.value]);
+    gameStore.initializeGame(props.layout, [...tiles.value] as MjTile[]);
     
     emit('ready');
   });
@@ -297,21 +297,23 @@ function getLayoutData(_layoutName: string): TilePosition[] {
 }
 
 function buildTileRelationsGraph() {
-  for (let i = 0; i < tiles.value.length; i++) {
-    for (let j = i + 1; j < tiles.value.length; j++) {
-      tiles.value[i].checkRelativePositions(tiles.value[j]);
-      tiles.value[j].checkRelativePositions(tiles.value[i]);
+  const tilesArray = tiles.value as MjTile[];
+  for (let i = 0; i < tilesArray.length; i++) {
+    for (let j = i + 1; j < tilesArray.length; j++) {
+      tilesArray[i].checkRelativePositions(tilesArray[j]);
+      tilesArray[j].checkRelativePositions(tilesArray[i]);
     }
   }
 }
 
 function setTileTypes() {
   let counter = 0;
+  const tilesArray = tiles.value as MjTile[];
   
   for (const [group, count, matchAny] of tileSetDescriptor) {
     for (let index = 0; index < count; index++) {
       const type = new MjTileType(group, index, matchAny);
-      tiles.value[counter].setType(type);
+      tilesArray[counter].setType(type);
       counter++;
     }
   }
@@ -322,24 +324,25 @@ function shuffleTypesFisherYates() {
   setTileTypes();
   
   // Then shuffle using Fisher-Yates
-  const n = tiles.value.length;
+  const tilesArray = tiles.value as MjTile[];
+  const n = tilesArray.length;
   for (let i = n - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     // Swap types
-    const tempType = tiles.value[i].type;
-    tiles.value[i].type = tiles.value[j].type;
-    tiles.value[j].type = tempType;
+    const tempType = tilesArray[i].type;
+    tilesArray[i].type = tilesArray[j].type;
+    tilesArray[j].type = tempType;
   }
 }
 
 function updateFreePairs() {
   // Reset all tiles
-  for (const tile of tiles.value) {
+  for (const tile of tiles.value as MjTile[]) {
     tile.hasFreePair = false;
   }
   
   // Find free tiles
-  const freeTiles = tiles.value.filter((t: MjTile) => t.active && t.isFree());
+  const freeTiles = (tiles.value as MjTile[]).filter((t: MjTile) => t.active && t.isFree());
   
   // Mark tiles that have matching pairs
   for (let i = 0; i < freeTiles.length; i++) {
@@ -372,7 +375,7 @@ function onTileClick(tile: MjTile) {
     
     if (selectedTile.value.matches(tile)) {
       // Match found - remove both tiles simultaneously
-      console.log(`Tile matched and removed: ${selectedTile.value.type?.group} ${selectedTile.value.type?.value} with ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
+      console.log(`Tile matched and removed: ${selectedTile.value.type?.group} ${selectedTile.value.type?.index} with ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
       
       // Deactivate both tiles at the same time
       selectedTile.value.active = false;
@@ -391,14 +394,14 @@ function onTileClick(tile: MjTile) {
       returnSelectedTile();
       tile.selected = true;
       selectedTile.value = tile;
-      console.log(`Tile selected: ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
+      console.log(`Tile selected: ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
       gameStore.setSelectedTile(tile);
     }
   } else {
     // No selected tile - select this tile
     tile.selected = true;
     selectedTile.value = tile;
-    console.log(`Tile selected: ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
+    console.log(`Tile selected: ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
     gameStore.setSelectedTile(tile);
   }
 }
@@ -493,7 +496,7 @@ function handleKeyDown(event: KeyboardEvent) {
 
 function returnSelectedTile() {
   if (selectedTile.value) {
-    console.log(`Tile unselected: ${selectedTile.value.type?.group} ${selectedTile.value.type?.value} at (${selectedTile.value.x}, ${selectedTile.value.y}, ${selectedTile.value.z})`);
+    console.log(`Tile unselected: ${selectedTile.value.type?.group} ${selectedTile.value.type?.index} at (${selectedTile.value.x}, ${selectedTile.value.y}, ${selectedTile.value.z})`);
     selectedTile.value.selected = false;
     selectedTile.value = null;
     gameStore.clearSelection();
@@ -556,7 +559,6 @@ function getTileSideLeftStyle(tile: MjTile) {
   
   const tileTop = baseTop - shiftX.value * 2;
   const tileLeft = baseLeft + shiftY.value * 2;
-  const tileWidth = elementPixelWidth.value * 2 - 4;
   const tileHeight = elementPixelHeight.value * 2 - 4;
   
   return {
@@ -592,7 +594,7 @@ function getTileStyle(tile: MjTile) {
 }
 
 function getTileClasses(tile: MjTile) {
-  const classes = {
+  return {
     selected: tile.selected,
     layer0: tile.z === 0,
     layer1: tile.z === 1,
@@ -604,13 +606,6 @@ function getTileClasses(tile: MjTile) {
     locked: !tile.isFree() && tile.active,
     'shake shake-rotate shake-constant shake-slow shake-little': tile.hasFreePair && showHints.value
   };
-  
-  // Debug logging
-  if (tile.selected) {
-    console.log(`Tile classes for selected tile at (${tile.x}, ${tile.y}, ${tile.z}):`, classes);
-  }
-  
-  return classes;
 }
 </script>
 
