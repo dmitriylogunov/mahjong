@@ -16,14 +16,14 @@
           @click="onUndoClick" 
           :class="{ disabled: !gameStore.canUndo }"
         >
-          <i class="fa fa-undo" aria-hidden="true"></i>
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>
         </span>
         <span 
           class="redo" 
           @click="onRedoClick" 
           :class="{ disabled: !gameStore.canRedo }"
         >
-          <i class="fa fa-repeat" aria-hidden="true"></i>
+          <i class="fa fa-arrow-right" aria-hidden="true"></i>
         </span>
       </div>
 
@@ -52,7 +52,7 @@
         </span>
 
         <span class="restart highlight" @click="$emit('restart')">
-          <i class="fa fa-close" aria-hidden="true"></i>
+          <i class="fa fa-undo" aria-hidden="true"></i>
         </span>
       </div>
     </div>
