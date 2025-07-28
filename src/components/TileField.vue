@@ -11,7 +11,9 @@
     <div v-if="paused" class="paused-backdrop">
       <div class="paused">
         <div class="paused-content">
-          Game paused !!
+          <div class="decorative-border top"></div>
+          <div class="paused-message">Game Paused</div>
+          <div class="decorative-border bottom"></div>
         </div>
         <div class="paused-actions">
           <button class="btn primary" @click="continueGame">Continue</button>
@@ -691,13 +693,67 @@ function getTileClasses(tile: MjTile) {
 }
 
 .paused-content {
-  font-size: 2em;
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  padding: 20px 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.paused-message {
+  font-family: "Palatino", "Garamond", serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: #FFE5B4;
+  text-align: center;
+  margin: 10px 0 30px 0;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  font-style: italic;
+}
+
+.paused .decorative-border {
+  width: 80%;
+  height: 3px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, 
+    transparent, 
+    #FFD700 20%, 
+    #FFD700 80%, 
+    transparent
+  );
+  position: relative;
+  
+  &::before,
+  &::after {
+    content: '◆';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #FFD700;
+    font-size: 16px;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  
+  &::before {
+    left: 15%;
+  }
+  
+  &::after {
+    right: 15%;
+  }
+  
+  &.top {
+    margin-bottom: 20px;
+  }
+  
+  &.bottom {
+    margin-top: 20px;
+  }
 }
 
 .paused-actions {
