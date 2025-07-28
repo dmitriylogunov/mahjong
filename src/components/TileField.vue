@@ -55,7 +55,7 @@
           class="tile"
           :class="getTileClasses(tile)"
           :style="getTileStyle(tile)"
-          @click="onTileClick(tile)"
+          @click.stop="onTileClick(tile)"
         >
           <!-- Edge gradient overlays -->
           <div class="tile-edge-gradient-h"></div>
@@ -370,6 +370,7 @@ function onTileClick(tile: MjTile) {
   if (floatingTile.value) {
     if (floatingTile.value.matches(tile)) {
       // Match found - remove both tiles
+      console.log(`Tile matched and removed: ${floatingTile.value.type?.group} ${floatingTile.value.type?.value} with ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
       gameStore.selectTile(tile);
       floatingTile.value = null;
       
@@ -384,12 +385,14 @@ function onTileClick(tile: MjTile) {
       returnFloatingTile();
       tile.selected = true;
       floatingTile.value = tile;
+      console.log(`Tile selected: ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
       gameStore.setSelectedTile(tile);
     }
   } else {
     // No floating tile - make this tile float
     tile.selected = true;
     floatingTile.value = tile;
+    console.log(`Tile selected: ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
     gameStore.setSelectedTile(tile);
   }
 }
@@ -489,6 +492,7 @@ function handleKeyDown(event: KeyboardEvent) {
 
 function returnFloatingTile() {
   if (floatingTile.value) {
+    console.log(`Tile unselected: ${floatingTile.value.type?.group} ${floatingTile.value.type?.value} at (${floatingTile.value.x}, ${floatingTile.value.y}, ${floatingTile.value.z})`);
     floatingTile.value.selected = false;
     floatingTile.value = null;
     gameStore.clearSelection();
