@@ -60,20 +60,25 @@
           :style="getTileStyle(tile as MjTile)"
           @click.stop="onTileClick(tile as MjTile)"
         >
-          <!-- Hint arrow -->
+          <!-- Mystical dragon spirit hint -->
           <div 
             v-if="tile.showHint && showHints"
-            class="hint-arrow"
+            class="dragon-spirit-hint"
           >
-            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-              <path 
-                d="M20 35 L35 10 L25 10 L25 5 L15 5 L15 10 L5 10 Z" 
-                fill="#FF9999" 
-                stroke="#FFD700" 
-                stroke-width="3"
-                stroke-linejoin="round"
-              />
-            </svg>
+            <!-- Dragon orb -->
+            <div class="dragon-orb">
+              <div class="orb-core"></div>
+              <div class="orb-glow"></div>
+            </div>
+            
+            <!-- Floating particles -->
+            <div class="spirit-particles">
+              <div class="particle" v-for="n in 6" :key="n" :style="`--particle-delay: ${n * 0.3}s`"></div>
+            </div>
+            
+            <!-- Energy ribbons -->
+            <div class="energy-ribbon ribbon-1"></div>
+            <div class="energy-ribbon ribbon-2"></div>
           </div>
           
           <!-- Edge gradient overlays -->
@@ -894,24 +899,165 @@ function getTileClasses(tile: MjTile) {
   }
 }
 
-// Hint arrow styles
-.hint-arrow {
+// Mystical dragon spirit hint styles
+.dragon-spirit-hint {
   position: absolute;
-  top: -50px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  animation: bounce 1s ease-in-out infinite;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
   pointer-events: none;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  z-index: 100;
 }
 
-@keyframes bounce {
+// Dragon orb that orbits around the tile
+.dragon-orb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: dragon-orbit 3s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+}
+
+.orb-core {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 30%, #FFE4B5, #FFD700, #FF6347);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px #FFD700,
+    0 0 20px #FF6347,
+    inset -2px -2px 4px rgba(255, 99, 71, 0.5);
+  animation: orb-pulse 1.5s ease-in-out infinite;
+}
+
+.orb-glow {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: orb-glow-pulse 1.5s ease-in-out infinite;
+}
+
+// Floating spirit particles
+.spirit-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #FFD700;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #FFD700;
+  opacity: 0;
+  animation: particle-float 3s ease-in-out infinite;
+  animation-delay: var(--particle-delay);
+}
+
+.particle:nth-child(1) { top: 10%; left: 20%; }
+.particle:nth-child(2) { top: 20%; right: 15%; }
+.particle:nth-child(3) { bottom: 15%; left: 10%; }
+.particle:nth-child(4) { bottom: 20%; right: 20%; }
+.particle:nth-child(5) { top: 50%; left: 5%; }
+.particle:nth-child(6) { top: 50%; right: 5%; }
+
+// Energy ribbons flowing around the tile
+.energy-ribbon {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  border: 2px solid transparent;
+  border-radius: 20%;
+  opacity: 0.6;
+}
+
+.ribbon-1 {
+  border-image: linear-gradient(45deg, transparent, #FFD700, #FF6347, transparent) 1;
+  animation: ribbon-rotate 4s linear infinite;
+}
+
+.ribbon-2 {
+  border-image: linear-gradient(-45deg, transparent, #FF6347, #FFD700, transparent) 1;
+  animation: ribbon-rotate 4s linear infinite reverse;
+  animation-delay: 2s;
+}
+
+// Animations
+@keyframes dragon-orbit {
+  0% {
+    transform: translateX(-50%) rotate(0deg) translateX(60px) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(360deg) translateX(60px) rotate(-360deg);
+  }
+}
+
+@keyframes orb-pulse {
   0%, 100% {
-    transform: translateX(-50%) translateY(0);
+    transform: scale(1);
   }
   50% {
-    transform: translateX(-50%) translateY(-8px);
+    transform: scale(1.2);
+  }
+}
+
+@keyframes orb-glow-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+@keyframes particle-float {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-35px) scale(0);
+  }
+}
+
+@keyframes ribbon-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.3;
   }
 }
 </style>
