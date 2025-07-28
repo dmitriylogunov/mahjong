@@ -364,6 +364,12 @@ function onTileClick(tile: MjTile) {
   
   // If we have a selected tile, check if it matches the clicked tile
   if (selectedTile.value) {
+    // Check if clicking on the same tile - deselect it
+    if (selectedTile.value === tile) {
+      returnSelectedTile();
+      return;
+    }
+    
     if (selectedTile.value.matches(tile)) {
       // Match found - remove both tiles
       console.log(`Tile matched and removed: ${selectedTile.value.type?.group} ${selectedTile.value.type?.value} with ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
