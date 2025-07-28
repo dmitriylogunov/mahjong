@@ -24,7 +24,7 @@
       <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
         <!-- Tile bottom -->
         <div
-          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          v-if="tile.type && (tile.active || tile.selected)"
           class="tile-bottom"
           :style="getTileBottomStyle(tile)"
         ></div>
@@ -33,7 +33,7 @@
       <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
         <!-- Tile bottom side -->
         <div
-          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          v-if="tile.type && (tile.active || tile.selected)"
           class="tile-side-bottom"
           :style="getTileSideBottomStyle(tile)"
         ></div>
@@ -42,7 +42,7 @@
       <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
         <!-- Tile left side -->
         <div
-          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          v-if="tile.type && (tile.active || tile.selected)"
           class="tile-side-left"
           :style="getTileSideLeftStyle(tile)"
         ></div>
@@ -51,7 +51,7 @@
       <template v-for="(tile, index) in sortedTiles" :key="`tile-${index}`">
         <!-- Tile face -->
         <div
-          v-if="tile.type && (tile.active || tile.selected || isFloatingTile(tile))"
+          v-if="tile.type && (tile.active || tile.selected)"
           class="tile"
           :class="getTileClasses(tile)"
           :style="getTileStyle(tile)"
@@ -117,15 +117,13 @@ const emit = defineEmits<{
 const gameStore = useGameStore();
 
 // Component state
-const tiles = shallowRef<MjTile[]>([]);
+const tiles = ref<MjTile[]>([]);
 const tilesReady = ref(false);
 const isVisible = ref(true);
 const showHints = ref(false);
 
-// Mouse tracking for floating tile
-const mouseX = ref(0);
-const mouseY = ref(0);
-const floatingTile = ref<MjTile | null>(null);
+// Selected tile tracking
+const selectedTile = ref<MjTile | null>(null);
 
 // Field dimensions
 const elementPixelWidth = ref(40);
@@ -205,7 +203,6 @@ const tileSetDescriptor: [string, number, boolean][] = [
 // Initialize component
 onMounted(() => {
   window.addEventListener('resize', handleResize);
-  window.addEventListener('mousemove', handleMouseMove);
   window.addEventListener('keydown', handleKeyDown);
   initializeGame();
   
@@ -217,7 +214,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
-  window.removeEventListener('mousemove', handleMouseMove);
   window.removeEventListener('keydown', handleKeyDown);
   if (resizeTimeout) {
     clearTimeout(resizeTimeout);
@@ -359,20 +355,20 @@ function updateFreePairs() {
 function onTileClick(tile: MjTile) {
   if (!tile.isFree() || props.paused) {
     audioService.play('wrong');
-    // Return floating tile if clicking on a locked tile
-    if (floatingTile.value) {
-      returnFloatingTile();
+    // Return selected tile if clicking on a locked tile
+    if (selectedTile.value) {
+      returnSelectedTile();
     }
     return;
   }
   
-  // If we have a floating tile, check if it matches the clicked tile
-  if (floatingTile.value) {
-    if (floatingTile.value.matches(tile)) {
+  // If we have a selected tile, check if it matches the clicked tile
+  if (selectedTile.value) {
+    if (selectedTile.value.matches(tile)) {
       // Match found - remove both tiles
-      console.log(`Tile matched and removed: ${floatingTile.value.type?.group} ${floatingTile.value.type?.value} with ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
+      console.log(`Tile matched and removed: ${selectedTile.value.type?.group} ${selectedTile.value.type?.value} with ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
       gameStore.selectTile(tile);
-      floatingTile.value = null;
+      selectedTile.value = null;
       
       // Check if we need to update free pairs after a match
       const activeTiles = tiles.value.filter((t: MjTile) => t.active);
@@ -381,26 +377,26 @@ function onTileClick(tile: MjTile) {
         emit('tileCleared');
       }
     } else {
-      // No match - return floating tile and select new one
-      returnFloatingTile();
+      // No match - return selected tile and select new one
+      returnSelectedTile();
       tile.selected = true;
-      floatingTile.value = tile;
+      selectedTile.value = tile;
       console.log(`Tile selected: ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
       gameStore.setSelectedTile(tile);
     }
   } else {
-    // No floating tile - make this tile float
+    // No selected tile - select this tile
     tile.selected = true;
-    floatingTile.value = tile;
+    selectedTile.value = tile;
     console.log(`Tile selected: ${tile.type?.group} ${tile.type?.value} at (${tile.x}, ${tile.y}, ${tile.z})`);
     gameStore.setSelectedTile(tile);
   }
 }
 
 function onFieldClick() {
-  // Return floating tile if clicking on the field
-  if (floatingTile.value) {
-    returnFloatingTile();
+  // Return selected tile if clicking on the field
+  if (selectedTile.value) {
+    returnSelectedTile();
   }
   emit('click');
 }
@@ -478,23 +474,18 @@ function handleResize() {
   }, 100);
 }
 
-function handleMouseMove(event: MouseEvent) {
-  mouseX.value = event.clientX;
-  mouseY.value = event.clientY;
-}
-
 function handleKeyDown(event: KeyboardEvent) {
-  // Return floating tile on ESC key
-  if (floatingTile.value && event.key === 'Escape') {
-    returnFloatingTile();
+  // Return selected tile on ESC key
+  if (selectedTile.value && event.key === 'Escape') {
+    returnSelectedTile();
   }
 }
 
-function returnFloatingTile() {
-  if (floatingTile.value) {
-    console.log(`Tile unselected: ${floatingTile.value.type?.group} ${floatingTile.value.type?.value} at (${floatingTile.value.x}, ${floatingTile.value.y}, ${floatingTile.value.z})`);
-    floatingTile.value.selected = false;
-    floatingTile.value = null;
+function returnSelectedTile() {
+  if (selectedTile.value) {
+    console.log(`Tile unselected: ${selectedTile.value.type?.group} ${selectedTile.value.type?.value} at (${selectedTile.value.x}, ${selectedTile.value.y}, ${selectedTile.value.z})`);
+    selectedTile.value.selected = false;
+    selectedTile.value = null;
     gameStore.clearSelection();
   }
 }
@@ -505,42 +496,28 @@ watch(() => gameStore.showHint, (value) => {
 });
 
 // Helper functions for tile rendering
-function isFloatingTile(tile: MjTile): boolean {
-  return !!floatingTile.value && floatingTile.value.x === tile.x && floatingTile.value.y === tile.y && floatingTile.value.z === tile.z;
-}
-
 function getTilePosition(tile: MjTile) {
-  if (isFloatingTile(tile)) {
-    return {
-      left: `${mouseX.value + 10}px`,
-      top: `${mouseY.value - elementPixelHeight.value * 2 - 10}px`,
-      position: 'fixed' as const
-    };
-  } else {
-    return {
-      left: `${tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX}px`,
-      top: `${tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY}px`,
-      position: 'absolute' as const
-    };
-  }
+  return {
+    left: `${tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX}px`,
+    top: `${tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY}px`,
+    position: 'absolute' as const
+  };
 }
 
 function getTileBottomStyle(tile: MjTile) {
   const pos = getTilePosition(tile);
-  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
-  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
-  
-  const topOffset = tile.selected && !isFloatingTile(tile) ? -8 : 0;
+  const baseTop = tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
   
   return {
     ...pos,
-    top: `${baseTop - shiftX.value * 2 + depthSize.value + topOffset}px`,
+    top: `${baseTop - shiftX.value * 2 + depthSize.value}px`,
     left: `${baseLeft + shiftY.value * 2 - depthSize.value}px`,
     width: `${elementPixelWidth.value * 2 - 4}px`,
     height: `${elementPixelHeight.value * 2 - 4}px`,
-    zIndex: tile.selected ? 9997 : (tile.z * 1000 + 0),
-    transform: isFloatingTile(tile) 
-      ? 'rotate3d(0, 0, 1, 0deg) scale3d(1.1, 1.1, 1)' 
+    zIndex: tile.selected ? 9990 : (tile.z * 1000 + 0),
+    transform: tile.selected 
+      ? `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0) scale3d(1.1, 1.1, 1)`
       : `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`,
     '--depth-size': `${depthSize.value}px`
   };
@@ -548,19 +525,19 @@ function getTileBottomStyle(tile: MjTile) {
 
 function getTileSideBottomStyle(tile: MjTile) {
   const pos = getTilePosition(tile);
-  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
-  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
-  
-  const topOffset = tile.selected && !isFloatingTile(tile) ? -8 : 0;
+  const baseTop = tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
   
   return {
     position: pos.position,
-    top: `${baseTop - shiftX.value * 2 + elementPixelHeight.value * 2 - 4 + topOffset}px`,
+    top: `${baseTop - shiftX.value * 2 + elementPixelHeight.value * 2 - 4}px`,
     left: `${baseLeft + shiftY.value * 2 + depthSize.value * 0.7}px`,
     width: `${elementPixelWidth.value * 2 - 4 - depthSize.value * 0.7}px`,
     height: `${depthSize.value}px`,
-    zIndex: tile.selected ? 9998 : (tile.z * 1000 + 1),
-    transform: `skewX(-45deg) translateX(${-depthSize.value * 0.3}px) translateZ(0) ${isFloatingTile(tile) ? 'scale3d(1.1, 1.1, 1)' : ''}`,
+    zIndex: tile.selected ? 9995 : (tile.z * 1000 + 1),
+    transform: tile.selected 
+      ? `skewX(-45deg) translateX(${-depthSize.value * 0.3}px) translateZ(0) scale3d(1.1, 1.1, 1)`
+      : `skewX(-45deg) translateX(${-depthSize.value * 0.3}px) translateZ(0)`,
     transformOrigin: 'top left',
     '--depth-size': `${depthSize.value}px`
   };
@@ -568,11 +545,10 @@ function getTileSideBottomStyle(tile: MjTile) {
 
 function getTileSideLeftStyle(tile: MjTile) {
   const pos = getTilePosition(tile);
-  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
-  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
+  const baseTop = tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
   
-  const topOffset = tile.selected && !isFloatingTile(tile) ? -8 : 0;
-  const tileTop = baseTop - shiftX.value * 2 + topOffset;
+  const tileTop = baseTop - shiftX.value * 2;
   const tileLeft = baseLeft + shiftY.value * 2;
   const tileWidth = elementPixelWidth.value * 2 - 4;
   const tileHeight = elementPixelHeight.value * 2 - 4;
@@ -583,8 +559,10 @@ function getTileSideLeftStyle(tile: MjTile) {
     left: `${tileLeft - depthSize.value}px`,
     width: `${depthSize.value}px`,
     height: `${tileHeight * 0.89}px`,
-    zIndex: tile.selected ? 9999 : (tile.z * 1000 + 2),
-    transform: `skewY(-45deg) translateZ(0) ${isFloatingTile(tile) ? 'scale3d(1.1, 1.1, 1)' : ''}`,
+    zIndex: tile.selected ? 9998 : (tile.z * 1000 + 2),
+    transform: tile.selected 
+      ? `skewY(-45deg) translateZ(0) scale3d(1.1, 1.1, 1)`
+      : `skewY(-45deg) translateZ(0)`,
     transformOrigin: 'top left',
     '--depth-size': `${depthSize.value}px`
   };
@@ -592,8 +570,8 @@ function getTileSideLeftStyle(tile: MjTile) {
 
 function getTileStyle(tile: MjTile) {
   const pos = getTilePosition(tile);
-  const baseTop = pos.position === 'fixed' ? parseInt(pos.top) : tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
-  const baseLeft = pos.position === 'fixed' ? parseInt(pos.left) : tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
+  const baseTop = tile.y * elementPixelHeight.value - tile.z * shiftY.value + tile.chaosOffsetY;
+  const baseLeft = tile.x * elementPixelWidth.value + tile.z * shiftX.value + tile.chaosOffsetX;
   
   return {
     position: pos.position,
@@ -604,17 +582,15 @@ function getTileStyle(tile: MjTile) {
     color: tile.selected ? '#5C5749' : tile.type?.getColor(),
     textShadow: `0 0 ${Math.floor(elementPixelWidth.value * 0.8)}px ${tile.type?.getColor()}`,
     zIndex: tile.selected ? 10000 : (tile.z * 1000 + 3),
-    transform: isFloatingTile(tile) 
-      ? 'rotate3d(0, 0, 1, 0deg) scale3d(1.1, 1.1, 1)' 
-      : tile.selected 
-        ? `translateY(-8px) rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`
-        : `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`,
+    transform: tile.selected 
+      ? `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0) scale3d(1.1, 1.1, 1)`
+      : `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`,
     '--depth-size': `${depthSize.value}px`
   };
 }
 
 function getTileClasses(tile: MjTile) {
-  return {
+  const classes = {
     selected: tile.selected,
     layer0: tile.z === 0,
     layer1: tile.z === 1,
@@ -624,9 +600,15 @@ function getTileClasses(tile: MjTile) {
     layer5: tile.z >= 5,
     free: tile.isFree() && !tile.selected,
     locked: !tile.isFree() && tile.active,
-    floating: isFloatingTile(tile),
     'shake shake-rotate shake-constant shake-slow shake-little': tile.hasFreePair && showHints.value
   };
+  
+  // Debug logging
+  if (tile.selected) {
+    console.log(`Tile classes for selected tile at (${tile.x}, ${tile.y}, ${tile.z}):`, classes);
+  }
+  
+  return classes;
 }
 </script>
 
@@ -774,17 +756,6 @@ function getTileClasses(tile: MjTile) {
     }
   }
 
-  &.floating {
-    cursor: grabbing;
-    pointer-events: none;
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
-    transition: none !important;
-    
-    box-shadow: 
-      0 12px 24px rgba(0, 0, 0, 0.3),
-      0 6px 12px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  }
 
   &.locked {
     cursor: not-allowed;
@@ -827,10 +798,8 @@ function getTileClasses(tile: MjTile) {
       inset 0 1px 0 rgba(255, 255, 255, 0.6),
       inset 0 -1px 0 rgba(0, 0, 0, 0.15),
       0 0 20px rgba(254, 170, 110, 0.4);
-    transform: translateY(-8px) translateZ(0);
     filter: brightness(1.08);
     cursor: pointer;
-    z-index: 10000 !important;
   }
 
   .tile-edge-gradient-h {
