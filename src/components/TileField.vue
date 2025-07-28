@@ -515,10 +515,8 @@ function getTileBottomStyle(tile: MjTile) {
     left: `${baseLeft + shiftY.value * 2 - depthSize.value}px`,
     width: `${elementPixelWidth.value * 2 - 4}px`,
     height: `${elementPixelHeight.value * 2 - 4}px`,
-    zIndex: tile.selected ? 9990 : (tile.z * 1000 + 0),
-    transform: tile.selected 
-      ? `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0) scale3d(1.1, 1.1, 1)`
-      : `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`,
+    zIndex: tile.z * 1000 + 0,
+    transform: `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`,
     '--depth-size': `${depthSize.value}px`
   };
 }
@@ -534,10 +532,8 @@ function getTileSideBottomStyle(tile: MjTile) {
     left: `${baseLeft + shiftY.value * 2 + depthSize.value * 0.7}px`,
     width: `${elementPixelWidth.value * 2 - 4 - depthSize.value * 0.7}px`,
     height: `${depthSize.value}px`,
-    zIndex: tile.selected ? 9995 : (tile.z * 1000 + 1),
-    transform: tile.selected 
-      ? `skewX(-45deg) translateX(${-depthSize.value * 0.3}px) translateZ(0) scale3d(1.1, 1.1, 1)`
-      : `skewX(-45deg) translateX(${-depthSize.value * 0.3}px) translateZ(0)`,
+    zIndex: tile.z * 1000 + 1,
+    transform: `skewX(-45deg) translateX(${-depthSize.value * 0.3}px) translateZ(0)`,
     transformOrigin: 'top left',
     '--depth-size': `${depthSize.value}px`
   };
@@ -559,10 +555,8 @@ function getTileSideLeftStyle(tile: MjTile) {
     left: `${tileLeft - depthSize.value}px`,
     width: `${depthSize.value}px`,
     height: `${tileHeight * 0.89}px`,
-    zIndex: tile.selected ? 9998 : (tile.z * 1000 + 2),
-    transform: tile.selected 
-      ? `skewY(-45deg) translateZ(0) scale3d(1.1, 1.1, 1)`
-      : `skewY(-45deg) translateZ(0)`,
+    zIndex: tile.z * 1000 + 2,
+    transform: `skewY(-45deg) translateZ(0)`,
     transformOrigin: 'top left',
     '--depth-size': `${depthSize.value}px`
   };
@@ -581,10 +575,8 @@ function getTileStyle(tile: MjTile) {
     height: `${elementPixelHeight.value * 2 - 4}px`,
     color: tile.selected ? '#5C5749' : tile.type?.getColor(),
     textShadow: `0 0 ${Math.floor(elementPixelWidth.value * 0.8)}px ${tile.type?.getColor()}`,
-    zIndex: tile.selected ? 10000 : (tile.z * 1000 + 3),
-    transform: tile.selected 
-      ? `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0) scale3d(1.1, 1.1, 1)`
-      : `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`,
+    zIndex: tile.z * 1000 + 3,
+    transform: `rotate3d(0, 0, 1, ${tile.chaosRotation}deg) translateZ(0)`,
     '--depth-size': `${depthSize.value}px`
   };
 }
@@ -661,6 +653,8 @@ function getTileClasses(tile: MjTile) {
   transition: transform 0.2s ease-out;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
   isolation: isolate;
+  will-change: transform;
+  backface-visibility: hidden;
 
   &::before {
     content: '';
@@ -707,6 +701,9 @@ function getTileClasses(tile: MjTile) {
     inset 0 -1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.15s ease-out;
   pointer-events: none;
+  isolation: isolate;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .tile-side-left {
@@ -723,6 +720,9 @@ function getTileClasses(tile: MjTile) {
     inset 2px 0 2px rgba(0, 0, 0, 0.1);
   transition: all 0.15s ease-out;
   pointer-events: none;
+  isolation: isolate;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .tile {
