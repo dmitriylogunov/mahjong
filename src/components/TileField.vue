@@ -8,18 +8,12 @@
       paddingBottom: `${paddingBottom}px`
     }"
   >
-    <div v-if="paused" class="paused-backdrop">
-      <div class="paused">
-        <div class="paused-content">
-          <div class="decorative-border top"></div>
-          <div class="paused-message">Game Paused</div>
-          <div class="decorative-border bottom"></div>
-        </div>
-        <div class="paused-actions">
-          <button class="btn primary" @click="continueGame">Continue</button>
-        </div>
-      </div>
-    </div>
+    <GameDialog 
+      v-if="paused" 
+      sub-text="Game Paused"
+      button-text="Continue"
+      @action="continueGame"
+    />
     <div 
       v-if="tilesReady && !paused && isVisible"
       class="tile-field"
@@ -111,6 +105,7 @@ import { useGameStore } from '@/stores/game.store';
 import { MjTile, MjTileType } from '@/models/tile.model';
 import { turtleLayout, type TilePosition } from '@/data/layouts';
 import { audioService } from '@/services/audio.service';
+import GameDialog from './GameDialog.vue';
 
 const props = defineProps<{
   layout: string;
@@ -637,169 +632,6 @@ function getTileClasses(tile: MjTile) {
   justify-content: center;
 }
 
-.paused-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.paused {
-  position: relative;
-  color: $text-color;
-  padding: 30px;
-  width: 60%;
-  max-width: 550px;
-  min-height: 200px;
-  border-radius: 15px;
-  border: 3px solid #FFD700;
-  text-align: center;
-  background: 
-    linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(160, 82, 45, 0.95)),
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 10px,
-      rgba(255, 215, 0, 0.03) 10px,
-      rgba(255, 215, 0, 0.03) 20px
-    );
-  box-shadow: 
-    0 8px 16px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 215, 0, 0.3),
-    inset 0 -1px 0 rgba(139, 69, 19, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-      radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
-    pointer-events: none;
-  }
-}
-
-.paused-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 20px 0;
-  text-align: center;
-  overflow: hidden;
-}
-
-.paused-message {
-  font-family: "Palatino", "Garamond", serif;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: #FFE5B4;
-  text-align: center;
-  margin: 10px 0 30px 0;
-  letter-spacing: 2px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  font-style: italic;
-}
-
-.paused .decorative-border {
-  width: 80%;
-  height: 3px;
-  margin: 0 auto;
-  background: linear-gradient(90deg, 
-    transparent, 
-    #FFD700 20%, 
-    #FFD700 80%, 
-    transparent
-  );
-  position: relative;
-  
-  &::before,
-  &::after {
-    content: '◆';
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #FFD700;
-    font-size: 16px;
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-  }
-  
-  &::before {
-    left: 15%;
-  }
-  
-  &::after {
-    right: 15%;
-  }
-  
-  &.top {
-    margin-bottom: 20px;
-  }
-  
-  &.bottom {
-    margin-top: 20px;
-  }
-}
-
-.paused-actions {
-  width: 100%;
-  padding: 20px 0;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.paused .btn {
-  font-size: 20px;
-  line-height: 28px;
-  border-radius: 10px;
-  cursor: pointer;
-  border: 2px solid #FFD700;
-  background: 
-    linear-gradient(135deg, #8FBC8F, #98D98E);
-  color: #2F4F2F;
-  padding: 12px 24px;
-  margin: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 3px 6px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
-  &:hover {
-    background: 
-      linear-gradient(135deg, #7FA87F, #88C888);
-    transform: translateY(-2px);
-    box-shadow: 
-      0 5px 10px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  }
-  
-  &:active {
-    transform: translateY(0);
-    box-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  }
-}
 
 .tile-field {
   position: relative;
