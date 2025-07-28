@@ -50,6 +50,7 @@
           @ready="onTileCollectionReady"
           @tile-cleared="onTileCleared"
           @click="onClick"
+          @continue="onContinueGame"
           :paused="gameStore.isPaused"
         />
       </div>
@@ -191,6 +192,10 @@ function onRedo() {
 
 function onRestartRequest() {
   showRestartDialog.value = true;
+}
+
+function onContinueGame() {
+  gameStore.resumeGame();
 }
 
 // Keyboard shortcuts

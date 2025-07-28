@@ -8,8 +8,15 @@
       paddingBottom: `${paddingBottom}px`
     }"
   >
-    <div v-if="paused" class="paused">
-      Game paused !!
+    <div v-if="paused" class="paused-backdrop">
+      <div class="paused">
+        <div class="paused-content">
+          Game paused !!
+        </div>
+        <div class="paused-actions">
+          <button class="btn primary" @click="continueGame">Continue</button>
+        </div>
+      </div>
     </div>
     <div 
       v-if="tilesReady && !paused && isVisible"
@@ -112,6 +119,7 @@ const emit = defineEmits<{
   ready: [];
   tileCleared: [];
   click: [];
+  continue: [];
 }>();
 
 const gameStore = useGameStore();
@@ -503,6 +511,10 @@ function returnSelectedTile() {
   }
 }
 
+function continueGame() {
+  emit('continue');
+}
+
 // Subscribe to hint requests
 watch(() => gameStore.showHint, (value) => {
   showHints.value = value;
@@ -623,18 +635,114 @@ function getTileClasses(tile: MjTile) {
   justify-content: center;
 }
 
-.paused {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 3em;
-  color: $text-color;
+.paused-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.8);
-  padding: 20px 40px;
-  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1000;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.paused {
+  position: relative;
+  color: $text-color;
+  padding: 30px;
+  width: 60%;
+  max-width: 550px;
+  min-height: 200px;
+  border-radius: 15px;
+  border: 3px solid #FFD700;
+  text-align: center;
+  background: 
+    linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(160, 82, 45, 0.95)),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 215, 0, 0.03) 10px,
+      rgba(255, 215, 0, 0.03) 20px
+    );
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 215, 0, 0.3),
+    inset 0 -1px 0 rgba(139, 69, 19, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+}
+
+.paused-content {
+  font-size: 2em;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.paused-actions {
+  width: 100%;
+  padding: 20px 0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.paused .btn {
+  font-size: 20px;
+  line-height: 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid #FFD700;
+  background: 
+    linear-gradient(135deg, #8FBC8F, #98D98E);
+  color: #2F4F2F;
+  padding: 12px 24px;
+  margin: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    background: 
+      linear-gradient(135deg, #7FA87F, #88C888);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 5px 10px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
 }
 
 .tile-field {
