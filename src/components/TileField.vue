@@ -148,6 +148,7 @@ const tilesReady = ref(false);
 const isVisible = ref(true);
 const showHints = ref(false);
 const savedTileTypes = ref<(MjTileType | null)[]>([]);
+const savedChaosData = ref<{offsetX: number, offsetY: number, rotation: number}[]>([]);
 
 // Selected tile tracking
 const selectedTile = ref<MjTile | null>(null);
@@ -279,27 +280,34 @@ function initializeGame() {
   });
 }
 
-function initTiles() {
+function initTiles(preserveChaos = false) {
   const newTiles: MjTile[] = [];
   
   // Get layout data
   const layoutData = getLayoutData(props.layout);
   
   // Create tiles from layout
+  let tileIndex = 0;
   for (const position of layoutData) {
     const tile = new MjTile(position.x, position.y, newTiles);
     
     // Add chaos to tile placement
     if (CHAOS_LEVEL > 0) {
-      // Random position offsets
-      tile.chaosOffsetX = (Math.random() - 0.5) * 2 * MAX_POSITION_OFFSET * CHAOS_LEVEL;
-      tile.chaosOffsetY = (Math.random() - 0.5) * 2 * MAX_POSITION_OFFSET * CHAOS_LEVEL;
-      
-      // Random rotation
-      tile.chaosRotation = (Math.random() - 0.5) * 2 * MAX_ROTATION * CHAOS_LEVEL;
+      if (preserveChaos && savedChaosData.value.length > tileIndex) {
+        // Restore saved chaos values
+        tile.chaosOffsetX = savedChaosData.value[tileIndex].offsetX;
+        tile.chaosOffsetY = savedChaosData.value[tileIndex].offsetY;
+        tile.chaosRotation = savedChaosData.value[tileIndex].rotation;
+      } else {
+        // Generate new random values
+        tile.chaosOffsetX = (Math.random() - 0.5) * 2 * MAX_POSITION_OFFSET * CHAOS_LEVEL;
+        tile.chaosOffsetY = (Math.random() - 0.5) * 2 * MAX_POSITION_OFFSET * CHAOS_LEVEL;
+        tile.chaosRotation = (Math.random() - 0.5) * 2 * MAX_ROTATION * CHAOS_LEVEL;
+      }
     }
     
     newTiles.push(tile);
+    tileIndex++;
   }
   
   // Sort tiles by rendering order
@@ -370,6 +378,12 @@ function shuffleTypesFisherYates(useExistingTypes = false) {
     
     // Save the current arrangement
     savedTileTypes.value = tilesArray.map(tile => tile.type);
+    // Save chaos data
+    savedChaosData.value = tilesArray.map(tile => ({
+      offsetX: tile.chaosOffsetX,
+      offsetY: tile.chaosOffsetY,
+      rotation: tile.chaosRotation
+    }));
   }
 }
 
@@ -663,7 +677,7 @@ function getTileClasses(tile: MjTile) {
 
 // Function to regenerate the current layout with same tile arrangement
 function regenerateLayout() {
-  initTiles();
+  initTiles(true); // Preserve chaos
   buildTileRelationsGraph();
   shuffleTypesFisherYates(true); // Use saved tile types
   updateFreePairs();
@@ -682,8 +696,9 @@ function regenerateLayout() {
 
 // Function to reshuffle with new random seed
 function reshuffleWithAnimation() {
-  // Clear saved types to force new shuffle
+  // Clear saved types and chaos data to force new shuffle
   savedTileTypes.value = [];
+  savedChaosData.value = [];
   
   // Initialize game with new random shuffle
   initializeGame();
