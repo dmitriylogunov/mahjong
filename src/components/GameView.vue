@@ -182,9 +182,10 @@ function restartCurrentGame() {
 }
 
 function reshuffleGame() {
-  // Start a completely new game with a new random layout
-  showMainMenu.value = false;
-  currentLayout.value = availableLayouts[Math.floor(Math.random() * availableLayouts.length)];
+  // Reshuffle tiles with animation
+  if (tileFieldRef.value) {
+    tileFieldRef.value.reshuffleWithAnimation();
+  }
 }
 
 function onTileCollectionReady() {

@@ -147,6 +147,7 @@ const tiles = ref<MjTile[]>([]);
 const tilesReady = ref(false);
 const isVisible = ref(true);
 const showHints = ref(false);
+const savedTileTypes = ref<(MjTileType | null)[]>([]);
 
 // Selected tile tracking
 const selectedTile = ref<MjTile | null>(null);
@@ -345,19 +346,30 @@ function setTileTypes() {
   }
 }
 
-function shuffleTypesFisherYates() {
-  // First set types in order
-  setTileTypes();
-  
-  // Then shuffle using Fisher-Yates
+function shuffleTypesFisherYates(useExistingTypes = false) {
   const tilesArray = tiles.value as MjTile[];
-  const n = tilesArray.length;
-  for (let i = n - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    // Swap types
-    const tempType = tilesArray[i].type;
-    tilesArray[i].type = tilesArray[j].type;
-    tilesArray[j].type = tempType;
+  
+  if (useExistingTypes && savedTileTypes.value.length === tilesArray.length) {
+    // Restore saved tile types
+    for (let i = 0; i < tilesArray.length; i++) {
+      tilesArray[i].type = savedTileTypes.value[i];
+    }
+  } else {
+    // First set types in order
+    setTileTypes();
+    
+    // Then shuffle using Fisher-Yates
+    const n = tilesArray.length;
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      // Swap types
+      const tempType = tilesArray[i].type;
+      tilesArray[i].type = tilesArray[j].type;
+      tilesArray[j].type = tempType;
+    }
+    
+    // Save the current arrangement
+    savedTileTypes.value = tilesArray.map(tile => tile.type);
   }
 }
 
@@ -649,14 +661,75 @@ function getTileClasses(tile: MjTile) {
   };
 }
 
-// Function to regenerate the current layout
+// Function to regenerate the current layout with same tile arrangement
 function regenerateLayout() {
-  initializeGame();
+  initTiles();
+  buildTileRelationsGraph();
+  shuffleTypesFisherYates(true); // Use saved tile types
+  updateFreePairs();
+  
+  // Calculate dimensions after DOM is ready
+  requestAnimationFrame(() => {
+    retrieveDimensionsFromElement();
+    tilesReady.value = true;
+    
+    // Initialize game store with shallow copy
+    gameStore.initializeGame(props.layout, [...tiles.value] as MjTile[]);
+    
+    emit('ready');
+  });
+}
+
+// Function to reshuffle with animation
+async function reshuffleWithAnimation() {
+  // First regenerate the layout structure
+  initTiles();
+  buildTileRelationsGraph();
+  setTileTypes(); // Set types in order first
+  
+  const tilesArray = tiles.value as MjTile[];
+  
+  // Make tiles visible
+  requestAnimationFrame(() => {
+    retrieveDimensionsFromElement();
+    tilesReady.value = true;
+  });
+  
+  // Wait a bit for tiles to render
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // Perform animated shuffling
+  const shuffleIterations = 20; // Number of swap animations
+  
+  for (let iter = 0; iter < shuffleIterations; iter++) {
+    // Pick two random tiles
+    const i = Math.floor(Math.random() * tilesArray.length);
+    const j = Math.floor(Math.random() * tilesArray.length);
+    
+    if (i !== j && tilesArray[i].type && tilesArray[j].type) {
+      // Swap the types
+      const tempType = tilesArray[i].type;
+      tilesArray[i].type = tilesArray[j].type;
+      tilesArray[j].type = tempType;
+      
+      // Add a small delay between swaps for visual effect
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+  
+  // Save the final arrangement
+  savedTileTypes.value = tilesArray.map(tile => tile.type);
+  
+  // Update game state
+  updateFreePairs();
+  gameStore.initializeGame(props.layout, [...tiles.value] as MjTile[]);
+  emit('ready');
 }
 
 // Expose public methods
 defineExpose({
-  regenerateLayout
+  regenerateLayout,
+  reshuffleWithAnimation
 });
 </script>
 
