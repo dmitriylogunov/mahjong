@@ -648,6 +648,16 @@ function getTileClasses(tile: MjTile) {
     'hint-active': tile.showHint && showHints.value
   };
 }
+
+// Function to regenerate the current layout
+function regenerateLayout() {
+  initializeGame();
+}
+
+// Expose public methods
+defineExpose({
+  regenerateLayout
+});
 </script>
 
 <style lang="scss" scoped>

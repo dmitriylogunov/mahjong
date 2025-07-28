@@ -12,7 +12,9 @@
 
     <!-- Restart Dialog -->
     <AppModal v-if="showRestartDialog" :actions="restartGameModalActions">
-      <h1>Restart game?</h1>
+      <h1>Choose restart option:</h1>
+      <p>Restart Current - Play the same layout again</p>
+      <p>Reshuffle - Generate a new random layout</p>
     </AppModal>
 
     <!-- No More Moves Modal -->
@@ -46,6 +48,7 @@
 
       <div class="gamefield noselect">
         <TileField
+          ref="tileFieldRef"
           :layout="currentLayout"
           @ready="onTileCollectionReady"
           @tile-cleared="onTileCleared"
@@ -68,6 +71,9 @@ import { audioService } from '@/services/audio.service';
 import { storageService } from '@/services/storage.service';
 
 const gameStore = useGameStore();
+
+// Component refs
+const tileFieldRef = ref<InstanceType<typeof TileField> | null>(null);
 
 // Modal states
 const showMainMenu = ref(true);
@@ -96,11 +102,24 @@ const mainMenuModalActions = [
 
 const restartGameModalActions = [
   {
-    label: 'Yes',
+    label: 'Restart Current',
     primary: true,
     action: () => {
       showRestartDialog.value = false;
-      startNewGame();
+      restartCurrentGame();
+    }
+  },
+  {
+    label: 'Reshuffle',
+    action: () => {
+      showRestartDialog.value = false;
+      reshuffleGame();
+    }
+  },
+  {
+    label: 'Cancel',
+    action: () => {
+      showRestartDialog.value = false;
     }
   }
 ];
@@ -153,6 +172,19 @@ function loadSavedGame() {
 
 function replayGame() {
   // TODO: Replay with same layout
+}
+
+function restartCurrentGame() {
+  // Emit event to TileField to regenerate with same layout
+  if (tileFieldRef.value) {
+    tileFieldRef.value.regenerateLayout();
+  }
+}
+
+function reshuffleGame() {
+  // Start a completely new game with a new random layout
+  showMainMenu.value = false;
+  currentLayout.value = availableLayouts[Math.floor(Math.random() * availableLayouts.length)];
 }
 
 function onTileCollectionReady() {
