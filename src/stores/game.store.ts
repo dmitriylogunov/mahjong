@@ -36,7 +36,6 @@ export const useGameStore = defineStore('game', () => {
   const preferences = ref<UserPreferences>(preferencesService.getCurrentPreferences());
   const soundEnabled = computed(() => preferences.value.soundEnabled);
   const musicEnabled = computed(() => preferences.value.musicEnabled);
-  const hintsEnabled = computed(() => preferences.value.hintsEnabled);
   const animationSpeed = computed(() => preferences.value.animationSpeed);
   const theme = computed(() => preferences.value.theme);
   
@@ -209,7 +208,6 @@ export const useGameStore = defineStore('game', () => {
   }
   
   function requestHint() {
-    // DEBUG: Hints always enabled
     if (isPaused.value || isGameComplete.value) return;
     
     // Clear any existing hint timeout
@@ -218,30 +216,44 @@ export const useGameStore = defineStore('game', () => {
       stopHint();
     }
     
-    showHint.value = true;
-    
     // Find all free tiles
     const freeTiles = tiles.value.filter(t => t.active && t.isFree());
     
-    // Find matching pairs
+    // Find all matching pairs and save them
+    const matchingPairs: Array<[MjTile, MjTile]> = [];
+    const highlightedTiles = new Set<MjTile>();
+    
     for (let i = 0; i < freeTiles.length; i++) {
       for (let j = i + 1; j < freeTiles.length; j++) {
         if (freeTiles[i].matches(freeTiles[j])) {
-          freeTiles[i].startHint();
-          freeTiles[j].startHint();
-          
-          // Remove hint after 5 seconds
-          hintTimeout = setTimeout(() => {
-            stopHint();
-          }, 5000);
-          
-          return;
+          matchingPairs.push([freeTiles[i], freeTiles[j]]);
+          highlightedTiles.add(freeTiles[i]);
+          highlightedTiles.add(freeTiles[j]);
         }
       }
     }
     
-    // No matches found
-    showHint.value = false;
+    if (matchingPairs.length > 0) {
+      // Only set showHint to true if we found matches
+      showHint.value = true;
+      
+      // Highlight all tiles that are part of matching pairs
+      highlightedTiles.forEach(tile => {
+        tile.startHint();
+      });
+      
+      console.log(`Found ${matchingPairs.length} matching pairs:`, matchingPairs.map(pair => 
+        `${pair[0].type?.toString()} <-> ${pair[1].type?.toString()}`
+      ));
+      
+      // Remove hint after 5 seconds
+      hintTimeout = setTimeout(() => {
+        stopHint();
+      }, 5000);
+    } else {
+      // No matches found
+      showHint.value = false;
+    }
   }
   
   function stopHint() {
@@ -343,7 +355,6 @@ export const useGameStore = defineStore('game', () => {
     // Preferences
     soundEnabled,
     musicEnabled,
-    hintsEnabled,
     animationSpeed,
     theme,
     
