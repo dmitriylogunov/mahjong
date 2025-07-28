@@ -680,50 +680,13 @@ function regenerateLayout() {
   });
 }
 
-// Function to reshuffle with animation
-async function reshuffleWithAnimation() {
-  // First regenerate the layout structure
-  initTiles();
-  buildTileRelationsGraph();
-  setTileTypes(); // Set types in order first
+// Function to reshuffle with new random seed
+function reshuffleWithAnimation() {
+  // Clear saved types to force new shuffle
+  savedTileTypes.value = [];
   
-  const tilesArray = tiles.value as MjTile[];
-  
-  // Make tiles visible
-  requestAnimationFrame(() => {
-    retrieveDimensionsFromElement();
-    tilesReady.value = true;
-  });
-  
-  // Wait a bit for tiles to render
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Perform animated shuffling
-  const shuffleIterations = 20; // Number of swap animations
-  
-  for (let iter = 0; iter < shuffleIterations; iter++) {
-    // Pick two random tiles
-    const i = Math.floor(Math.random() * tilesArray.length);
-    const j = Math.floor(Math.random() * tilesArray.length);
-    
-    if (i !== j && tilesArray[i].type && tilesArray[j].type) {
-      // Swap the types
-      const tempType = tilesArray[i].type;
-      tilesArray[i].type = tilesArray[j].type;
-      tilesArray[j].type = tempType;
-      
-      // Add a small delay between swaps for visual effect
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-  }
-  
-  // Save the final arrangement
-  savedTileTypes.value = tilesArray.map(tile => tile.type);
-  
-  // Update game state
-  updateFreePairs();
-  gameStore.initializeGame(props.layout, [...tiles.value] as MjTile[]);
-  emit('ready');
+  // Initialize game with new random shuffle
+  initializeGame();
 }
 
 // Expose public methods
