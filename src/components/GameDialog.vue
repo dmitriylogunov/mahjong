@@ -1,7 +1,7 @@
 <template>
   <div class="dialog-backdrop">
     <div class="dialog">
-      <div class="dialog-content">
+      <div class="dialog-content" :class="{ 'sub-text-only': !mainText && subText }">
         <div class="decorative-border top"></div>
         <h1 v-if="mainText" class="main-text" :data-text="mainText">{{ mainText }}</h1>
         <div v-if="subText" class="sub-text">{{ subText }}</div>
@@ -141,6 +141,15 @@ defineEmits<{
   letter-spacing: 2px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   font-style: italic;
+}
+
+// When only sub-text is present, center content vertically
+.dialog-content.sub-text-only {
+  min-height: 150px;
+  
+  .sub-text {
+    margin: auto 0;
+  }
 }
 
 .decorative-border {
