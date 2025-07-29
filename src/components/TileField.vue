@@ -416,10 +416,7 @@ function onTileClick(tile: MjTile) {
   
   if (!tile.isFree() || props.paused) {
     audioService.play('wrong');
-    // Return selected tile if clicking on a locked tile
-    if (selectedTile.value) {
-      returnSelectedTile();
-    }
+    // Don't unselect when clicking on a locked tile
     return;
   }
   
