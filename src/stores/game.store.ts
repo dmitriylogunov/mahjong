@@ -6,9 +6,10 @@ import { preferencesService, UserPreferences } from '@/services/preferences.serv
 import { storageService } from '@/services/storage.service';
 
 interface UndoItem {
-  tiles: MjTile[];
-  score: number;
-  time: number;
+  tile1: MjTile;
+  tile2: MjTile;
+  previousScore: number;
+  selectedTile: MjTile | null;
 }
 
 export const useGameStore = defineStore('game', () => {
@@ -129,14 +130,16 @@ export const useGameStore = defineStore('game', () => {
   function removeTiles(tile1Param: any, tile2Param: any) {
     const tile1 = tile1Param as MjTile;
     const tile2 = tile2Param as MjTile;
+    
     // Save state for undo
     undoStack.value.push({
-      tiles: [tile1, tile2],
-      score: score.value,
-      time: timer.value
+      tile1: tile1,
+      tile2: tile2,
+      previousScore: score.value,
+      selectedTile: selectedTile.value
     });
     
-    // Clear redo stack
+    // Clear redo stack when making a new move
     redoStack.value = [];
     
     // Remove tiles
@@ -177,17 +180,30 @@ export const useGameStore = defineStore('game', () => {
     
     const lastAction = undoStack.value.pop()!;
     
-    // Save current state to redo stack
-    redoStack.value.push(lastAction);
+    // Clear current selection
+    if (selectedTile.value) {
+      selectedTile.value.unselect();
+      selectedTile.value = null;
+    }
     
     // Restore tiles
-    lastAction.tiles.forEach(tile => tile.returnToField());
+    lastAction.tile1.returnToField();
+    lastAction.tile2.returnToField();
     
     // Restore score
-    score.value = lastAction.score;
+    score.value = lastAction.previousScore;
+    
+    // Restore previous selection if any
+    if (lastAction.selectedTile && lastAction.selectedTile !== lastAction.tile1 && lastAction.selectedTile !== lastAction.tile2) {
+      lastAction.selectedTile.select();
+      selectedTile.value = lastAction.selectedTile;
+    }
     
     // Remove last move
     moves.value.pop();
+    
+    // Save to redo stack
+    redoStack.value.push(lastAction);
   }
   
   function redo() {
@@ -195,16 +211,42 @@ export const useGameStore = defineStore('game', () => {
     
     const action = redoStack.value.pop()!;
     
-    // Re-remove tiles
-    action.tiles.forEach(tile => tile.remove());
+    // Clear current selection
+    if (selectedTile.value) {
+      selectedTile.value.unselect();
+      selectedTile.value = null;
+    }
     
-    // Move action back to undo stack
-    undoStack.value.push(action);
+    // Re-remove tiles
+    action.tile1.remove();
+    action.tile2.remove();
     
     // Restore score after redo
     const baseScore = 10;
     const timeBonus = Math.max(0, 10 - Math.floor(timer.value / 30));
-    score.value += baseScore + timeBonus;
+    score.value = action.previousScore + baseScore + timeBonus;
+    
+    // Re-add the move
+    moves.value.push({
+      tile1: {
+        x: action.tile1.x,
+        y: action.tile1.y,
+        z: action.tile1.z,
+        typeGroup: action.tile1.type!.group,
+        typeIndex: action.tile1.type!.index
+      },
+      tile2: {
+        x: action.tile2.x,
+        y: action.tile2.y,
+        z: action.tile2.z,
+        typeGroup: action.tile2.type!.group,
+        typeIndex: action.tile2.type!.index
+      },
+      timestamp: Date.now()
+    });
+    
+    // Move action back to undo stack
+    undoStack.value.push(action);
   }
   
   function requestHint() {

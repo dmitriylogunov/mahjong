@@ -427,22 +427,20 @@ function onTileClick(tile: MjTile) {
   if (selectedTile.value) {
     // Check if clicking on the same tile - deselect it
     if (selectedTile.value === tile) {
+      gameStore.selectTile(tile); // This will handle deselection
       returnSelectedTile();
       return;
     }
     
     if (selectedTile.value.matches(tile)) {
-      // Match found - remove both tiles simultaneously
+      // Match found - use the game store to properly handle the removal
       console.log(`Tile matched and removed: ${selectedTile.value.type?.group} ${selectedTile.value.type?.index} with ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
       
-      // Deactivate both tiles at the same time
-      selectedTile.value.active = false;
-      tile.active = false;
+      // Use the game store's selectTile method to properly handle the match
+      gameStore.selectTile(tile);
       
-      // Clear selection
-      selectedTile.value.selected = false;
+      // Clear local selection
       selectedTile.value = null;
-      gameStore.clearSelection();
       
       // Check if we need to update free pairs after a match
       updateFreePairs();
@@ -450,17 +448,17 @@ function onTileClick(tile: MjTile) {
     } else {
       // No match - return selected tile and select new one
       returnSelectedTile();
+      console.log(`Tile selected: ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
+      gameStore.selectTile(tile);
       tile.selected = true;
       selectedTile.value = tile;
-      console.log(`Tile selected: ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
-      gameStore.setSelectedTile(tile);
     }
   } else {
-    // No selected tile - select this tile
+    // No selected tile - use game store to select this tile
+    console.log(`Tile selected: ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
+    gameStore.selectTile(tile);
     tile.selected = true;
     selectedTile.value = tile;
-    console.log(`Tile selected: ${tile.type?.group} ${tile.type?.index} at (${tile.x}, ${tile.y}, ${tile.z})`);
-    gameStore.setSelectedTile(tile);
   }
 }
 
