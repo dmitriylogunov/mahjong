@@ -168,9 +168,7 @@ export class MjTile {
 
   public remove(): void {
     this.active = false;
-    setTimeout(() => {
-      this.unselect();
-    }, 500);
+    this.unselect();
   }
 
   public returnToField(): void {
