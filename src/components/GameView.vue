@@ -17,18 +17,17 @@
 
     <!-- No More Moves Modal -->
     <AppModal v-if="showTieModal" :actions="tieModalActions">
-      There are no more free tiles left. From here you can:
-      <ul>
-        <li>Continue playing, undo the latest moves and try a different strategy</li>
-        <li>Replay the game with same layout</li>
-        <li>Restart the game with different layout</li>
-      </ul>
+      <h1>No More Free Pairs Left</h1>
+      <p>There are no more matching tiles that can be removed.</p>
+      <p>You can try a different approach or start fresh:</p>
     </AppModal>
 
     <!-- Win Modal -->
     <AppModal v-if="showWinModal" :actions="winModalActions">
-      <h1>Congratulations, you won!</h1>
-      <p>Your score is {{ gameStore.score }}.</p>
+      <h1>🎉 Congratulations!</h1>
+      <p>You have successfully cleared all tiles!</p>
+      <p><strong>Your final score: {{ gameStore.score }}</strong></p>
+      <p>Well played! Ready for another journey?</p>
     </AppModal>
 
     <div class="game-component">
@@ -119,7 +118,7 @@ const restartGameModalActions = [
     }
   },
   {
-    label: 'Reshuffle',
+    label: 'Start New',
     action: () => {
       showRestartDialog.value = false;
       reshuffleGame();
@@ -135,15 +134,15 @@ const restartGameModalActions = [
 
 const tieModalActions = [
   {
-    label: 'Restart',
+    label: 'Restart Current',
+    primary: true,
     action: () => {
       showTieModal.value = false;
-      replayGame();
+      restartCurrentGame();
     }
   },
   {
-    label: 'New game',
-    primary: true,
+    label: 'Start New',
     action: () => {
       showTieModal.value = false;
       startNewGame();
@@ -153,7 +152,7 @@ const tieModalActions = [
 
 const winModalActions = [
   {
-    label: 'New Game',
+    label: 'Start Journey Again',
     primary: true,
     action: () => {
       showWinModal.value = false;
