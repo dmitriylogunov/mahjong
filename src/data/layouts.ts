@@ -67,6 +67,52 @@ export const turtleLayout: Layout = {
   positions: turtlePositions
 };
 // Export for backward compatibility
+// Mobile turtle layout - adapted for smaller screens
+// Removes level 0 and adds side tiles to level 1
+// Total: 72 tiles (exactly half of 144)
+const mobileTurtlePositions: TilePosition[] = [
+  // Level 1 - Base layer with side extensions (51 tiles)
+  ...createLayer([
+    // Original level 1 tiles (36 tiles)
+    [8,2], [10,2], [12,2], [14,2], [16,2], [18,2],
+    [8,4], [10,4], [12,4], [14,4], [16,4], [18,4],
+    [8,6], [10,6], [12,6], [14,6], [16,6], [18,6],
+    [8,8], [10,8], [12,8], [14,8], [16,8], [18,8],
+    [8,10], [10,10], [12,10], [14,10], [16,10], [18,10],
+    [8,12], [10,12], [12,12], [14,12], [16,12], [18,12],
+    // Side extensions (15 tiles) - vertically in the middle
+    [6,4], [6,6], [6,8], [6,10], [20,4], [20,6], [20,8], [20,10], // Left and right sides - core middle
+    [6,2], [6,12], [20,2], [20,12], // Left and right sides - outer
+    [4,6], [4,8], [13,1] // Additional tiles for balance
+  ], 1),
+  
+  // Layer 2 (16 tiles)
+  ...createLayer([
+    [10,4], [12,4], [14,4], [16,4],
+    [10,6], [12,6], [14,6], [16,6],
+    [10,8], [12,8], [14,8], [16,8],
+    [10,10], [12,10], [14,10], [16,10],
+  ], 2),
+  
+  // Layer 3 (4 tiles)
+  ...createLayer([
+    [12,6], [14,6],
+    [12,8], [14,8],
+  ], 3),
+  
+  // Layer 4 - Top (1 tile)
+  ...createLayer([
+    [13,7],
+  ], 4)
+];
+
+export const mobileTurtleLayout: Layout = {
+  name: 'mobile-turtle',
+  description: 'Mobile-optimized turtle layout with 72 tiles (exactly half of original)',
+  positions: mobileTurtlePositions
+};
+
 export const layouts = {
-  turtle: turtleLayout.positions.map(p => [p.x, p.y])
+  turtle: turtleLayout.positions.map(p => [p.x, p.y]),
+  'mobile-turtle': mobileTurtleLayout.positions.map(p => [p.x, p.y])
 };

@@ -125,7 +125,7 @@
 import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import { MjTile, MjTileType } from '@/models/tile.model';
-import { turtleLayout, type TilePosition } from '@/data/layouts';
+import { turtleLayout, mobileTurtleLayout, type TilePosition } from '@/data/layouts';
 import { audioService } from '@/services/audio.service';
 import GameDialog from './GameDialog.vue';
 
@@ -230,6 +230,28 @@ const tileSetDescriptor: [string, number, boolean][] = [
   ["dragon", 3, false],
 ];
 
+// Mobile tile set descriptor - half the tiles for mobile layout
+// Total: 72 tiles (18 ball + 18 bam + 14 num + 4 season + 8 wind + 4 flower + 6 dragon)
+const mobileTileSetDescriptor: [string, number, boolean][] = [
+  ["ball", 9, false],
+  ["ball", 9, false],
+  ["bam", 9, false],
+  ["bam", 9, false],
+  ["num", 7, false],
+  ["num", 7, false],
+  ["season", 4, true],
+  ["wind", 4, false],
+  ["wind", 4, false],
+  ["flower", 4, true],
+  ["dragon", 3, false],
+  ["dragon", 3, false],
+];
+
+// Mobile detection utility
+function isMobileScreen(): boolean {
+  return window.innerWidth <= 768; // Mobile breakpoint
+}
+
 // Initialize component
 onMounted(() => {
   window.addEventListener('resize', handleResize);
@@ -328,8 +350,13 @@ function initTiles(preserveChaos = false) {
   tiles.value = newTiles;
 }
 
-function getLayoutData(_layoutName: string): TilePosition[] {
-  // For now, only turtle layout is supported
+function getLayoutData(layoutName: string): TilePosition[] {
+  // Check if we should use mobile layout
+  if (isMobileScreen() && layoutName === 'default') {
+    return mobileTurtleLayout.positions;
+  }
+  
+  // For now, only turtle layout is supported for desktop
   return turtleLayout.positions;
 }
 
@@ -347,7 +374,10 @@ function setTileTypes() {
   let counter = 0;
   const tilesArray = tiles.value as MjTile[];
   
-  for (const [group, count, matchAny] of tileSetDescriptor) {
+  // Choose the appropriate tile set descriptor based on screen size
+  const descriptor = isMobileScreen() ? mobileTileSetDescriptor : tileSetDescriptor;
+  
+  for (const [group, count, matchAny] of descriptor) {
     for (let index = 0; index < count; index++) {
       const type = new MjTileType(group, index, matchAny);
       tilesArray[counter].setType(type);
@@ -362,7 +392,11 @@ function shuffleTypesFisherYates(useExistingTypes = false) {
   if (useExistingTypes && savedTileTypes.value.length === tilesArray.length) {
     // Restore saved tile types
     for (let i = 0; i < tilesArray.length; i++) {
-      tilesArray[i].type = savedTileTypes.value[i];
+      const savedType = savedTileTypes.value[i];
+      if (savedType) {
+        // Create a new MjTileType instance to ensure proper type
+        tilesArray[i].type = new MjTileType(savedType.group, savedType.index, savedType.matchAny);
+      }
     }
   } else {
     // First set types in order
