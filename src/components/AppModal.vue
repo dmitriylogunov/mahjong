@@ -149,10 +149,12 @@ const visibleActions = computed(() => {
 }
 
 .modal-actions {
-  width: 50%;
+  width: 80%;
   margin: 0 auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .btn {
@@ -165,7 +167,8 @@ const visibleActions = computed(() => {
     linear-gradient(135deg, #8FBC8F, #98D98E);
   color: #2F4F2F;
   padding: 12px 24px;
-  margin: 8px;
+  width: 100%;
+  max-width: 300px;
   transition: all 0.3s ease;
   box-shadow: 
     0 3px 6px rgba(0, 0, 0, 0.3),

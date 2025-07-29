@@ -13,8 +13,6 @@
     <!-- Restart Dialog -->
     <AppModal v-if="showRestartDialog" :actions="restartGameModalActions" @close="showRestartDialog = false">
       <h1>Choose restart option:</h1>
-      <p>Restart Current - Play the same layout again</p>
-      <p>Reshuffle - Generate a new random layout</p>
     </AppModal>
 
     <!-- No More Moves Modal -->
