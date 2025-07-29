@@ -12,6 +12,34 @@ interface UndoItem {
   selectedTile: MjTile | null;
 }
 
+interface SavedGameState {
+  id?: number;
+  layout: string;
+  score: number;
+  timer: number;
+  moves: Move[];
+  tiles: Array<{
+    x: number;
+    y: number;
+    z: number;
+    typeGroup: string;
+    typeIndex: number;
+    active: boolean;
+    selected: boolean;
+    chaosOffsetX: number;
+    chaosOffsetY: number;
+    chaosRotation: number;
+  }>;
+  undoStack: Array<{
+    tile1: { x: number; y: number; z: number; typeGroup: string; typeIndex: number };
+    tile2: { x: number; y: number; z: number; typeGroup: string; typeIndex: number };
+    previousScore: number;
+  }>;
+  createdAt: Date;
+  updatedAt: Date;
+  completed: boolean;
+}
+
 export const useGameStore = defineStore('game', () => {
   // Game state
   const tiles = shallowRef<MjTile[]>([]);
@@ -85,6 +113,9 @@ export const useGameStore = defineStore('game', () => {
     showHint.value = false;
     
     startTimer();
+    
+    // Save initial game state
+    saveCurrentGame();
   }
   
   function selectTile(tileParam: any) {
@@ -173,6 +204,9 @@ export const useGameStore = defineStore('game', () => {
     
     // Check for game completion
     checkGameComplete();
+    
+    // Save current game state
+    saveCurrentGame();
   }
   
   function undo() {
@@ -204,6 +238,9 @@ export const useGameStore = defineStore('game', () => {
     
     // Save to redo stack
     redoStack.value.push(lastAction);
+    
+    // Save current game state
+    saveCurrentGame();
   }
   
   function redo() {
@@ -247,6 +284,9 @@ export const useGameStore = defineStore('game', () => {
     
     // Move action back to undo stack
     undoStack.value.push(action);
+    
+    // Save current game state
+    saveCurrentGame();
   }
   
   function requestHint() {
@@ -340,6 +380,54 @@ export const useGameStore = defineStore('game', () => {
     saveGameState(false);
   }
   
+  async function saveCurrentGame() {
+    if (!currentLayout.value || isGameComplete.value) return;
+    
+    const savedGame: SavedGameState = {
+      id: 1, // Always use ID 1 for the current game
+      layout: currentLayout.value,
+      score: score.value,
+      timer: timer.value,
+      moves: moves.value,
+      tiles: tiles.value.map(t => ({
+        x: t.x,
+        y: t.y,
+        z: t.z,
+        typeGroup: t.type ? t.type.group : '',
+        typeIndex: t.type ? t.type.index : 0,
+        active: t.active,
+        selected: t.selected,
+        chaosOffsetX: t.chaosOffsetX || 0,
+        chaosOffsetY: t.chaosOffsetY || 0,
+        chaosRotation: t.chaosRotation || 0
+      })),
+      undoStack: undoStack.value.map(item => ({
+        tile1: { x: item.tile1.x, y: item.tile1.y, z: item.tile1.z, typeGroup: item.tile1.type!.group, typeIndex: item.tile1.type!.index },
+        tile2: { x: item.tile2.x, y: item.tile2.y, z: item.tile2.z, typeGroup: item.tile2.type!.group, typeIndex: item.tile2.type!.index },
+        previousScore: item.previousScore
+      })),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      completed: false
+    };
+    
+    try {
+      // Use JSON serialization to ensure plain data
+      const plainData = JSON.parse(JSON.stringify(savedGame));
+      await storageService.save('currentGame', plainData);
+    } catch (error) {
+      console.error('Failed to save current game:', error);
+    }
+  }
+  
+  async function clearSavedGame() {
+    try {
+      await storageService.delete('currentGame', 1);
+    } catch (error) {
+      console.error('Failed to clear saved game:', error);
+    }
+  }
+  
   async function saveGameState(completed: boolean) {
     const gameState: GameState = {
       layout: currentLayout.value,
@@ -362,6 +450,11 @@ export const useGameStore = defineStore('game', () => {
     
     try {
       await storageService.save('gameStates', gameState);
+      
+      // Clear the current game save if completed
+      if (completed) {
+        await clearSavedGame();
+      }
     } catch (error) {
       console.error('Failed to save game state:', error);
     }
@@ -393,6 +486,7 @@ export const useGameStore = defineStore('game', () => {
     showHint,
     canUndo,
     canRedo,
+    undoStack,
     
     // Preferences
     soundEnabled,
@@ -414,6 +508,7 @@ export const useGameStore = defineStore('game', () => {
     toggleSound,
     toggleMusic,
     updatePreferences,
-    saveGameState
+    saveGameState,
+    clearSavedGame
   };
 });

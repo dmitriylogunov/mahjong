@@ -700,10 +700,85 @@ function reshuffleWithAnimation() {
   initializeGame();
 }
 
+// Function to load a saved game
+async function loadSavedGame(savedGame: any) {
+  // Initialize tiles from saved state
+  const newTiles: MjTile[] = [];
+  
+  // Create tiles with saved positions and types
+  for (const savedTile of savedGame.tiles) {
+    const tile = new MjTile(savedTile.x, savedTile.y, newTiles);
+    tile.z = savedTile.z;
+    tile.type = new MjTileType(savedTile.typeGroup, savedTile.typeIndex, 
+      savedTile.typeGroup === 'season' || savedTile.typeGroup === 'flower');
+    tile.active = savedTile.active;
+    tile.selected = savedTile.selected;
+    tile.chaosOffsetX = savedTile.chaosOffsetX || 0;
+    tile.chaosOffsetY = savedTile.chaosOffsetY || 0;
+    tile.chaosRotation = savedTile.chaosRotation || 0;
+    tile.sortingOrder = tile.z * 10000 - tile.x * 100 + tile.y;
+    newTiles.push(tile);
+  }
+  
+  // Sort tiles by rendering order
+  newTiles.sort((a, b) => a.sortingOrder - b.sortingOrder);
+  
+  // Assign tiles
+  tiles.value = newTiles;
+  
+  // Rebuild relations
+  buildTileRelationsGraph();
+  updateFreePairs();
+  
+  // Set up game store with saved state
+  requestAnimationFrame(() => {
+    retrieveDimensionsFromElement();
+    tilesReady.value = true;
+    
+    // Initialize game store with the tiles
+    gameStore.initializeGame(savedGame.layout, [...tiles.value] as MjTile[]);
+    
+    // Restore game state
+    gameStore.score = savedGame.score;
+    gameStore.timer = savedGame.timer;
+    gameStore.moves = savedGame.moves;
+    
+    // Restore undo stack
+    const restoredUndoStack = [];
+    for (const savedUndo of savedGame.undoStack) {
+      // Find the tiles by their positions
+      const tile1 = tiles.value.find(t => 
+        t.x === savedUndo.tile1.x && 
+        t.y === savedUndo.tile1.y && 
+        t.z === savedUndo.tile1.z
+      );
+      const tile2 = tiles.value.find(t => 
+        t.x === savedUndo.tile2.x && 
+        t.y === savedUndo.tile2.y && 
+        t.z === savedUndo.tile2.z
+      );
+      
+      if (tile1 && tile2) {
+        restoredUndoStack.push({
+          tile1,
+          tile2,
+          previousScore: savedUndo.previousScore,
+          selectedTile: null
+        });
+      }
+    }
+    
+    gameStore.undoStack = restoredUndoStack;
+    
+    emit('ready');
+  });
+}
+
 // Expose public methods
 defineExpose({
   regenerateLayout,
-  reshuffleWithAnimation
+  reshuffleWithAnimation,
+  loadSavedGame
 });
 </script>
 

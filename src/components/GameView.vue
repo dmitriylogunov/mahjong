@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import AppModal from './AppModal.vue';
 import StatusBar from './StatusBar.vue';
@@ -85,18 +85,29 @@ const numberOfHints = ref(3);
 const hasSavedGame = ref(false);
 
 // Modal actions
-const mainMenuModalActions = [
-  {
-    label: 'Begin Journey',
-    primary: true,
-    action: () => startNewGame()
-  },
-  {
-    label: 'Continue Game',
-    action: () => continueGame(),
-    visible: () => hasSavedGame.value
+const mainMenuModalActions = computed(() => {
+  if (hasSavedGame.value) {
+    return [
+      {
+        label: 'Continue Journey',
+        primary: true,
+        action: () => continueGame()
+      },
+      {
+        label: 'Start Journey',
+        action: () => startNewGame()
+      }
+    ];
+  } else {
+    return [
+      {
+        label: 'Begin Journey',
+        primary: true,
+        action: () => startNewGame()
+      }
+    ];
   }
-];
+});
 
 const restartGameModalActions = [
   {
@@ -157,15 +168,23 @@ function startNewGame() {
   // Initialize new game will be handled by TileField component
 }
 
-function continueGame() {
+async function continueGame() {
   showMainMenu.value = false;
-  // TODO: Load saved game from IndexedDB
-  loadSavedGame();
+  await loadSavedGame();
 }
 
-function loadSavedGame() {
-  // TODO: Implement loading saved game state
-  console.log('Loading saved game...');
+async function loadSavedGame() {
+  try {
+    const savedGame = await storageService.get('currentGame', 1);
+    if (savedGame && tileFieldRef.value) {
+      // Load the saved game state
+      await tileFieldRef.value.loadSavedGame(savedGame);
+    }
+  } catch (error) {
+    console.error('Failed to load saved game:', error);
+    // Fall back to new game if loading fails
+    startNewGame();
+  }
 }
 
 function replayGame() {
@@ -252,10 +271,10 @@ onMounted(async () => {
   
   // Check for saved game
   try {
-    const savedGames = await storageService.getAll('gameStates');
-    hasSavedGame.value = savedGames.some(game => !game.completed);
+    const savedGame = await storageService.get('currentGame', 1);
+    hasSavedGame.value = !!savedGame;
   } catch (error) {
-    console.error('Failed to check for saved games:', error);
+    console.error('Failed to check for saved game:', error);
   }
   
   // Load sounds

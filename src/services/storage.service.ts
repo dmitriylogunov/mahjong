@@ -1,6 +1,6 @@
 export class StorageService {
   private dbName = 'MahjongDB';
-  private dbVersion = 1;
+  private dbVersion = 2; // Increment version to add new object store
   private db: IDBDatabase | null = null;
   private dbReadyPromise: Promise<boolean>;
 
@@ -43,6 +43,10 @@ export class StorageService {
 
         if (!db.objectStoreNames.contains('preferences')) {
           db.createObjectStore('preferences', { keyPath: 'key' });
+        }
+        
+        if (!db.objectStoreNames.contains('currentGame')) {
+          db.createObjectStore('currentGame', { keyPath: 'id' });
         }
       };
     });
