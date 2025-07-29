@@ -73,36 +73,45 @@ export const turtleLayout: Layout = {
 const mobileTurtlePositions: TilePosition[] = [
   // Level 1 - Base layer with side extensions (51 tiles)
   ...createLayer([
-    // Original level 1 tiles (36 tiles)
-    [8,2], [10,2], [12,2], [14,2], [16,2], [18,2],
-    [8,4], [10,4], [12,4], [14,4], [16,4], [18,4],
-    [8,6], [10,6], [12,6], [14,6], [16,6], [18,6],
-    [8,8], [10,8], [12,8], [14,8], [16,8], [18,8],
-    [8,10], [10,10], [12,10], [14,10], [16,10], [18,10],
-    [8,12], [10,12], [12,12], [14,12], [16,12], [18,12],
-    // Side extensions (15 tiles) - vertically in the middle
-    [6,4], [6,6], [6,8], [6,10], [20,4], [20,6], [20,8], [20,10], // Left and right sides - core middle
-    [6,2], [6,12], [20,2], [20,12], // Left and right sides - outer
-    [4,6], [4,8], [13,1] // Additional tiles for balance
+    // Original level 1 tiles (36 tiles) - normalized to (0,0)
+    [2,0], [4,0], [6,0], [8,0], [10,0], [12,0],
+    [2,2], [4,2], [6,2], [8,2], [10,2], [12,2],
+    [2,4], [4,4], [6,4], [8,4], [10,4], [12,4],
+    [2,6], [4,6], [6,6], [8,6], [10,6], [12,6],
+    [2,8], [4,8], [6,8], [8,8], [10,8], [12,8],
+    [2,10], [4,10], [6,10], [8,10], [10,10], [12,10],
+
+    // Side extensions (15 tiles) - vertically in the middle - normalized
+    [0,2], [0,4], [0,6], [0,8], [14,2], [14,4], [14,6], [14,8] // Left and right sides - core middle
+
   ], 1),
   
-  // Layer 2 (16 tiles)
+  // Layer 2 (16 tiles) - normalized
   ...createLayer([
-    [10,4], [12,4], [14,4], [16,4],
-    [10,6], [12,6], [14,6], [16,6],
-    [10,8], [12,8], [14,8], [16,8],
-    [10,10], [12,10], [14,10], [16,10],
+    // Additional tiles for balance
+    [2,5], [12,5],
+
+    // top two
+    [6,0], [8,0],
+
+    // bottom three
+    [5,10], [7,10], [9,10],
+
+    [4,2], [6,2], [8,2], [10,2],
+    [4,4], [6,4], [8,4], [10,4],
+    [4,6], [6,6], [8,6], [10,6],
+    [4,8], [6,8], [8,8], [10,8],
   ], 2),
   
-  // Layer 3 (4 tiles)
+  // Layer 3 (4 tiles) - normalized
   ...createLayer([
-    [12,6], [14,6],
-    [12,8], [14,8],
+    [6,4], [8,4],
+    [6,6], [8,6],
   ], 3),
   
-  // Layer 4 - Top (1 tile)
+  // Layer 4 - Top (1 tile) - normalized
   ...createLayer([
-    [13,7],
+    [7,5],
   ], 4)
 ];
 
