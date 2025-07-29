@@ -150,6 +150,7 @@ const isVisible = ref(true);
 const showHints = ref(false);
 const savedTileTypes = ref<(MjTileType | null)[]>([]);
 const savedChaosData = ref<{offsetX: number, offsetY: number, rotation: number}[]>([]);
+const currentLayout = ref('');
 
 // Selected tile tracking
 const selectedTile = ref<MjTile | null>(null);
@@ -233,9 +234,8 @@ const tileSetDescriptor: [string, number, boolean][] = [
 onMounted(() => {
   window.addEventListener('resize', handleResize);
   window.addEventListener('keydown', handleKeyDown);
-  initializeGame();
   
-  // Ensure dimensions are calculated after mount
+  // Only calculate dimensions, don't initialize game
   nextTick(() => {
     retrieveDimensionsFromElement();
   });
@@ -264,6 +264,7 @@ watch(() => props.paused, (isPaused) => {
 });
 
 function initializeGame() {
+  currentLayout.value = props.layout;
   initTiles();
   buildTileRelationsGraph();
   shuffleTypesFisherYates();
@@ -702,26 +703,49 @@ function reshuffleWithAnimation() {
 
 // Function to load a saved game
 async function loadSavedGame(savedGame: any) {
-  // Initialize tiles from saved state
+  // Set the current layout
+  currentLayout.value = savedGame.layout;
+  
+  // Initialize tiles from saved state - but first create them from the layout
   const newTiles: MjTile[] = [];
   
-  // Create tiles with saved positions and types
-  for (const savedTile of savedGame.tiles) {
-    const tile = new MjTile(savedTile.x, savedTile.y, newTiles);
-    tile.z = savedTile.z;
-    tile.type = new MjTileType(savedTile.typeGroup, savedTile.typeIndex, 
-      savedTile.typeGroup === 'season' || savedTile.typeGroup === 'flower');
-    tile.active = savedTile.active;
-    tile.selected = savedTile.selected;
-    tile.chaosOffsetX = savedTile.chaosOffsetX || 0;
-    tile.chaosOffsetY = savedTile.chaosOffsetY || 0;
-    tile.chaosRotation = savedTile.chaosRotation || 0;
-    tile.sortingOrder = tile.z * 10000 - tile.x * 100 + tile.y;
+  // Get layout data to ensure proper positioning
+  const layoutData = getLayoutData(savedGame.layout);
+  
+  // Create tiles from layout positions
+  for (const position of layoutData) {
+    const tile = new MjTile(position.x, position.y, newTiles);
+    
+    // Find the corresponding saved tile data
+    const savedTile = savedGame.tiles.find((st: any) => 
+      st.x === tile.x && st.y === tile.y && st.z === tile.z
+    );
+    
+    if (savedTile) {
+      // Apply saved tile data
+      tile.type = new MjTileType(savedTile.typeGroup, savedTile.typeIndex, 
+        savedTile.typeGroup === 'season' || savedTile.typeGroup === 'flower');
+      tile.active = savedTile.active;
+      tile.selected = savedTile.selected;
+      tile.chaosOffsetX = savedTile.chaosOffsetX || 0;
+      tile.chaosOffsetY = savedTile.chaosOffsetY || 0;
+      tile.chaosRotation = savedTile.chaosRotation || 0;
+    }
+    
     newTiles.push(tile);
   }
   
   // Sort tiles by rendering order
   newTiles.sort((a, b) => a.sortingOrder - b.sortingOrder);
+  
+  // Calculate field dimensions
+  let maxX = 0, maxY = 0;
+  for (const tile of newTiles) {
+    maxX = Math.max(maxX, tile.x + tile.tileSizeX);
+    maxY = Math.max(maxY, tile.y + tile.tileSizeY);
+  }
+  fieldWidth.value = maxX;
+  fieldHeight.value = maxY;
   
   // Assign tiles
   tiles.value = newTiles;
@@ -774,11 +798,17 @@ async function loadSavedGame(savedGame: any) {
   });
 }
 
+// Function to initialize a new game
+function initializeNewGame() {
+  initializeGame();
+}
+
 // Expose public methods
 defineExpose({
   regenerateLayout,
   reshuffleWithAnimation,
-  loadSavedGame
+  loadSavedGame,
+  initializeNewGame
 });
 </script>
 

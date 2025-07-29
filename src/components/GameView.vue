@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { useGameStore } from '@/stores/game.store';
 import AppModal from './AppModal.vue';
 import StatusBar from './StatusBar.vue';
@@ -165,11 +165,17 @@ const winModalActions = [
 // Game methods
 function startNewGame() {
   showMainMenu.value = false;
-  // Initialize new game will be handled by TileField component
+  // Wait for next tick to ensure component is ready
+  nextTick(() => {
+    if (tileFieldRef.value) {
+      tileFieldRef.value.initializeNewGame();
+    }
+  });
 }
 
 async function continueGame() {
   showMainMenu.value = false;
+  await nextTick();
   await loadSavedGame();
 }
 
