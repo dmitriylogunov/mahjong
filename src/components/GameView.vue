@@ -271,6 +271,15 @@ function handleKeyPress(event: KeyboardEvent) {
 onMounted(async () => {
   window.addEventListener('keydown', handleKeyPress);
   
+  // Preload critical font to prevent FOUC
+  const fontPreloader = new FontFace('FreeSerifNF', 'url(/fonts/FreeSerifNF.ttf)');
+  try {
+    await fontPreloader.load();
+    document.fonts.add(fontPreloader);
+  } catch (error) {
+    console.error('Failed to preload font:', error);
+  }
+  
   // Check for saved game
   try {
     const savedGame = await storageService.get('currentGame', 1);

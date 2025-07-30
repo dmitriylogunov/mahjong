@@ -5,7 +5,26 @@
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mahjong Solitaire</title>
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/fonts/FreeSerifNF.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <!-- Preload critical images -->
+    <link rel="preload" href="/img/backgrounds/oriental-1.jpg" as="image">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/font-awesome.min.css">
+    
+    <!-- Inline critical font-face to ensure immediate loading -->
+    <style>
+      @font-face {
+        font-family: 'FreeSerifNF';
+        src: url('/fonts/FreeSerifNF.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: block;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>
