@@ -161,7 +161,6 @@ const selectedTile = ref<MjTile | null>(null);
 // Touch handling for mobile
 const touchStartTile = ref<MjTile | null>(null);
 const touchStartTime = ref<number>(0);
-const isTouchDevice = ref(false);
 
 // Field dimensions
 const elementPixelWidth = ref(40);
@@ -387,21 +386,6 @@ function buildTileRelationsGraph() {
   }
 }
 
-function setTileTypes() {
-  let counter = 0;
-  const tilesArray = tiles.value as MjTile[];
-  
-  // Choose the appropriate tile set descriptor based on screen size
-  const descriptor = isMobileScreen() ? mobileTileSetDescriptor : tileSetDescriptor;
-  
-  for (const [group, count, matchAny] of descriptor) {
-    for (let index = 0; index < count; index++) {
-      const type = new MjTileType(group, index, matchAny);
-      tilesArray[counter].setType(type);
-      counter++;
-    }
-  }
-}
 
 function shuffleTypesFisherYates(useExistingTypes = false) {
   const tilesArray = tiles.value as MjTile[];
@@ -716,7 +700,7 @@ function returnSelectedTile() {
 }
 
 // Touch event handlers for better mobile experience
-function onTileTouchStart(event: TouchEvent, tile: MjTile) {
+function onTileTouchStart(_event: TouchEvent, tile: MjTile) {
   // Store the tile that was touched
   touchStartTile.value = tile;
   touchStartTime.value = Date.now();
