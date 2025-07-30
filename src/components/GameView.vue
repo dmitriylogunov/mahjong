@@ -20,11 +20,6 @@
       <h1>No More Free Pairs Left</h1>
       <p>There are no more matching tiles that can be removed at this point.</p>
       <p><strong>Don't worry!</strong> Every game is created to be solvable. You may have taken a path that led to this situation.</p>
-      <p>You can:</p>
-      <ul style="text-align: left; margin: 10px 0;">
-        <li>Restart with the same tile arrangement to try a different strategy</li>
-        <li>Start a completely new game with a fresh layout</li>
-      </ul>
     </AppModal>
 
     <!-- Win Modal -->
