@@ -18,8 +18,13 @@
     <!-- No More Moves Modal -->
     <AppModal v-if="showTieModal" :actions="tieModalActions">
       <h1>No More Free Pairs Left</h1>
-      <p>There are no more matching tiles that can be removed.</p>
-      <p>You can try a different approach or start fresh:</p>
+      <p>There are no more matching tiles that can be removed at this point.</p>
+      <p><strong>Don't worry!</strong> Every game is created to be solvable. You may have taken a path that led to this situation.</p>
+      <p>You can:</p>
+      <ul style="text-align: left; margin: 10px 0;">
+        <li>Restart with the same tile arrangement to try a different strategy</li>
+        <li>Start a completely new game with a fresh layout</li>
+      </ul>
     </AppModal>
 
     <!-- Win Modal -->
@@ -134,7 +139,7 @@ const restartGameModalActions = [
 
 const tieModalActions = [
   {
-    label: 'Restart Current',
+    label: 'Try Again (Same Layout)',
     primary: true,
     action: () => {
       showTieModal.value = false;
@@ -142,7 +147,7 @@ const tieModalActions = [
     }
   },
   {
-    label: 'Start New',
+    label: 'New Game (New Layout)',
     action: () => {
       showTieModal.value = false;
       startNewGame();
