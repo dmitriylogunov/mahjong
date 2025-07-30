@@ -91,11 +91,8 @@ const mobileTurtlePositions: TilePosition[] = [
     // Additional tiles for balance
     [2,5], [12,5],
 
-    // top two
-    [6,0], [8,0],
-
-    // bottom three
-    [5,10], [7,10], [9,10],
+    // top two and bottom one
+    [6,0], [8,0], [7,10],
 
     [4,2], [6,2], [8,2], [10,2],
     [4,4], [6,4], [8,4], [10,4],

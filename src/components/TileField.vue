@@ -230,15 +230,21 @@ const tileSetDescriptor: [string, number, boolean][] = [
   ["dragon", 3, false],
 ];
 
-// Mobile tile set descriptor - half the tiles for mobile layout
-// Total: 72 tiles (18 ball + 18 bam + 14 num + 4 season + 8 wind + 4 flower + 6 dragon)
+// Mobile tile set descriptor - reduced set with selective tile removal
+// Total: 70 tiles (16 ball (only 1-4) + 16 bam (only 1-4) + 16 num (only 1-4) + 4 season + 8 wind + 4 flower + 6 dragon)
 const mobileTileSetDescriptor: [string, number, boolean][] = [
-  ["ball", 9, false],
-  ["ball", 9, false],
-  ["bam", 9, false],
-  ["bam", 9, false],
-  ["num", 7, false],
-  ["num", 7, false],
+  ["ball", 4, false],  // balls 1-4
+  ["ball", 4, false],  // balls 1-4
+  ["ball", 4, false],  // balls 1-4
+  ["ball", 4, false],  // balls 1-4
+  ["bam", 4, false],   // bamboos 1-4
+  ["bam", 4, false],   // bamboos 1-4
+  ["bam", 4, false],   // bamboos 1-4
+  ["bam", 4, false],   // bamboos 1-4
+  ["num", 4, false],   // numbers 1-4
+  ["num", 4, false],   // numbers 1-4
+  ["num", 4, false],   // numbers 1-4
+  ["num", 4, false],   // numbers 1-4
   ["season", 4, true],
   ["wind", 4, false],
   ["wind", 4, false],
