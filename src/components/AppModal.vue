@@ -95,6 +95,14 @@ const visibleActions = computed(() => {
   align-items: center;
   position: relative;
   
+  // Mobile styles
+  @media (max-width: 768px) {
+    width: 90%;
+    max-width: none;
+    padding: 20px;
+    margin: 20px;
+  }
+  
   &::before {
     content: '';
     position: absolute;
@@ -110,33 +118,47 @@ const visibleActions = computed(() => {
 }
 
 .modal-content {
-  padding: 0;
-  overflow: hidden;
+  padding: 0 10px;
+  overflow: visible;
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
   
   h1 {
     margin: 0 0 20px;
     font-size: 2em;
     text-align: center;
+    word-wrap: break-word;
+    
+    @media (max-width: 768px) {
+      font-size: 1.5em;
+    }
   }
   
   p {
     margin: 15px 0;
     line-height: 1.6;
+    width: 100%;
+    word-wrap: break-word;
   }
   
   ul {
     margin: 20px 0;
     padding-left: 20px;
+    width: 100%;
+    
+    @media (max-width: 768px) {
+      padding-left: 15px;
+    }
     
     li {
       margin: 10px 0;
       line-height: 1.5;
+      word-wrap: break-word;
     }
   }
 }
