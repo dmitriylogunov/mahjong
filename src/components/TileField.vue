@@ -1116,7 +1116,6 @@ defineExpose({
   left: 50%;
   transform: translate(-50%, -50%);
   animation: 
-    dragon-wobble 4s ease-in-out infinite,
     dragon-float 2.5s ease-in-out infinite alternate;
 }
 
@@ -1196,33 +1195,6 @@ defineExpose({
 }
 
 // Animations
-@keyframes dragon-wobble {
-  0% {
-    transform: translate(-50%, -50%) translateX(0px) translateY(0px);
-  }
-  15% {
-    transform: translate(-50%, -50%) translateX(12px) translateY(-8px);
-  }
-  30% {
-    transform: translate(-50%, -50%) translateX(8px) translateY(10px);
-  }
-  45% {
-    transform: translate(-50%, -50%) translateX(-15px) translateY(5px);
-  }
-  60% {
-    transform: translate(-50%, -50%) translateX(-10px) translateY(-12px);
-  }
-  75% {
-    transform: translate(-50%, -50%) translateX(6px) translateY(-6px);
-  }
-  90% {
-    transform: translate(-50%, -50%) translateX(-5px) translateY(8px);
-  }
-  100% {
-    transform: translate(-50%, -50%) translateX(0px) translateY(0px);
-  }
-}
-
 @keyframes dragon-float {
   0% {
     filter: brightness(1) hue-rotate(0deg);
