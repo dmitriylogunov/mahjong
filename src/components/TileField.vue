@@ -416,18 +416,8 @@ function shuffleTypesFisherYates(useExistingTypes = false) {
       }
     }
   } else {
-    // First set types in order
-    setTileTypes();
-    
-    // Then shuffle using Fisher-Yates
-    const n = tilesArray.length;
-    for (let i = n - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      // Swap types
-      const tempType = tilesArray[i].type;
-      tilesArray[i].type = tilesArray[j].type;
-      tilesArray[j].type = tempType;
-    }
+    // Use the solvable puzzle generation algorithm
+    generateSolvablePuzzle();
     
     // Save the current arrangement
     savedTileTypes.value = tilesArray.map(tile => tile.type);
@@ -439,6 +429,110 @@ function shuffleTypesFisherYates(useExistingTypes = false) {
     }));
   }
 }
+
+// Generate a solvable puzzle using reverse placement
+function generateSolvablePuzzle() {
+  const tilesArray = tiles.value as MjTile[];
+  
+  // Create all tile types we need
+  const allTypes: MjTileType[] = [];
+  const descriptor = isMobileScreen() ? mobileTileSetDescriptor : tileSetDescriptor;
+  
+  for (const [group, count, matchAny] of descriptor) {
+    for (let index = 0; index < count; index++) {
+      allTypes.push(new MjTileType(group, index, matchAny));
+    }
+  }
+  
+  // Shuffle the tile types
+  for (let i = allTypes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allTypes[i], allTypes[j]] = [allTypes[j], allTypes[i]];
+  }
+  
+  // Clear all tiles
+  tilesArray.forEach(tile => {
+    tile.type = null;
+    tile.active = false; // Start with all tiles "removed"
+  });
+  
+  // Build solution by placing pairs in reverse order
+  const solutionOrder: MjTile[] = [];
+  let typeIndex = 0;
+  
+  // Keep placing pairs until all tiles are placed
+  while (solutionOrder.length < tilesArray.length && typeIndex < allTypes.length) {
+    // Find all currently removable positions (free tiles if they were active)
+    const removablePositions = tilesArray.filter(tile => 
+      !tile.active && isPositionFree(tile, tilesArray)
+    );
+    
+    if (removablePositions.length >= 2) {
+      // Randomly select 2 positions from removable ones
+      const shuffled = [...removablePositions].sort(() => Math.random() - 0.5);
+      const tile1 = shuffled[0];
+      const tile2 = shuffled[1];
+      
+      // Assign the same type to both
+      tile1.type = allTypes[typeIndex];
+      tile2.type = allTypes[typeIndex];
+      tile1.active = true;
+      tile2.active = true;
+      
+      // Add to solution order (these would be removed in this order)
+      solutionOrder.push(tile1, tile2);
+      typeIndex++;
+    } else {
+      // If we can't find 2 free positions, just place remaining tiles randomly
+      const inactive = tilesArray.filter(t => !t.active);
+      if (inactive.length >= 2) {
+        inactive[0].type = allTypes[typeIndex];
+        inactive[1].type = allTypes[typeIndex];
+        inactive[0].active = true;
+        inactive[1].active = true;
+        solutionOrder.push(inactive[0], inactive[1]);
+        typeIndex++;
+      } else {
+        break;
+      }
+    }
+  }
+  
+  // Ensure all tiles are active at the end
+  tilesArray.forEach(tile => tile.active = true);
+}
+
+// Check if a position would be free (for reverse placement)
+function isPositionFree(tile: MjTile, allTiles: MjTile[]): boolean {
+  // Check if any active tile blocks from above
+  const blockedFromAbove = allTiles.some(other => 
+    other.active && other !== tile &&
+    other.z > tile.z &&
+    Math.abs(other.x - tile.x) < 2 &&
+    Math.abs(other.y - tile.y) < 2
+  );
+  
+  if (blockedFromAbove) return false;
+  
+  // Check horizontal blocking (both sides must be free)
+  const leftBlocked = allTiles.some(other =>
+    other.active && other !== tile &&
+    other.z === tile.z &&
+    other.x === tile.x - 2 &&
+    Math.abs(other.y - tile.y) < 2
+  );
+  
+  const rightBlocked = allTiles.some(other =>
+    other.active && other !== tile &&
+    other.z === tile.z &&
+    other.x === tile.x + 2 &&
+    Math.abs(other.y - tile.y) < 2
+  );
+  
+  // Tile is free if not blocked from above and at least one side is free
+  return !(leftBlocked && rightBlocked);
+}
+
 
 function updateFreePairs() {
   // Reset all tiles
