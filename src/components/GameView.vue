@@ -147,6 +147,13 @@ const tieModalActions = [
       showTieModal.value = false;
       startNewGame();
     }
+  },
+  {
+    label: 'Cancel (Close and Undo)',
+    action: () => {
+      showTieModal.value = false;
+      // User can now use the undo button to go back
+    }
   }
 ];
 
