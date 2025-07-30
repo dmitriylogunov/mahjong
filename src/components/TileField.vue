@@ -417,14 +417,76 @@ function shuffleTypesFisherYates(useExistingTypes = false) {
 // Generate a solvable puzzle using reverse placement
 function generateSolvablePuzzle() {
   const tilesArray = tiles.value as MjTile[];
+  const isMobile = isMobileScreen();
   
   // Create all tile types we need
   const allTypes: MjTileType[] = [];
-  const descriptor = isMobileScreen() ? mobileTileSetDescriptor : tileSetDescriptor;
   
-  for (const [group, count, matchAny] of descriptor) {
-    for (let index = 0; index < count; index++) {
-      allTypes.push(new MjTileType(group, index, matchAny));
+  if (isMobile) {
+    // Mobile version: 70 tiles total
+    // Rules:
+    // - Exactly 1 of each season (4 tiles) 
+    // - Exactly 1 of each flower (4 tiles)
+    // - Exactly 2 pairs (4 tiles) of each dragon (12 total)
+    // - Exactly 2 pairs (4 tiles) of each wind (16 total)
+    // - Rest are nums, bams, balls in range 1-4 with exactly 2 pairs each
+    
+    // Add exactly one of each season (4 tiles total) - these match any season
+    allTypes.push(new MjTileType("season", 0, true)); // spring
+    allTypes.push(new MjTileType("season", 1, true)); // summer
+    allTypes.push(new MjTileType("season", 2, true)); // autumn
+    allTypes.push(new MjTileType("season", 3, true)); // winter
+    
+    // Add exactly one of each flower (4 tiles total) - these match any flower
+    allTypes.push(new MjTileType("flower", 0, true)); // plum
+    allTypes.push(new MjTileType("flower", 1, true)); // orchid
+    allTypes.push(new MjTileType("flower", 2, true)); // bamboo
+    allTypes.push(new MjTileType("flower", 3, true)); // mum
+    
+    // Add exactly 2 pairs of each dragon (12 tiles total)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 4; j++) { // 4 tiles = 2 pairs
+        allTypes.push(new MjTileType("dragon", i, false));
+      }
+    }
+    
+    // Add exactly 2 pairs of each wind (16 tiles total)
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) { // 4 tiles = 2 pairs
+        allTypes.push(new MjTileType("wind", i, false));
+      }
+    }
+    
+    // Calculate remaining slots: 70 - 4 - 4 - 12 - 16 = 34 tiles
+    // These should be nums, bams, balls (1-4 only) with exactly 2 pairs each
+    // We need to distribute 34 tiles among nums, bams, balls (1-4)
+    // That's 34/2 = 17 pairs to distribute among 12 possible types (3 suits * 4 numbers)
+    
+    // Start with at least 1 pair of each type (12 pairs = 24 tiles)
+    for (let suit of ["num", "bam", "ball"]) {
+      for (let i = 0; i < 4; i++) { // Only 1-4
+        for (let j = 0; j < 2; j++) { // 1 pair = 2 tiles
+          allTypes.push(new MjTileType(suit, i, false));
+        }
+      }
+    }
+    
+    // Distribute remaining 10 tiles (5 pairs) evenly
+    const remainingTiles = 10;
+    for (let i = 0; i < remainingTiles; i++) {
+      const suitChoice = i % 3;
+      const suit = suitChoice === 0 ? "num" : suitChoice === 1 ? "bam" : "ball";
+      const number = i % 4; // Only 1-4
+      allTypes.push(new MjTileType(suit, number, false));
+    }
+  } else {
+    // Desktop version: standard 144 tiles
+    const descriptor = tileSetDescriptor;
+    
+    for (const [group, count, matchAny] of descriptor) {
+      for (let index = 0; index < count; index++) {
+        allTypes.push(new MjTileType(group, index, matchAny));
+      }
     }
   }
   
@@ -492,26 +554,22 @@ function isPositionFree(tile: MjTile, allTiles: MjTile[]): boolean {
   const blockedFromAbove = allTiles.some(other => 
     other.active && other !== tile &&
     other.z > tile.z &&
-    Math.abs(other.x - tile.x) < 2 &&
-    Math.abs(other.y - tile.y) < 2
+    tile.overlaps2d(other)
   );
   
   if (blockedFromAbove) return false;
   
   // Check horizontal blocking (both sides must be free)
-  const leftBlocked = allTiles.some(other =>
-    other.active && other !== tile &&
-    other.z === tile.z &&
-    other.x === tile.x - 2 &&
-    Math.abs(other.y - tile.y) < 2
-  );
+  let leftBlocked = false;
+  let rightBlocked = false;
   
-  const rightBlocked = allTiles.some(other =>
-    other.active && other !== tile &&
-    other.z === tile.z &&
-    other.x === tile.x + 2 &&
-    Math.abs(other.y - tile.y) < 2
-  );
+  for (const other of allTiles) {
+    if (!other.active || other === tile || other.z !== tile.z) continue;
+    
+    const [isLeftAdjacent, isRightAdjacent] = tile.isXAdjacentTo(other);
+    if (isLeftAdjacent) leftBlocked = true;
+    if (isRightAdjacent) rightBlocked = true;
+  }
   
   // Tile is free if not blocked from above and at least one side is free
   return !(leftBlocked && rightBlocked);

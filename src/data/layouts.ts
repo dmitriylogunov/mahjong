@@ -69,7 +69,7 @@ export const turtleLayout: Layout = {
 // Export for backward compatibility
 // Mobile turtle layout - adapted for smaller screens
 // Removes level 0 and adds side tiles to level 1
-// Total: 72 tiles (exactly half of 144)
+// Total: 70 tiles
 const mobileTurtlePositions: TilePosition[] = [
   // Level 1 - Base layer with side extensions (51 tiles)
   ...createLayer([
@@ -114,7 +114,7 @@ const mobileTurtlePositions: TilePosition[] = [
 
 export const mobileTurtleLayout: Layout = {
   name: 'mobile-turtle',
-  description: 'Mobile-optimized turtle layout with 72 tiles (exactly half of original)',
+  description: 'Mobile-optimized turtle layout with 70 tiles',
   positions: mobileTurtlePositions
 };
 
