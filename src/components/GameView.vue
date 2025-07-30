@@ -192,9 +192,6 @@ async function loadSavedGame() {
   }
 }
 
-function replayGame() {
-  // TODO: Replay with same layout
-}
 
 function restartCurrentGame() {
   // Emit event to TileField to regenerate with same layout
