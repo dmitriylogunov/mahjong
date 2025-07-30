@@ -60,6 +60,9 @@
           :class="getTileClasses(tile as MjTile)"
           :style="getTileStyle(tile as MjTile)"
           @click.stop="onTileClick(tile as MjTile)"
+          @touchstart="onTileTouchStart($event, tile as MjTile)"
+          @touchend="onTileTouchEnd($event, tile as MjTile)"
+          @touchcancel="onTileTouchCancel"
         >
           <!-- Mystical dragon spirit hint -->
           <div 
@@ -154,6 +157,11 @@ const currentLayout = ref('');
 
 // Selected tile tracking
 const selectedTile = ref<MjTile | null>(null);
+
+// Touch handling for mobile
+const touchStartTile = ref<MjTile | null>(null);
+const touchStartTime = ref<number>(0);
+const isTouchDevice = ref(false);
 
 // Field dimensions
 const elementPixelWidth = ref(40);
@@ -611,6 +619,31 @@ function returnSelectedTile() {
     selectedTile.value = null;
     gameStore.clearSelection();
   }
+}
+
+// Touch event handlers for better mobile experience
+function onTileTouchStart(event: TouchEvent, tile: MjTile) {
+  // Store the tile that was touched
+  touchStartTile.value = tile;
+  touchStartTime.value = Date.now();
+}
+
+function onTileTouchEnd(event: TouchEvent, tile: MjTile) {
+  // Check if this is the same tile we started touching
+  if (touchStartTile.value === tile) {
+    // Prevent the click event from firing
+    event.preventDefault();
+    // Treat as a tap regardless of finger movement
+    onTileClick(tile);
+  }
+  
+  // Reset touch tracking
+  touchStartTile.value = null;
+}
+
+function onTileTouchCancel() {
+  // Reset touch tracking on cancel
+  touchStartTile.value = null;
 }
 
 function continueGame() {
