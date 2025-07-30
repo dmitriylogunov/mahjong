@@ -174,6 +174,9 @@ const CHAOS_LEVEL = 0.3; // 0 = perfect placement, 1 = maximum chaos
 const MAX_POSITION_OFFSET = 4; // Maximum pixels of position offset
 const MAX_ROTATION = 2; // Maximum degrees of rotation
 
+// Maximum field width to prevent tiles from becoming too large
+const MAX_FIELD_WIDTH = 1280; // pixels
+
 // Constants for tile proportions
 const shiftProportion = 0.14;
 const depthProportion = 0.15;
@@ -519,8 +522,13 @@ function retrieveDimensionsFromElement() {
   if (!container) return;
   
   const rect = container.getBoundingClientRect();
-  const availableWidth = rect.width;
+  let availableWidth = rect.width;
   const availableHeight = rect.height;
+  
+  // Apply maximum width constraint
+  if (availableWidth > MAX_FIELD_WIDTH) {
+    availableWidth = MAX_FIELD_WIDTH;
+  }
   
   // Constants for tile proportions - matching original implementation
   const elementProportionMin = 0.7;
@@ -566,7 +574,9 @@ function retrieveDimensionsFromElement() {
   windowHeight.value = elementPixelHeight.value * fieldHeight.value;
   
   // Calculate padding to center the field with fixed gaps
-  const totalPaddingX = availableWidth - windowWidth.value;
+  // Use the actual container width for centering, not the constrained width
+  const actualWidth = rect.width;
+  const totalPaddingX = actualWidth - windowWidth.value;
   paddingLeft.value = Math.floor(totalPaddingX / 2);
   paddingRight.value = totalPaddingX - paddingLeft.value;
   
