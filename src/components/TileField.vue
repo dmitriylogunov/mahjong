@@ -240,28 +240,22 @@ const tileSetDescriptor: [string, number, boolean][] = [
   ["dragon", 3, false],
 ];
 
-// Mobile tile set descriptor - reduced set with selective tile removal
-// Total: 70 tiles (16 ball (only 1-4) + 16 bam (only 1-4) + 16 num (only 1-4) + 4 season + 8 wind + 4 flower + 6 dragon)
-const mobileTileSetDescriptor: [string, number, boolean][] = [
-  ["ball", 4, false],  // balls 1-4
-  ["ball", 4, false],  // balls 1-4
-  ["ball", 4, false],  // balls 1-4
-  ["ball", 4, false],  // balls 1-4
-  ["bam", 4, false],   // bamboos 1-4
-  ["bam", 4, false],   // bamboos 1-4
-  ["bam", 4, false],   // bamboos 1-4
-  ["bam", 4, false],   // bamboos 1-4
-  ["num", 4, false],   // numbers 1-4
-  ["num", 4, false],   // numbers 1-4
-  ["num", 4, false],   // numbers 1-4
-  ["num", 4, false],   // numbers 1-4
-  ["season", 4, true],
-  ["wind", 4, false],
-  ["wind", 4, false],
-  ["flower", 4, true],
-  ["dragon", 3, false],
-  ["dragon", 3, false],
-];
+// Mobile tile set descriptor - reduced set according to CLAUDE.md rules
+// Total: 70 tiles
+// Note: This descriptor is structured differently than desktop version
+// For mobile, we need special handling for:
+// - Seasons: 1 of each type (4 total)
+// - Flowers: 1 of each type (4 total) 
+// - Dragons: 2 pairs of each type (12 total)
+// - Winds: 2 pairs of each type (16 total)
+// - Numbers/Bamboos/Balls: only 1-4, with at least 1 pair each (34 total)
+const mobileTileSetDescriptor = {
+  seasons: { count: 4, matchAny: true },    // 1 of each season
+  flowers: { count: 4, matchAny: true },    // 1 of each flower
+  dragons: { count: 12, matchAny: false },  // 2 pairs of each dragon
+  winds: { count: 16, matchAny: false },    // 2 pairs of each wind
+  numbered: { count: 34, matchAny: false }  // nums, bams, balls 1-4
+};
 
 // Mobile detection utility
 function isMobileScreen(): boolean {
@@ -423,37 +417,30 @@ function generateSolvablePuzzle() {
   const allTypes: MjTileType[] = [];
   
   if (isMobile) {
-    // Mobile version: 70 tiles total
-    // Rules:
-    // - Exactly 1 of each season (4 tiles) 
-    // - Exactly 1 of each flower (4 tiles)
-    // - Exactly 2 pairs (4 tiles) of each dragon (12 total)
-    // - Exactly 2 pairs (4 tiles) of each wind (16 total)
-    // - Rest are nums, bams, balls in range 1-4 with exactly 2 pairs each
+    // Mobile version: 70 tiles total - use descriptor from CLAUDE.md rules
+    const descriptor = mobileTileSetDescriptor;
     
     // Add exactly one of each season (4 tiles total) - these match any season
-    allTypes.push(new MjTileType("season", 0, true)); // spring
-    allTypes.push(new MjTileType("season", 1, true)); // summer
-    allTypes.push(new MjTileType("season", 2, true)); // autumn
-    allTypes.push(new MjTileType("season", 3, true)); // winter
+    for (let i = 0; i < descriptor.seasons.count; i++) {
+      allTypes.push(new MjTileType("season", i, descriptor.seasons.matchAny));
+    }
     
     // Add exactly one of each flower (4 tiles total) - these match any flower
-    allTypes.push(new MjTileType("flower", 0, true)); // plum
-    allTypes.push(new MjTileType("flower", 1, true)); // orchid
-    allTypes.push(new MjTileType("flower", 2, true)); // bamboo
-    allTypes.push(new MjTileType("flower", 3, true)); // mum
+    for (let i = 0; i < descriptor.flowers.count; i++) {
+      allTypes.push(new MjTileType("flower", i, descriptor.flowers.matchAny));
+    }
     
     // Add exactly 2 pairs of each dragon (12 tiles total)
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 4; j++) { // 4 tiles = 2 pairs
-        allTypes.push(new MjTileType("dragon", i, false));
+        allTypes.push(new MjTileType("dragon", i, descriptor.dragons.matchAny));
       }
     }
     
     // Add exactly 2 pairs of each wind (16 tiles total)
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) { // 4 tiles = 2 pairs
-        allTypes.push(new MjTileType("wind", i, false));
+        allTypes.push(new MjTileType("wind", i, descriptor.winds.matchAny));
       }
     }
     
@@ -466,7 +453,7 @@ function generateSolvablePuzzle() {
     for (let suit of ["num", "bam", "ball"]) {
       for (let i = 0; i < 4; i++) { // Only 1-4
         for (let j = 0; j < 2; j++) { // 1 pair = 2 tiles
-          allTypes.push(new MjTileType(suit, i, false));
+          allTypes.push(new MjTileType(suit, i, descriptor.numbered.matchAny));
         }
       }
     }
@@ -477,7 +464,7 @@ function generateSolvablePuzzle() {
       const suitChoice = i % 3;
       const suit = suitChoice === 0 ? "num" : suitChoice === 1 ? "bam" : "ball";
       const number = i % 4; // Only 1-4
-      allTypes.push(new MjTileType(suit, number, false));
+      allTypes.push(new MjTileType(suit, number, descriptor.numbered.matchAny));
     }
   } else {
     // Desktop version: standard 144 tiles
