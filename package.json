@@ -19,7 +19,8 @@
     "pretest:once": "npm run build",
     "test:once": "karma start karma.conf.js --single-run",
     "lint": "tslint ./src/**/*.ts -t verbose",
-    "styles:watch": "stylus -w src/styles/*.styl -o src/styles"
+    "styles:watch": "stylus -w src/styles/*.styl -o src/styles",
+    "build:prod": "npm run build && node build-prod.js"
   },
   "keywords": [],
   "author": "",
