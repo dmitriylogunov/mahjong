@@ -16,7 +16,7 @@ import { TweenLite } from 'gsap';
 export class MjGameComponent {
   //config
   public numberOfHints = 3;
-  public showDebugFields = true;
+  public showDebugFields = false;
 
   //
   private state: string;
