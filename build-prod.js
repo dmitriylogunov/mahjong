@@ -1,6 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
+// Debug: Show current working directory
+console.log('Current working directory:', process.cwd());
+console.log('Script directory (__dirname):', __dirname);
+
 // Create dist directory structure
 const distDir = path.join(__dirname, 'dist');
 const vendorDir = path.join(distDir, 'vendor');
@@ -151,6 +155,16 @@ try {
     console.log(`Total files in dist: ${distContents.length}`);
     console.log(`Dist directory exists: ${fs.existsSync(distDir)}`);
     console.log(`Dist directory path: ${distDir}`);
+    
+    // Also check what's in the current working directory
+    console.log('\nCurrent directory contents:');
+    const cwdContents = fs.readdirSync(process.cwd());
+    console.log(cwdContents);
+    
+    // Check if dist exists in current working directory
+    const cwdDist = path.join(process.cwd(), 'dist');
+    console.log(`\nDist in cwd exists: ${fs.existsSync(cwdDist)}`);
+    console.log(`Dist in cwd path: ${cwdDist}`);
 } catch (err) {
     console.error('Error reading dist directory:', err);
 }
