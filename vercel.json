@@ -1,7 +1,8 @@
 {
-  "buildCommand": "npm run build:prod",
+  "buildCommand": "npm install && npm run build:prod",
   "outputDirectory": "dist",
   "framework": null,
+  "installCommand": "npm install",
   "rewrites": [
     {
       "source": "/(.*)",
