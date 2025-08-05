@@ -142,3 +142,15 @@ fs.writeFileSync(path.join(distDir, 'systemjs.config.js'), systemJsConfig);
 console.log('Created production systemjs.config.js');
 
 console.log('\nProduction build complete! Deploy the contents of the dist/ directory.');
+
+// List dist contents for debugging
+console.log('\nDist directory contents:');
+try {
+    const distContents = fs.readdirSync(distDir);
+    console.log(distContents);
+    console.log(`Total files in dist: ${distContents.length}`);
+    console.log(`Dist directory exists: ${fs.existsSync(distDir)}`);
+    console.log(`Dist directory path: ${distDir}`);
+} catch (err) {
+    console.error('Error reading dist directory:', err);
+}
